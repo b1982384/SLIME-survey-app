@@ -1,2 +1,2 @@
 # SLIME-survey-app
-Web development application done for the Northwestern University Music Cognition Lab
+This repository contains the source code for an interactive web application for the Northwestern Music Cognition Lab
