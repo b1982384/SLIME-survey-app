@@ -1,10 +1,31 @@
-import ListGroup from './components/ListGroup';
+
+import {Routes, Route, useNavigate} from 'react-router-dom'
+
+import P1 from './p1'
+import P2 from './p2'
+import P3 from './p3'
+// import ListGroup from './components/ListGroup';
+
+// function App() {
+//   return <div><ListGroup></ListGroup></div>;
+// }
+
+// export default App;
 
 function App() {
-  return <div><ListGroup></ListGroup></div>;
+  return (
+    <div>
+      <Routes>
+        <Route path="/" element={<P1 />} />
+        <Route path="/p2" element={<P2 />} />
+        <Route path="/p3" element={<P3 />} />
+      </Routes>
+    </div>
+  )
 }
 
-export default App;
+export default App
+
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
