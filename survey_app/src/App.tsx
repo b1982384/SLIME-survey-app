@@ -1,5 +1,5 @@
 
-import {Routes, Route, useNavigate} from 'react-router-dom'
+import {Routes, Route} from 'react-router-dom'
 
 import P1 from './p1'
 import P2 from './p2'
