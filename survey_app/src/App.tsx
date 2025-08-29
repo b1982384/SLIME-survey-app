@@ -4,6 +4,7 @@ import {Routes, Route} from 'react-router-dom'
 import P1 from './p1'
 import P2 from './p2'
 import P3 from './p3'
+import WelcomePage from './Welcome'
 // import ListGroup from './components/ListGroup';
 
 // function App() {
@@ -16,7 +17,8 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<P1 />} />
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/p1" element={<P1 />} />
         <Route path="/p2" element={<P2 />} />
         <Route path="/p3" element={<P3 />} />
       </Routes>
