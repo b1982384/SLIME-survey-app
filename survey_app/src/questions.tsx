@@ -18,17 +18,36 @@ const MOODS: MoodOption[] = [
   { emoji: '😀', color: 'bg-blue-400', label: 'Strongly Agree', value: 7 },
 ];
 
-const QUESTIONS: string[] = [
-  'I feel like I play a strong role in how things are recommended to me',
-  'I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)',
-  "I can rely on my music platform's recommendations when I want to hear something new",
-  'I prefer to skip songs the platform adds or suggests automatically',
+const SEVEN_POINT_QUESTIONS: string[] = [
   'I feel uneasy letting the platform decide what to play next',
+  'I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)',
+  'I use music to better understand or make sense of my emotions',
+  'I like to explore songs from all genres',
   'I avoid app-curated playlists and mixes – I prefer my own',
-  'I add or edit my existing playlists',
-  'I make playlists for myself',
-  'I make and create playlists on my music platform',
+  'I keep up with popular/trending songs',
+  'I prefer to find my own music and tend not to listen to what others think (negatively weighted)',
+  'I feel like I play a strong role in how things are recommended to me',
+  'I choose music without considering how Im feeling (negatively weighted)',
+  'I prefer to skip songs the platform adds or suggests automatically',
+  'I dont like the music my friends listen to',
+  'I can rely on my music platforms recommendations when I want to hear something new',
+  'I think that artists make better music when they arent really popular',
+  'I worry that my music platform recommends music for its own interests not mine',
+  'I frequently listen to music by artists I havent heard before',
+
 ];
+
+const FIVE_POINT_QUESTIONS: string[] = [
+  ' I will listen to music via… - Full albums',
+  'Please indicate how often you do the following statements: - I make and create playlists on my music platform',
+  'Please indicate how often you do the following statements: - I listen to unfamiliar music',
+  'When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later.',
+  'When I hear a new song from a playlist, autoplay, or other passive source, I look up the artist or track to learn more.',
+  'I collect physical music formats',
+  'I add or edit my existing playlists',
+  'I make playlists for friends',
+  'I make playlists for myself',
+]
 
 type EmojiRowProps = {
   name: string;
@@ -61,7 +80,7 @@ const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect }) =>
 
 const EmojiProgression: React.FC = () => {
   const [responses, setResponses] = useState<Array<number | null>>(
-    Array(QUESTIONS.length).fill(null)
+    Array(SEVEN_POINT_QUESTIONS.length).fill(null)
   );
 
   const handleSelect = (questionIndex: number, value: number) => {
@@ -74,7 +93,7 @@ const EmojiProgression: React.FC = () => {
 
   return (
     <div className="questions-container">
-      {QUESTIONS.map((q, index) => (
+      {SEVEN_POINT_QUESTIONS.map((q, index) => (
         <div key={index} className="question-block">
           <div className="question-text">{q}</div>
           <EmojiRow

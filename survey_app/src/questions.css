@@ -8,12 +8,14 @@
 
 /* A single question followed by the emoji scale */
 .question-block {
+    text-align: center;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
 .question-text {
+    text-align: center;
     font-weight: 600;
     font-size: 1rem;
 }
