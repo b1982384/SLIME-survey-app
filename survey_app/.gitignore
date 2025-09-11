@@ -23,12 +23,12 @@ dist-ssr
 *.sln
 *.sw?
 
- Node.js dependencies
 node_modules/
 
 # Python virtual environment
 venv/
 ../venv/
+env/
 
 # Logs
 npm-debug.log*
