@@ -1,0 +1,90 @@
+/* Layout for the full questions list */
+.questions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+}
+
+/* A single question followed by the emoji scale */
+.question-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.question-text {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Row of emoji options */
+.scale-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Each emoji item */
+.p-4 {
+    padding: 16px;
+    text-align: center;
+    border-radius: 50%;
+    margin: 0 5px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.p-4:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.p-4.selected {
+    border-color: rgba(0,0,0,0.25);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.12);
+}
+
+/* Emoji styling */
+.p-4 span {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+/* Label styling */
+.p-4 p {
+    font-size: 0.8rem;
+    margin: 0;
+    color: white;
+    font-weight: bold;
+}
+
+/* Beautiful Likert Scale Color Palette - Emoji Harmonized */
+.bg-maroon-400 {
+    background-color: #D4737A; /* warm rose - complements angry emoji */
+  }
+  .bg-red-400 {
+    background-color: #F08080; /* light coral - softer red for sad emoji */
+  }
+  .bg-orange-400 {
+    background-color: #FFCBA4; /* warm peach - matches neutral emoji undertones */
+  }
+  .bg-yellow-400 {
+    background-color: #FFF2A6; /* creamy yellow - bright like happy emoji */
+  }
+  .bg-green-400 {
+    background-color: #98E4D6; /* seafoam mint - fresh and positive */
+  }
+  .bg-turquoise-400 {
+    background-color: #A8E6CF; /* sage mint - calm and pleasant */
+  }
+  .bg-blue-400 {
+    background-color: #B8D4E3; /* powder blue - serene and confident */
+  }
