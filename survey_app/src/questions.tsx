@@ -46,16 +46,17 @@ const FIVE_POINT_MOODS: MoodOption[] = [
 
 
 const FIVE_POINT_QUESTIONS: string[] = [
-  '1. Please indicate how often you do the following statements: - I make and create playlists on my music platform',
-  '2. Please indicate how often you do the following statements: - I listen to unfamiliar music',
-  '3. I make playlists for friends',
-  '4. When I hear a new song from a playlist, autoplay, or other passive source, I look up the artist or track to learn more.',
-  '5. I will listen to music via… - Full albums',
-  '6. I collect physical music formats',
-  '7. I make playlists for myself',
-  '8. I add or edit my existing playlists',
-  '9. When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later.'
+  '16. Please indicate how often you do the following statements: - I make and create playlists on my music platform',
+  '17. Please indicate how often you do the following statements: - I listen to unfamiliar music',
+  '18. I make playlists for friends',
+  '19. When I hear a new song from a playlist, autoplay, or other passive source, I look up the artist or track to learn more.',
+  '20. I will listen to music via… - Full albums',
+  '21. I collect physical music formats',
+  '22. I make playlists for myself',
+  '23. I add or edit my existing playlists',
+  '24. When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later.'
 ];
+
 
 
 type EmojiRowProps = {
