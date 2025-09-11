@@ -38,7 +38,7 @@ const SEVEN_POINT_QUESTIONS: string[] = [
 ];
 
 const FIVE_POINT_QUESTIONS: string[] = [
-  ' I will listen to music via… - Full albums',
+  'I will listen to music via… - Full albums',
   'Please indicate how often you do the following statements: - I make and create playlists on my music platform',
   'Please indicate how often you do the following statements: - I listen to unfamiliar music',
   'When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later.',
@@ -78,6 +78,12 @@ const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect }) =>
   );
 };
 
+// creates block for each question - 
+// each block has  emoji row (in classname question text)
+// emoji row has 7 buttons - from moods (above)
+// click a button = calls onSelect and passes in a value
+// onSelect does the handleSelect which updates the response array fo reach question
+// rerenders UI - button added to selected
 const EmojiProgression: React.FC = () => {
   const [responses, setResponses] = useState<Array<number | null>>(
     Array(SEVEN_POINT_QUESTIONS.length).fill(null)
