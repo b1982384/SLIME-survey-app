@@ -8,7 +8,7 @@ type MoodOption = {
   value: number;
 };
 
-const MOODS: MoodOption[] = [
+const SEVEN_POINT_MOODS: MoodOption[] = [
   { emoji: '😠', color: 'bg-maroon-400', label: 'Strongly Disagree', value: 1 },
   { emoji: '☹️', color: 'bg-red-400', label: 'Disagree', value: 2 },
   { emoji: '😕', color: 'bg-orange-400', label: 'Somewhat Disagree', value: 3 },
@@ -58,7 +58,7 @@ type EmojiRowProps = {
 const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect }) => {
   return (
     <div className="scale-row" role="radiogroup" aria-label={name}>
-      {MOODS.map((mood) => {
+      {SEVEN_POINT_MOODS.map((mood) => {
         const isSelected = selectedValue === mood.value;
         return (
           <button
