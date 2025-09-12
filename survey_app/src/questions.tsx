@@ -94,6 +94,9 @@ const EmojiRow: React.FC<EmojiRowProps> = ({name, selectedValue, onSelect, moods
 
 
 const EmojiProgression: React.FC = () => {
+
+  const [answerError, setAnswerError] = useState(false);
+
   const [isDarkMode, setIsDarkMode] = useState(false);
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -113,6 +116,7 @@ const EmojiProgression: React.FC = () => {
     const allQuestionsAnswered = responses.every((response) => response !== null);
     // async call to supbse
     if (!allQuestionsAnswered) {
+      setAnswerError(true); 
       alert('Please answer all questions before submitting.'); // make sure everything answered
       return;
     }
@@ -171,6 +175,9 @@ const EmojiProgression: React.FC = () => {
           </div>
         ))}
       </div>
+      {answerError && (
+        <p className = "submit-error">Please answer all questions</p>
+      )}
         <button onClick={addResponse} className='submit-button'>
           SUBMIT
         </button>

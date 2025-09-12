@@ -9,9 +9,22 @@
   padding: 16px;             /* slightly smaller padding */
 }
 
+
+.advertise-banner{
+  background: linear-gradient(180deg, #415bcb, #a02dca);
+  -webkit-background-clip: text;   /* Chrome, Safari */
+  -webkit-text-fill-color: transparent; /* Chrome, Safari */
+  background-clip: text;           /* Firefox (partially supported) */
+  color: transparent;              /* fallback */
+  font-size: 2rem;
+  margin-top: 8px;           /* reduced margin */
+  justify-self: center;
+  font-weight: 800;
+}
+
 .Welcome-banner{
   color: slateblue;
-  font-size: 3.6rem;
+  font-size: 3rem;
   margin-top: 8px;           /* reduced margin */
   justify-self: center;
   font-weight: 700;
@@ -49,4 +62,28 @@
   margin-bottom: 16px;       /* reduced spacing */
 }
 
-.take-test { background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); display: block; margin: 0 auto; border: 3px solid #221501; border-radius: 28px; box-shadow: #251600 4px 6px 0 0; color: #ffffff; font-weight: 600; font-size: 24px; padding: 12px 36px; line-height: 36px; text-align: center; margin-top: 30px; margin-bottom: 20px; cursor: pointer; transition: transform 0.2s ease; }
+.take-test { 
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); 
+  display: block; 
+  margin: 0 auto; 
+  border: 3px solid #221501;
+   border-radius: 28px; 
+   box-shadow: #251600 4px 6px 0 0; 
+   color: #ffffff; font-weight: 600; 
+   font-size: 24px; padding: 12px 36px; 
+   line-height: 36px; 
+   text-align: center; 
+   margin-top: 30px; 
+   margin-bottom: 20px; 
+   cursor: pointer; 
+   transition: transform 0.2s ease;
+
+  }
+
+
+.consent-error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  
+}
