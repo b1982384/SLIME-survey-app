@@ -1,84 +1,52 @@
-.welcome-container {
-    padding: 20px;
-    text-align: center;
-    font-family: Arial, sans-serif;
-  }
-  
-  .welcome-header {
-    margin-bottom: 20px;
-  }
-  
-  .welcome-title {
-    background-color: slateblue;
-    color: white;
-    padding: 20px;
-    margin: 0;
-    border-radius: 8px;
-    font-size: 2.5rem;
-  }
-  
-  .welcome-main {
-    margin: 30px 0;
-  }
-  
-  .welcome-description {
-    font-size: 1.5rem;
-    line-height: 1.6;
-    color: #333;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+/* Container for about section */
+.about-section {
+  display: flex;
+  align-items: flex-start;   /* align logo + text at top */
+  justify-content: center;
+  gap: 24px;                 /* smaller space between logo & text */
+  margin: 30px auto;         /* reduced vertical margin */
+  max-width: 1000px;
+  padding: 16px;             /* slightly smaller padding */
+}
 
-  .about-header {
-    background-color: slateblue;
-    color: white;
-    font-size: 1.8rem;
-    line-height: 1.6;
-    margin-top: 60px;
-    padding: 2px;
-    border-radius: 8px;
-  }
+.Welcome-banner{
+  color: slateblue;
+  font-size: 3.6rem;
+  margin-top: 8px;           /* reduced margin */
+  justify-self: center;
+  font-weight: 700;
+}
 
-  .about-text {
-    font-size: 1.0rem;
-    line-height: 1.6rem;
-    color: black;
-  }
-  
-  .Big-header {
-    font-size: 1.8rem;
-    line-height: 1.6rem;
-    font-weight: bold;
-    margin-top: 50px;
-    color: rgb(100, 83, 212);
-  }
-  
-  .take-test {
-    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-    display: block;
-    margin: 0 auto;
-    border: 3px solid #221501;
-    border-radius: 28px;
-    box-shadow: #251600 4px 6px 0 0;
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 30px;
-    padding: 12px 45px;
-    line-height: 40px;
-    text-align: center;
-    margin-top: 34px;
-    margin-bottom: 20px;
-  }
+/* Consent section */
+.consent-section {
+  max-width: 800px;
+  margin: 24px auto;         /* smaller vertical margin */
+  background: white;
+  padding: 20px;             /* slightly smaller padding */
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
 
-  .welcome-logo {
-    margin-top: 20px;
-    border-radius: 8px;
-  }
+.consent-header {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: slateblue;
+  margin-bottom: 8px;        /* reduced space under header */
+}
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background:#fbf5ff
-  }
+.consent-text {
+  font-size: 1rem;
+  line-height: 1.6rem;
+  color: #333;
+  margin-bottom: 16px;       /* reduced space under text */
+}
 
+/* Consent checkbox */
+.consent-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;                  /* tighter checkbox gap */
+  margin-bottom: 16px;       /* reduced spacing */
+}
+
+.take-test { background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); display: block; margin: 0 auto; border: 3px solid #221501; border-radius: 28px; box-shadow: #251600 4px 6px 0 0; color: #ffffff; font-weight: 600; font-size: 24px; padding: 12px 36px; line-height: 36px; text-align: center; margin-top: 30px; margin-bottom: 20px; cursor: pointer; transition: transform 0.2s ease; }
