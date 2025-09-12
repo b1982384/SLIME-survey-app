@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './questions.css';
+import {supabase} from './supabaseClient';
 
 type MoodOption = {
   emoji: string;
@@ -16,6 +17,14 @@ const SEVEN_POINT_MOODS: MoodOption[] = [
   { emoji: '🙂', color: 'bg-green-400', label: 'Somewhat Agree', value: 5 },
   { emoji: '😊', color: 'bg-turquoise-400', label: 'Agree', value: 6 },
   { emoji: '😀', color: 'bg-blue-400', label: 'Strongly Agree', value: 7 },
+];
+
+const FIVE_POINT_MOODS: MoodOption[] = [
+  { emoji: '🕛', color: 'bg-maroon-400', label: ' Never', value: 1 },
+  { emoji: '🕒', color: 'bg-orange-400', label: 'Rarely', value: 2 },
+  { emoji: '🕔', color: 'bg-yellow-400', label: 'Sometimes', value: 3 },
+  { emoji: '🕠', color: 'bg-green-400', label: 'Often', value: 4 },
+  { emoji: '🕢', color: 'bg-blue-400', label: 'Very Often', value: 5 },
 ];
 
 const SEVEN_POINT_QUESTIONS: string[] = [
@@ -36,15 +45,6 @@ const SEVEN_POINT_QUESTIONS: string[] = [
   '15. I use music to better underst'
 ];
 
-const FIVE_POINT_MOODS: MoodOption[] = [
-  { emoji: '🕛', color: 'bg-maroon-400', label: ' Never', value: 1 },
-  { emoji: '🕒', color: 'bg-orange-400', label: 'Rarely', value: 2 },
-  { emoji: '🕔', color: 'bg-yellow-400', label: 'Sometimes', value: 3 },
-  { emoji: '🕠', color: 'bg-green-400', label: 'Often', value: 4 },
-  { emoji: '🕢', color: 'bg-blue-400', label: 'Very Often', value: 5 },
-];
-
-
 const FIVE_POINT_QUESTIONS: string[] = [
   '16. Please indicate how often you do the following statements: - I make and create playlists on my music platform',
   '17. Please indicate how often you do the following statements: - I listen to unfamiliar music',
@@ -57,70 +57,40 @@ const FIVE_POINT_QUESTIONS: string[] = [
   '24. When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later.'
 ];
 
-
-
 type EmojiRowProps = {
   name: string;
   selectedValue: number | null;
   onSelect: (value: number) => void;
+  moods: MoodOption[]
 };
 
-const SevenEmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect }) => {
-  return (
+const EmojiRow: React.FC<EmojiRowProps> = ({name, selectedValue, onSelect, moods}) => {
+  return(
     <div className="scale-row" role="radiogroup" aria-label={name}>
-      {SEVEN_POINT_MOODS.map((mood) => {
-        const isSelected = selectedValue === mood.value;
-        return (
-          <button
-            key={mood.value}
-            type="button"
-            role="radio"
-            aria-checked={isSelected}
-            className={`p-4 ${mood.color}${isSelected ? ' selected' : ''}`}
-            onClick={() => onSelect(mood.value)}
-          >
-            <span>{mood.emoji}</span>
-            <p>{mood.label}</p>
-          </button>
-        );
+      {moods.map((mood) => {
+       const isSelected = selectedValue === mood.value;
+       return (
+         <button
+           key={mood.value}
+           type="button"
+           role="radio"
+           aria-checked={isSelected}
+           className={`p-4 ${mood.color}${isSelected ? ' selected' : ''}`}
+           onClick={() => onSelect(mood.value)}
+         >
+           <span>{mood.emoji}</span>
+           <p>{mood.label}</p>
+         </button>
+       );
       })}
     </div>
-  );
-};
-
-const FiveEmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect}) => {
-  return (
-  <div className="scale-row" role="radiogroup" aria-label={name}>
-      {FIVE_POINT_MOODS.map((mood) => {
-        const isSelected = selectedValue === mood.value;
-        return (
-          <button
-            key={mood.value}
-            type="button"
-            role="radio"
-            aria-checked={isSelected}
-            className={`p-4 ${mood.color}${isSelected ? ' selected' : ''}`}
-            onClick={() => onSelect(mood.value)}
-          >
-            <span>{mood.emoji}</span>
-            <p>{mood.label}</p>
-          </button>
-        );
-      })}
-    </div>);
+  )
 }
 
-// creates block for each question - 
-// each block has  emoji row (in classname question text)
-// emoji row has 7 buttons - from moods (above)
-// click a button = calls onSelect and passes in a value
-// onSelect does the handleSelect which updates the response array fo reach question
-// rerenders UI - button added to selected
 const EmojiProgression: React.FC = () => {
   const [responses, setResponses] = useState<Array<number | null>>(
-    Array(SEVEN_POINT_QUESTIONS.length).fill(null)
+    Array(SEVEN_POINT_QUESTIONS.length + FIVE_POINT_QUESTIONS.length).fill(null)
   );
-
 
   const handleSelect = (questionIndex: number, value: number) => {
     setResponses((prev) => {
@@ -129,34 +99,68 @@ const EmojiProgression: React.FC = () => {
       return next;
     });
   };
+  
+  const addResponse = async () => {
+    const allQuestionsAnswered = responses.every((response) => response !== null);
+    
+    if (!allQuestionsAnswered) {
+      alert('Please answer all questions before submitting.');
+      return;
+    }
+  
+    const formattedData = responses.reduce<Record<string, number | null>>((acc, response, index) => {
+      acc[`q${index + 1}`] = response;
+      return acc;
+    }, {});
+  
+    try {
+      const { data, error } = await supabase.from("responses").insert([formattedData]);
+  
+      if (error) {
+        console.error('Error updating supabase:', error.message);
+        alert('Error submitting responses. Please try again.');
+      } else {
+        console.log('Success updating supabase:', data);
+        alert('Responses submitted successfully!');
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      alert('An unexpected error occurred. Please try again.');
+    }
+  };
 
   return (
     <div>
-    <div className="questions-container">
-      {SEVEN_POINT_QUESTIONS.map((q, index) => (
-        <div key={index} className="question-block">
-          <div className="question-text">{q}</div>
-          <SevenEmojiRow
-            name={`q${index}`}
-            selectedValue={responses[index]}
-            onSelect={(value) => handleSelect(index, value)}
-          />
-        </div>
-      ))}
+      <div className="questions-container">
+        {SEVEN_POINT_QUESTIONS.map((q, index) => (
+          <div key={index} className="question-block">
+            <div className="question-text">{q}</div>
+            <EmojiRow
+              name={`q${index}`}
+              selectedValue={responses[index]}
+              onSelect={(value) => handleSelect(index, value)}
+              moods={SEVEN_POINT_MOODS}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="questions-container">
+        {FIVE_POINT_QUESTIONS.map((q, index) => (
+          <div key={SEVEN_POINT_QUESTIONS.length + index} className="question-block">
+            <div className="question-text">{q}</div>
+            <EmojiRow
+              name={`q${SEVEN_POINT_QUESTIONS.length + index}`}
+              selectedValue={responses[SEVEN_POINT_QUESTIONS.length + index]}
+              onSelect={(value) => handleSelect(SEVEN_POINT_QUESTIONS.length + index, value)}
+              moods={FIVE_POINT_MOODS}
+            />
+          </div>
+        ))}
+      </div>
+      <button onClick={addResponse} className="submit-button">
+        Submit
+      </button>
     </div>
-    <div>
-    {FIVE_POINT_QUESTIONS.map((q, index) => (
-        <div key={index} className="question-block">
-          <div className="question-text">{q}</div>
-          <FiveEmojiRow
-            name={`q${index}`}
-            selectedValue={responses[index]}
-            onSelect={(value) => handleSelect(index, value)}
-          />
-        </div>
-      ))}
-    </div>
-  </div>
   );
 };
 
