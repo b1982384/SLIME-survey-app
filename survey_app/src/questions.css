@@ -45,12 +45,12 @@
 
 .p-4:hover {
     transform: translateY(-2.4px);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.415);
+    box-shadow: 0 10px 17px rgba(0, 0, 0, 0.612);
 }
 
 .p-4.selected {
     border-color: rgba(0, 0, 0, 0.571);
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.312);
+    box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.477);
 }
 
 /* Emoji styling */
@@ -160,8 +160,8 @@
 }
 
 .dark-theme .p-4.selected {
-  border-color: rgba(255, 255, 255, 0.571);
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.312);
+  border-color: rgb(255, 255, 255);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.792);
 }
 
 .dark-theme .submit-button {
