@@ -78,7 +78,7 @@
     background-color: #f3c598; /* warm peach - matches neutral emoji undertones */
   }
   .bg-yellow-400 {
-    background-color: #e1da93c4; /* creamy yellow - bright like happy emoji */
+    background-color: #e1e395c4; /* creamy yellow - bright like happy emoji */
   }
   .bg-green-400 {
     background-color: #95eacb; /* sage mint - calm and pleasant */
@@ -90,23 +90,83 @@
     background-color: #88b9d3; /* powder blue - serene and confident */
   }
   
-.submit-button {
-  display: block;
-  margin: 0 auto;
-  border: 3px solid #221501;
-  border-radius: 30px;
-  box-shadow: #251600 4px 4px 0 0;
+  .submit-button {
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    display: block;
+    margin: 0 auto;
+    border: 3px solid #221501;
+    border-radius: 28px;
+    box-shadow: #251600 4px 6px 0 0;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 30px;
+    padding: 12px 45px;
+    line-height: 40px;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #fbf5ff; /* fallback so even outside wrapper matches */
+  }
+
+  .light-theme {
+  background-color: #fbf5ff;
   color: #221501;
-  font-weight: 600;
-  font-size: 30px;
-  padding: 12px 45px;
-  line-height: 40px;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 30px;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  padding-bottom: 2rem;
 }
 
 .submit-button:hover {
-  background-color: #fff;
+  transform: scale(1.1);
 }
 
+.dark-theme {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  padding-bottom: 2rem;
+}
+
+.dark-mode-toggle {
+  text-align: center;
+  padding: 20px;
+}
+
+.toggle-btn {
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 25px;
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.toggle-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Dark theme overrides */
+.dark-theme .question-text {
+  color: #ffffff;
+}
+
+.dark-theme .p-4.selected {
+  border-color: rgba(255, 255, 255, 0.571);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.312);
+}
+
+.dark-theme .submit-button {
+  background-color: #333333;
+  color: #ffffff;
+  border-color: #555555;
+  box-shadow: #444444 4px 4px 0 0;
+}

@@ -65,7 +65,9 @@ type EmojiRowProps = {
 };
 
 const EmojiRow: React.FC<EmojiRowProps> = ({name, selectedValue, onSelect, moods}) => {
+
   return(
+    
     <div className="scale-row" role="radiogroup" aria-label={name}>
       {moods.map((mood) => {
        const isSelected = selectedValue === mood.value;
@@ -87,11 +89,19 @@ const EmojiRow: React.FC<EmojiRowProps> = ({name, selectedValue, onSelect, moods
   )
 }
 
+
+
+
+
 const EmojiProgression: React.FC = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   const [responses, setResponses] = useState<Array<number | null>>(
     Array(SEVEN_POINT_QUESTIONS.length + FIVE_POINT_QUESTIONS.length).fill(null)
   );
-
   const handleSelect = (questionIndex: number, value: number) => {
     setResponses((prev) => {
       const next = [...prev];
@@ -99,19 +109,18 @@ const EmojiProgression: React.FC = () => {
       return next;
     });
   };
-  
   const addResponse = async () => {
     const allQuestionsAnswered = responses.every((response) => response !== null);
-    
+    // async call to supbse
     if (!allQuestionsAnswered) {
-      alert('Please answer all questions before submitting.');
+      alert('Please answer all questions before submitting.'); // make sure everything answered
       return;
     }
-  
+    
     const formattedData = responses.reduce<Record<string, number | null>>((acc, response, index) => {
       acc[`q${index + 1}`] = response;
       return acc;
-    }, {});
+    }, {}); //
   
     try {
       const { data, error } = await supabase.from("responses").insert([formattedData]);
@@ -130,7 +139,12 @@ const EmojiProgression: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
+    <div className="dark-mode-toggle">
+      <button onClick={toggleDarkMode} className="toggle-btn">
+        {isDarkMode ? '☀️' : '🌙'} {isDarkMode ? 'Light' : 'Dark'} Mode
+      </button>
+      </div>
       <div className="questions-container">
         {SEVEN_POINT_QUESTIONS.map((q, index) => (
           <div key={index} className="question-block">
