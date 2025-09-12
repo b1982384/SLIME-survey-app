@@ -28,33 +28,33 @@ const FIVE_POINT_MOODS: MoodOption[] = [
 ];
 
 const SEVEN_POINT_QUESTIONS: string[] = [
-  '1. I like to explore songs from all genres',
-  '2. I feel like I play a strong role in how things are recommended to me',
-  '3. I worry that my music platform recommends music for its own interests not mine',
-  '4. I keep up with popular/trending songs',
-  '5. I prefer to find my own music and tend not to listen to what others think (negatively weighted)',
-  '6. I can rely on my music platforms recommendations when I want to hear something new',
-  '7. I avoid app-curated playlists and mixes – I prefer my own',
-  '8. I frequently listen to music by artists I havent heard before',
-  '9. I think that artists make better music when they arent really popular',
-  '10. I prefer to skip songs the platform adds or suggests automatically',
-  '11. I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)',
-  '12. I dont like the music my friends listen to',
-  '13. I choose music without considering how Im feeling (negatively weighted)',
-  '14. I feel uneasy letting the platform decide what to play next',
-  '15. I use music to better underst'
+  "1. I like to explore songs from all genres",
+  "2. I feel like I play a strong role in how things are recommended to me",
+  "3. I worry that my music platform recommends music for its own interests not mine",
+  "4. I keep up with popular/trending songs",
+  "5. I prefer to find my own music and tend not to listen to what others think (negatively weighted)",
+  "6. I can rely on my music platform's recommendations when I want to hear something new",
+  "7. I avoid app-curated playlists and mixes – I prefer my own",
+  "8. I frequently listen to music by artists I haven't heard before",
+  "9. I think that artists make better music when they aren't really popular",
+  "10. I prefer to skip songs the platform adds or suggests automatically",
+  "11. I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)",
+  "12. I don't like the music my friends listen to",
+  "13. I choose music without considering how I'm feeling (negatively weighted)",
+  "14. I feel uneasy letting the platform decide what to play next",
+  "15. I use music to better understand or make sense of my emotions"
 ];
 
 const FIVE_POINT_QUESTIONS: string[] = [
-  '16. Please indicate how often you do the following statements: - I make and create playlists on my music platform',
-  '17. Please indicate how often you do the following statements: - I listen to unfamiliar music',
-  '18. I make playlists for friends',
-  '19. When I hear a new song from a playlist, autoplay, or other passive source, I look up the artist or track to learn more.',
-  '20. I will listen to music via… - Full albums',
-  '21. I collect physical music formats',
-  '22. I make playlists for myself',
-  '23. I add or edit my existing playlists',
-  '24. When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later.'
+  "16. Please indicate how often you do the following statements: - I make and create playlists on my music platform",
+  "17. Please indicate how often you do the following statements: - I listen to unfamiliar music",
+  "18. I make playlists for friends",
+  "19. When I hear a new song from a playlist, autoplay, or other passive source, I look up the artist or track to learn more.",
+  "20. I will listen to music via… - Full albums",
+  "21. I collect physical music formats",
+  "22. I make playlists for myself",
+  "23. I add or edit my existing playlists",
+  "24. When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later."
 ];
 
 type EmojiRowProps = {
@@ -157,9 +157,9 @@ const EmojiProgression: React.FC = () => {
           </div>
         ))}
       </div>
-      <button onClick={addResponse} className="submit-button">
-        Submit
-      </button>
+        <button onClick={addResponse} className='submit-button'>
+          SUBMIT
+        </button>
     </div>
   );
 };
