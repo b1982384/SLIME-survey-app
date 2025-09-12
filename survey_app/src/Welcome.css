@@ -9,7 +9,7 @@
   }
   
   .welcome-title {
-    background-color: SlateBlue;
+    background-color: slateblue;
     color: white;
     padding: 20px;
     margin: 0;
@@ -30,7 +30,7 @@
   }
 
   .about-header {
-    background-color: SlateBlue;
+    background-color: slateblue;
     color: white;
     font-size: 1.8rem;
     line-height: 1.6;
@@ -45,35 +45,30 @@
     color: black;
   }
   
-
   .Big-header {
     font-size: 1.8rem;
     line-height: 1.6rem;
     font-weight: bold;
     margin-top: 50px;
-    color: slateblue;
+    color: rgb(100, 83, 212);
   }
-
   
   .take-test {
-    background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
-    border: 0;
-    margin-top: 40px;
-    border-radius: 8px;
-    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
-    box-sizing: border-box;
-    color: #FFFFFF;
-    display: flex;
-    justify-content: center;
-    justify-self: center;
-    font-family: Phantomsans, sans-serif;
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    display: block;
+    margin: 0 auto;
+    border: 3px solid #221501;
+    border-radius: 28px;
+    box-shadow: #251600 4px 6px 0 0;
+    color: #ffffff;
+    font-weight: 600;
     font-size: 30px;
-    line-height: 1em;
-    max-width: 100%;
-    min-width: 140px;
-    padding: 19px 24px;
+    padding: 12px 45px;
+    line-height: 40px;
+    text-align: center;
+    margin-top: 34px;
+    margin-bottom: 20px;
   }
-
 
   .welcome-logo {
     margin-top: 20px;
@@ -84,13 +79,7 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    background-color: #fbf5ff; /* fallback so even outside wrapper matches */
+    background:#fbf5ff
   }
 
-  .light-theme {
-  background-color: #fbf5ff;
-  color: #221501;
-  min-height: 100vh;
-  transition: all 0.3s ease;
-  padding-bottom: 2rem;
-}
+  

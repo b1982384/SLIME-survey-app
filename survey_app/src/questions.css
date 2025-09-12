@@ -95,7 +95,7 @@
     display: block;
     margin: 0 auto;
     border: 3px solid #221501;
-    border-radius: 28px;
+    border-radius: 32px;
     box-shadow: #251600 4px 6px 0 0;
     color: #ffffff;
     font-weight: 600;
@@ -107,10 +107,23 @@
     margin-bottom: 20px;
   }
 
-e
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #fbf5ff; /* fallback so even outside wrapper matches */
+  }
+
+  .light-theme {
+  background-color: #fbf5ff;
+  color: #221501;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  padding-bottom: 2rem;
+}
 
 .submit-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .dark-theme {
