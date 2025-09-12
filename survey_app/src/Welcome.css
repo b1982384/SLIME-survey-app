@@ -79,3 +79,18 @@
     margin-top: 20px;
     border-radius: 8px;
   }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #fbf5ff; /* fallback so even outside wrapper matches */
+  }
+
+  .light-theme {
+  background-color: #fbf5ff;
+  color: #221501;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  padding-bottom: 2rem;
+}

@@ -20,7 +20,7 @@ const navigate = useNavigate()
         width="300" 
         height="300"
       />
-        <button className = "take-test" onClick= {() => navigate('/p1')}>Take Survey</button>
+        <button className = "take-test" onClick= {() => navigate('/question')}>Take Survey</button>
        <p className = "about-header">About
        </p>
        <p className = "about-text">Technology has long shaped musical life: 
@@ -33,7 +33,7 @@ const navigate = useNavigate()
          </p>
          <p className = "Big-header">Take the 24 question survey to learn your listening identity!
          </p>
-         <button className = "take-test" onClick= {() => navigate('/p1')}>Take Survey</button>
+         <button className = "take-test" onClick= {() => navigate('/question')}>Take Survey</button>
     </div>
   );
 }
