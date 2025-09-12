@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './questions.css';
 import {supabase} from './supabaseClient';
+import { useNavigate } from 'react-router-dom'
+
 
 type MoodOption = {
   emoji: string;
@@ -95,6 +97,7 @@ const EmojiRow: React.FC<EmojiRowProps> = ({name, selectedValue, onSelect, moods
 
 const EmojiProgression: React.FC = () => {
 
+  const navigate = useNavigate()
   const [answerError, setAnswerError] = useState(false);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -178,7 +181,13 @@ const EmojiProgression: React.FC = () => {
       {answerError && (
         <p className = "submit-error">Please answer all questions</p>
       )}
-        <button onClick={addResponse} className='submit-button'>
+        <button  onClick={async () => {
+        await addResponse();
+        const allQuestionsAnswered = responses.every((r) => r !== null);
+        if (allQuestionsAnswered) {
+            navigate('/p3');
+          }
+      }} className='submit-button'>
           SUBMIT
         </button>
     </div>

@@ -2,6 +2,7 @@
 import {Routes, Route} from 'react-router-dom'
 import WelcomePage from './Welcome'
 import Questionpage from './questions'
+import P3 from './test-pages/p3'
 // import ListGroup from './components/ListGroup';
 
 // function App() {
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<WelcomePage/>} />
         <Route path="/question" element={<Questionpage/>} />
+        <Route path="/p3" element={<P3/>} />
       </Routes>
     </div>
   )
