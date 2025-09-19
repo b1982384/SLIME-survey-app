@@ -117,17 +117,17 @@ const EmojiProgression: React.FC = () => {
   };
   const addResponse = async () => {
     const allQuestionsAnswered = responses.every((response) => response !== null);
-    // async call to supbse
+  
     if (!allQuestionsAnswered) {
-      setAnswerError(true); 
-      alert('Please answer all questions before submitting.'); // make sure everything answered
+      setAnswerError(true);
+      alert('Please answer all questions before submitting.');
       return;
     }
-    
+  
     const formattedData = responses.reduce<Record<string, number | null>>((acc, response, index) => {
       acc[`q${index + 1}`] = response;
       return acc;
-    }, {}); //
+    }, {});
   
     try {
       const { data, error } = await supabase.from("responses").insert([formattedData]);
@@ -138,13 +138,15 @@ const EmojiProgression: React.FC = () => {
       } else {
         console.log('Success updating supabase:', data);
         alert('Responses submitted successfully!');
+        // Navigate to the results page and pass the responses
+        navigate('/results', { state: { responses } });
       }
     } catch (err) {
       console.error('Unexpected error:', err);
       alert('An unexpected error occurred. Please try again.');
     }
   };
-
+  
   return (
     <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
     <div className="dark-mode-toggle">
@@ -185,7 +187,7 @@ const EmojiProgression: React.FC = () => {
         await addResponse();
         const allQuestionsAnswered = responses.every((r) => r !== null);
         if (allQuestionsAnswered) {
-            navigate('/p3');
+            navigate('/results');
           }
       }} className='submit-button'>
           SUBMIT

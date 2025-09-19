@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // Type definitions
 interface FactorScores {
   [key: number]: number;
-}
+} 
 
 interface TopFactor {
   number: number;
@@ -31,35 +32,24 @@ interface Point {
 }
 
 const ResultsPage: React.FC = () => {
+  const location = useLocation();
+  const responses = location.state?.responses || []; // Get responses from state
+
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Factor mappings (0-indexed to match array positions)
   const questionToFactor: { [key: number]: number } = {
-    // Factor 1: Platform Trust/Recommendation Acceptance
-    5: 1, 10: 1, 1: 1,  // q6, q11, q2
-    
-    // Factor 2: Platform Resistance/Control  
-    13: 2, 9: 2, 6: 2,  // q14, q10, q7
-    
-    // Factor 3: Playlist Creation
-    22: 3, 21: 3, 15: 3,  // q23, q22, q16
-    
-    // Factor 4: Anti-Mainstream/Skeptical
-    8: 4, 11: 4, 2: 4,  // q9, q12, q3
-    
-    // Factor 5: Intentional/Album Listening
-    19: 5, 4: 5, 12: 5,  // q20, q5(new), q13
-    
-    // Factor 6: Popular Music Engagement
-    3: 6, 18: 6, 23: 6,  // q4, q19, q24
-    
-    // Factor 7: Musical Exploration
-    16: 7, 0: 7, 7: 7,  // q17, q1, q8
-    
-    // Factor 8: Social/Physical Music Engagement
-    20: 8, 17: 8, 14: 8  // q21, q18, q15
+    // Factor mappings
+    5: 1, 10: 1, 1: 1, // q6, q11, q2
+    13: 2, 9: 2, 6: 2, // q14, q10, q7
+    22: 3, 21: 3, 15: 3, // q23, q22, q16
+    8: 4, 11: 4, 2: 4, // q9, q12, q3
+    19: 5, 4: 5, 12: 5, // q20, q5(new), q13
+    3: 6, 18: 6, 23: 6, // q4, q19, q24
+    16: 7, 0: 7, 7: 7, // q17, q1, q8
+    20: 8, 17: 8, 14: 8 // q21, q18, q15
   };
 
   // Questions with negative weighting (0-indexed)
@@ -92,16 +82,17 @@ const ResultsPage: React.FC = () => {
   const fivePointIndices: Set<number> = new Set(Array.from({length: 9}, (_, i) => i + 15)); // questions 16-24
 
   useEffect(() => {
-    // Mock data for demonstration - replace with your Supabase logic
-    const mockResponses: (number | null)[] = [
-      6, 5, 4, 7, 3, 6, 2, 7, 4, 3, 6, 2, 2, 3, 6,  // 7-point questions
-      4, 3, 2, 4, 3, 2, 4, 5, 4  // 5-point questions
-    ];
-    
-    const factorScores = calculateFactorScores(mockResponses);
+    if (responses.length === 0) {
+      setError('No responses provided.');
+      setLoading(false);
+      return;
+    }
+
+    const factorScores = calculateFactorScores(responses);
     setResults(factorScores);
     setLoading(false);
-  }, []);
+  }, [responses]);
+
 
   const calculateFactorScores = (responses: (number | null)[]): Results => {
     // Initialize factor scores
