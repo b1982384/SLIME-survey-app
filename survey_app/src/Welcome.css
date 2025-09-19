@@ -12,13 +12,11 @@
 
 .advertise-banner{
   background: linear-gradient(180deg, #415bcb, #a02dca);
-  -webkit-background-clip: text;   /* Chrome, Safari */
-  -webkit-text-fill-color: transparent; /* Chrome, Safari */
   background-clip: text;           /* Firefox (partially supported) */
   color: transparent;              /* fallback */
   font-size: 2rem;
   margin-top: 8px;           /* reduced margin */
-  justify-self: center;
+  text-align: center;
   font-weight: 800;
 }
 
@@ -26,7 +24,7 @@
   color: slateblue;
   font-size: 3rem;
   margin-top: 8px;           /* reduced margin */
-  justify-self: center;
+  text-align: center;
   font-weight: 700;
 }
 
@@ -86,4 +84,33 @@
   font-size: 0.9rem;
   margin-top: 6px;
   
+}
+
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  justify-content: center; /* Center the tabs horizontally */
+  margin-bottom: 24px; /* Add spacing below the tabs */
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 16px 32px; /* Increase padding for larger tabs */
+  font-size: 1.5rem; /* Increase font size for larger text */
+  font-weight: bold;
+  cursor: pointer;
+  color: slateblue;
+  border-bottom: 3px solid transparent; /* Thicker underline for active tab */
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.tab-button:hover {
+  color: #415bcb; /* Slightly darker blue on hover */
+}
+
+.tab-button.active-tab {
+  border-bottom: 3px solid slateblue; /* Thicker underline for active tab */
+  color: #415bcb; /* Active tab color */
 }
