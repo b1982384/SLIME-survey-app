@@ -1,0 +1,152 @@
+/* General container for the results page */
+.results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  /* Title for the results page */
+  .results-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  
+  /* Primary result section */
+  .primary-result {
+    text-align: center;
+    margin-bottom: 30px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .primary-factor-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3498db;
+    margin-bottom: 10px;
+  }
+  
+  .primary-score {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #27ae60;
+    margin-bottom: 10px;
+  }
+  
+  .factor-description {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* Radar chart section */
+  .radar-section {
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  .radar-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .radar-chart {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Detailed scores section */
+  .detailed-scores {
+    margin-top: 40px;
+    width: 100%;
+    max-width: 800px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-align: center;
+  }
+  
+  .factor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .factor-item {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .factor-name {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #34495e;
+  }
+  
+  .factor-bar {
+    background: #e0e0e0;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  
+  .factor-fill {
+    background: #3498db;
+    height: 100%;
+    border-radius: 5px;
+  }
+  
+  .factor-percentage {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* Retake button */
+  .retake-button {
+    margin-top: 30px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    background: #3498db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .retake-button:hover {
+    background: #2980b9;
+  }
+  
+  /* Loading and error messages */
+  .loading,
+  .error {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e74c3c;
+    text-align: center;
+    margin-top: 20px;
+  }
