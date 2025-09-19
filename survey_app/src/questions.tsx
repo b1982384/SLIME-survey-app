@@ -34,7 +34,7 @@ const SEVEN_POINT_QUESTIONS: string[] = [
   "2. I feel like I play a strong role in how things are recommended to me",
   "3. I worry that my music platform recommends music for its own interests not mine",
   "4. I keep up with popular/trending songs",
-  "5. I prefer to find my own music and tend not to listen to what others think (negatively weighted)",
+  "5. I think that popular artists are popular because they make better music",
   "6. I can rely on my music platform's recommendations when I want to hear something new",
   "7. I avoid app-curated playlists and mixes – I prefer my own",
   "8. I frequently listen to music by artists I haven't heard before",
