@@ -130,14 +130,14 @@ const ResultsPage = () => {
   const negativelyWeighted = new Set([4, 12]); // Example: Questions with negative weighting
   
   const factorNames: FactorNames = {
-    1: "Algorithmic Openness",
-    2: "Algorithmic Skepticism",
-    3: "Hoarding",
-    4: "Individualistic Musicking",
-    5: "Deep Listening",
-    6: "Musical Omnivorism",
-    7: "Searching",
-    8: "Curation & Sociality",
+    1: "Algorithmically Open",
+    2: "Algorithmically Skeptical",
+    3: "A Music Hoarder",
+    4: "An Individualistic Listener",
+    5: "A Deep Listener",
+    6: "A Musical Omnivore",
+    7: "A Searcher",
+    8: "A Curator & Social Listener",
   };
 
   const factorDescriptions: FactorNames = {
@@ -277,7 +277,7 @@ const ResultsPage = () => {
         </div>
         <div className="results-info">
           <h1>Your Music Listening Profile</h1>
-          <h2>You are a: {results.topFactor.name}</h2>
+          <h2>You are: {results.topFactor.name}</h2>
           <p>Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
           <p>{results.topFactor.description}</p>
           <img
