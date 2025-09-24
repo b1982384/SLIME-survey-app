@@ -3,7 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './result.css';
 
 // RadarChart Component
-const RadarChart = ({ factorScores, factorNames }) => {
+type RadarChartProps = {
+  factorScores: Record<number, number>; // Object with factor numbers as keys and scores as values
+  factorNames: Record<number, string>; // Object with factor numbers as keys and names as values
+};
+
+const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) => {
   const size = 400; // Radar chart size
   const padding = 50; // Extra padding for labels
   const center = size / 2;
