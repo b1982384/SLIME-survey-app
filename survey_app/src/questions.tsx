@@ -51,7 +51,21 @@ const FIVE_POINT_QUESTIONS = [
   "24. When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later."
 ];
 
-const EmojiRow = ({ name, selectedValue, onSelect, moods }) => (
+type Mood = {
+  emoji: string;
+  color: string;
+  label: string;
+  value: number;
+};
+
+type EmojiRowProps = {
+  name: string;
+  selectedValue: number | null;
+  onSelect: (value: number) => void;
+  moods: Mood[];
+};
+
+const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect, moods }) => (
   <div className="scale-row" role="radiogroup" aria-label={name}>
     {moods.map((mood) => {
       const isSelected = selectedValue === mood.value;
@@ -74,7 +88,7 @@ const EmojiRow = ({ name, selectedValue, onSelect, moods }) => (
 
 const EmojiProgression = () => {
   const navigate = useNavigate();
-  const [responsesState, setResponsesState] = useState(
+  const [responsesState, setResponsesState] = useState<(number | null)[]>(
     Array(SEVEN_POINT_QUESTIONS.length + FIVE_POINT_QUESTIONS.length).fill(null)
   );
   const [answerError, setAnswerError] = useState(false);
