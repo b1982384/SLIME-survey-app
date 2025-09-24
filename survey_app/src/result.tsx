@@ -262,7 +262,7 @@ const ResultsPage = () => {
   }
 
   if (isStraightlined) {
-    return <div>All responses were neutral. Please try again with more varied responses.</div>;
+    return <div className = "straightlined-message">Your listener profile is ... boring. Please try again with more honest answers!</div>;
   }
 
   if (!results) {

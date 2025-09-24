@@ -62,7 +62,13 @@
     stroke-width: 2;
   }
   
-  
+  .straightlined-message{
+    margin-top: 100px;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 700;
+  }
+
   .radar-chart text {
     font-size: 0.75rem; /* Text size */
     font-weight: 600; /* Text weight */
