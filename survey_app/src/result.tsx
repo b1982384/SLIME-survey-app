@@ -1,89 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import './result.css';
 
-// Type definitions
-interface FactorScores {
-  [key: number]: number;
-} 
-
-interface TopFactor {
-  number: number;
-  name: string;
-  score: number;
-  description: string;
-}
-
-interface Results {
-  factorScores: FactorScores;
-  topFactor: TopFactor;
-}
-
-interface RadarChartProps {
-  factorScores: FactorScores;
-}
-
-interface Point {
-  x: number;
-  y: number;
-  labelX: number;
-  labelY: number;
-  label: string;
-  score: number;
-}
-
-const ResultsPage: React.FC = () => {
+const ResultsPage = () => {
   const location = useLocation();
-  const responses = location.state?.responses || []; // Get responses from state
+  const navigate = useNavigate();
+  const responses = location.state?.responses || [];
 
-  const [results, setResults] = useState<Results | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isStraightlined, setIsStraightlined] = useState(false);
 
-  // Factor mappings (0-indexed to match array positions)
-  const questionToFactor: { [key: number]: number } = {
-    // Factor mappings
-    5: 1, 10: 1, 1: 1, // q6, q11, q2
-    13: 2, 9: 2, 6: 2, // q14, q10, q7
-    22: 3, 21: 3, 15: 3, // q23, q22, q16
-    8: 4, 11: 4, 2: 4, // q9, q12, q3
-    19: 5, 4: 5, 12: 5, // q20, q5(new), q13
-    3: 6, 18: 6, 23: 6, // q4, q19, q24
-    16: 7, 0: 7, 7: 7, // q17, q1, q8
-    20: 8, 17: 8, 14: 8 // q21, q18, q15
+  // Factor mappings
+  const questionToFactor = {
+    0: 1, 1: 1, 2: 1, // Factor 1
+    3: 2, 4: 2, 5: 2, // Factor 2
+    6: 3, 7: 3, 8: 3, // Factor 3
+    9: 4, 10: 4, 11: 4, // Factor 4
+    12: 5, 13: 5, 14: 5, // Factor 5
+    15: 6, 16: 6, 17: 6, // Factor 6
+    18: 7, 19: 7, 20: 7, // Factor 7
+    21: 8, 22: 8, 23: 8, // Factor 8
   };
 
-  // Questions with negative weighting (0-indexed)
-  const negativelyWeighted: Set<number> = new Set([4, 12]); // q5(new) and q13
-
-  // Factor names
-  const factorNames: { [key: number]: string } = {
-    1: "Platform Trust",
-    2: "Platform Resistance", 
-    3: "Playlist Curator",
-    4: "Anti-Mainstream",
-    5: "Intentional Listener",
-    6: "Popular Music Engagement",
-    7: "Musical Explorer",
-    8: "Social Music Engagement"
+  const negativelyWeighted = new Set([4, 12]); // Example: Questions with negative weighting
+  const factorNames = {
+    1: "Algorithmic Openness",
+    2: "Algorithmic Skepticism",
+    3: "Hoarding",
+    4: "Individualistic Musicking",
+    5: "Deep Listening",
+    6: "Musical Omnivorism",
+    7: "Searching",
+    8: "Curation & Sociality",
   };
 
-  // Factor descriptions
-  const factorDescriptions: { [key: number]: string } = {
-    1: "You trust and rely on platform recommendations, enjoying algorithmic features like autoplay and feeling involved in how music is recommended to you.",
-    2: "You prefer to maintain control over your music, avoiding platform suggestions and curated content in favor of your own choices.",
-    3: "You actively create and manage playlists, taking an organized approach to curating your music collection.",
-    4: "You're skeptical of mainstream popularity and platform motives, preferring underground artists and questioning algorithmic recommendations.",
-    5: "You listen to music intentionally and thoughtfully, preferring full albums over individual tracks and considering your emotional state when choosing music.",
-    6: "You stay current with popular trends, actively engage with new music discoveries, and save tracks for later listening.",
-    7: "You actively seek out new and diverse music, exploring different genres and artists you haven't heard before.",
-    8: "You engage with music socially and physically, creating playlists for friends, collecting physical formats, and using music for emotional understanding."
+  const factorDescriptions = {
+    1: "Algorithmic Openness - Smart Speaker. Like a Smart Speaker, you’re always ready to hear what’s next. You trust the algorithm to guide you to fresh discoveries that still align with your personal tastes.",
+    2: "Algorithmic Skepticism - Wired Earbuds. You’re Wired Earbuds — simple, direct, and in full control. No autoplay, no surprises: just the music you choose, the way you want it.",
+    3: "Hoarding – Jukebox. Like a Jukebox, you are overflowing with songs, playlists, and hidden gems. Each track is catalogued into your personal archive, and you’re always ready to play the perfect one on demand.",
+    4: "Individualistic Musicking – Noise-Cancelling Headphones. You tune out the noise of popularity and platforms. Your listening is private, intentional, and completely yours.",
+    5: "Deep Listening – Studio Headphones. Like Studio Headphones your listening is tuned for clarity and depth. You listen closely, savor full albums, and treat music like a rich, immersive world.",
+    6: "Musical Omnivorism – AirPods. You’re AirPods, a trendy listener who is always bouncing between moods and genres with ease. Your music is woven into your everyday life.",
+    7: "Searching – Vinyl Crate. You are a Vinyl Crate, always digging for the next discovery. You love flipping through the unfamiliar and novel, hunting for gems others might overlook.",
+    8: "Curation & Sociality – Boombox. Bold and sociable, you’re the Boombox. Music isn’t just for you — it’s a vibe you broadcast, connecting people and setting the mood.",
   };
 
-  const fivePointIndices: Set<number> = new Set(Array.from({length: 9}, (_, i) => i + 15)); // questions 16-24
+  const fivePointIndices = new Set(Array.from({ length: 9 }, (_, i) => i + 15)); // Questions 16-24
 
   useEffect(() => {
     if (responses.length === 0) {
       setError('No responses provided.');
+      setTimeout(() => navigate('/questions'), 3000);
+      return;
+    }
+
+    // Check if the user straightlined (all responses normalize to 0.5)
+    const isNeutral = responses.every((response, index) => {
+      if (fivePointIndices.has(index)) {
+        return (response - 1) / 4 === 0.5; // 5-point scale
+      } else {
+        return (response - 1) / 6 === 0.5; // 7-point scale
+      }
+    });
+
+    if (isNeutral) {
+      setIsStraightlined(true);
       setLoading(false);
       return;
     }
@@ -91,14 +74,13 @@ const ResultsPage: React.FC = () => {
     const factorScores = calculateFactorScores(responses);
     setResults(factorScores);
     setLoading(false);
-  }, [responses]);
+  }, [responses, navigate]);
 
+  const calculateFactorScores = (responses) => {
+    const factorScores = {};
+    const factorQuestionCounts = {};
 
-  const calculateFactorScores = (responses: (number | null)[]): Results => {
-    // Initialize factor scores
-    const factorScores: FactorScores = {};
-    const factorQuestionCounts: { [key: number]: number } = {};
-    
+    // Initialize scores and counts
     for (let i = 1; i <= 8; i++) {
       factorScores[i] = 0;
       factorQuestionCounts[i] = 0;
@@ -111,14 +93,14 @@ const ResultsPage: React.FC = () => {
       const factor = questionToFactor[i];
       if (!factor) continue;
 
-      let normalizedScore: number;
-      const responseValue = responses[i] as number;
+      let normalizedScore;
+      const responseValue = responses[i];
 
-      // Normalize scores to 0-1 scale
+      // Normalize scores to a 0-1 scale
       if (fivePointIndices.has(i)) {
-        normalizedScore = (responseValue - 1) / 4; // 5-point: 1-5 -> 0-1
+        normalizedScore = (responseValue - 1) / 4; // 5-point scale
       } else {
-        normalizedScore = (responseValue - 1) / 6; // 7-point: 1-7 -> 0-1
+        normalizedScore = (responseValue - 1) / 6; // 7-point scale
       }
 
       // Apply negative weighting if applicable
@@ -130,7 +112,7 @@ const ResultsPage: React.FC = () => {
       factorQuestionCounts[factor]++;
     }
 
-    // Average scores by number of questions per factor
+    // Average scores by the number of questions per factor
     for (let factor in factorScores) {
       const factorNum = parseInt(factor);
       if (factorQuestionCounts[factorNum] > 0) {
@@ -138,8 +120,8 @@ const ResultsPage: React.FC = () => {
       }
     }
 
-    // Find top factor
-    const topFactorEntry = Object.entries(factorScores).reduce((a, b) => 
+    // Find the top factor
+    const topFactorEntry = Object.entries(factorScores).reduce((a, b) =>
       factorScores[parseInt(a[0])] > factorScores[parseInt(b[0])] ? a : b
     );
 
@@ -151,174 +133,85 @@ const ResultsPage: React.FC = () => {
         number: topFactorNumber,
         name: factorNames[topFactorNumber],
         score: topFactorEntry[1],
-        description: factorDescriptions[topFactorNumber]
-      }
+        description: factorDescriptions[topFactorNumber],
+      },
     };
   };
 
-  // Simple radar chart component
-  const RadarChart: React.FC<RadarChartProps> = ({ factorScores }) => {
-    const size = 300;
+  const RadarChart = ({ factorScores }) => {
+    const size = 400; // Radar chart size
+    const padding = 50; // Extra padding for labels
     const center = size / 2;
     const maxRadius = center - 40;
     const factors = Object.keys(factorScores);
-    
-    // Calculate points for each factor
-    const points: Point[] = factors.map((factor, index) => {
+  
+    const points = factors.map((factor, index) => {
       const angle = (index * 2 * Math.PI) / factors.length - Math.PI / 2;
       const score = factorScores[parseInt(factor)];
       const radius = score * maxRadius;
-      
+  
       return {
         x: center + Math.cos(angle) * radius,
         y: center + Math.sin(angle) * radius,
         labelX: center + Math.cos(angle) * (maxRadius + 20),
         labelY: center + Math.sin(angle) * (maxRadius + 20),
         label: factorNames[parseInt(factor)],
-        score: score
+        score: score,
       };
     });
-
-    // Create background circles
-    const backgroundCircles = [0.2, 0.4, 0.6, 0.8, 1.0].map((level: number) => (
+  
+    const backgroundCircles = [0.2, 0.4, 0.6, 0.8, 1.0].map((level) => (
       <circle
         key={level}
         cx={center}
         cy={center}
         r={level * maxRadius}
-        fill="none"
-        stroke="#e5e7eb"
-        strokeWidth="1"
+        className="background-circle"
       />
     ));
-
-    // Create axis lines
-    const axisLines = points.map((point: Point, index: number) => (
+  
+    const axisLines = points.map((point, index) => (
       <line
         key={index}
         x1={center}
         y1={center}
         x2={center + Math.cos((index * 2 * Math.PI) / factors.length - Math.PI / 2) * maxRadius}
         y2={center + Math.sin((index * 2 * Math.PI) / factors.length - Math.PI / 2) * maxRadius}
-        stroke="#e5e7eb"
-        strokeWidth="1"
+        className="axis-line"
       />
     ));
-
-    // Create the data polygon
-    const pathData = points.map((point: Point, index: number) => 
+  
+    const pathData = points.map((point, index) =>
       `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
     ).join(' ') + ' Z';
-
+  
     return (
       <div className="radar-chart-container">
-        <svg width={size} height={size} className="radar-chart">
-          {backgroundCircles}
-          {axisLines}
-          
-          <path
-            d={pathData}
-            fill="rgba(59, 130, 246, 0.3)"
-            stroke="rgb(59, 130, 246)"
-            strokeWidth="2"
-          />
-          
-          {points.map((point: Point, index: number) => (
-            <g key={index}>
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r="4"
-                fill="rgb(59, 130, 246)"
-              />
-              <text
-                x={point.labelX}
-                y={point.labelY}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                className="text-xs font-semibold"
-                fill="rgb(75, 85, 99)"
-              >
-                {point.label}
-              </text>
-            </g>
-          ))}
+        <svg
+          width={size + padding}
+          height={size + padding}
+          viewBox={`0 0 ${size + padding} ${size + padding}`}
+          className="radar-chart"
+        >
+          <g transform={`translate(${padding / 2}, ${padding / 2})`}>
+            {backgroundCircles}
+            {axisLines}
+            <path d={pathData} />
+            {points.map((point, index) => (
+              <g key={index}>
+                <circle cx={point.x} cy={point.y} r="4" />
+                <text
+                  x={point.labelX}
+                  y={point.labelY}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                >
+                  {point.label}
+                </text>
+              </g>
+            ))}
+          </g>
         </svg>
       </div>
     );
   };
-
-  if (loading) {
-    return (
-      <div className="results-container">
-        <div className="loading">Loading your results...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="results-container">
-        <div className="error">Error: {error}</div>
-      </div>
-    );
-  }
-
-  if (!results) {
-    return (
-      <div className="results-container">
-        <div className="error">No results to display</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="results-container">
-      <h1 className="results-title">Your Music Listening Profile</h1>
-      
-      <div className="primary-result">
-        <h2 className="primary-factor-title">You are a: {results.topFactor.name}</h2>
-        <div className="primary-score">
-          Score: {(results.topFactor.score * 100).toFixed(1)}%
-        </div>
-        <p className="factor-description">
-          {results.topFactor.description}
-        </p>
-      </div>
-
-      <div className="radar-section">
-        <h3 className="section-title">Your Complete Profile</h3>
-        <RadarChart factorScores={results.factorScores} />
-      </div>
-
-      <div className="detailed-scores">
-        <h3 className="section-title">Detailed Factor Scores</h3>
-        <div className="factor-grid">
-          {Object.entries(results.factorScores)
-            .sort(([,a], [,b]) => b - a)
-            .map(([factor, score]: [string, number]) => (
-            <div key={factor} className="factor-item">
-              <div className="factor-name">{factorNames[parseInt(factor)]}</div>
-              <div className="factor-bar">
-                <div 
-                  className="factor-fill"
-                  style={{ width: `${score * 100}%` }}
-                />
-              </div>
-              <div className="factor-percentage">{(score * 100).toFixed(1)}%</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <button 
-        onClick={() => window.location.reload()} 
-        className="retake-button"
-      >
-        View Updated Results
-      </button>
-    </div>
-  );
-};
-
-export default ResultsPage;
