@@ -93,7 +93,7 @@ const EmojiProgression = () => {
   );
   const [answerError, setAnswerError] = useState(false);
 
-  const handleSelect = (questionIndex, value) => {
+  const handleSelect = (questionIndex: number, value: number) => {
     setResponsesState((prev) => {
       const next = [...prev];
       next[questionIndex] = value;
@@ -110,7 +110,7 @@ const EmojiProgression = () => {
       return;
     }
 
-    const formattedData = responsesState.reduce((acc, response, index) => {
+    const formattedData = responsesState.reduce((acc: Record<string, number | null>, response, index) => {
       acc[`q${index + 1}`] = response;
       return acc;
     }, {});
