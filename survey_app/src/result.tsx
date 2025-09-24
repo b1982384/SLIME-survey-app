@@ -2,6 +2,86 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './result.css';
 
+// RadarChart Component
+const RadarChart = ({ factorScores, factorNames }) => {
+  const size = 400; // Radar chart size
+  const padding = 50; // Extra padding for labels
+  const center = size / 2;
+  const maxRadius = center - 40;
+  const factors = Object.keys(factorScores);
+
+  const points = factors.map((factor, index) => {
+    const angle = (index * 2 * Math.PI) / factors.length - Math.PI / 2;
+    const score = factorScores[parseInt(factor)];
+    const radius = score * maxRadius;
+
+    return {
+      x: center + Math.cos(angle) * radius,
+      y: center + Math.sin(angle) * radius,
+      labelX: center + Math.cos(angle) * (maxRadius + 20),
+      labelY: center + Math.sin(angle) * (maxRadius + 20),
+      label: factorNames[parseInt(factor)],
+      score: score,
+    };
+  });
+
+  const backgroundCircles = [0.2, 0.4, 0.6, 0.8, 1.0].map((level) => (
+    <circle
+      key={level}
+      cx={center}
+      cy={center}
+      r={level * maxRadius}
+      className="background-circle"
+    />
+  ));
+
+  const axisLines = points.map((point, index) => (
+    <line
+      key={index}
+      x1={center}
+      y1={center}
+      x2={center + Math.cos((index * 2 * Math.PI) / factors.length - Math.PI / 2) * maxRadius}
+      y2={center + Math.sin((index * 2 * Math.PI) / factors.length - Math.PI / 2) * maxRadius}
+      className="axis-line"
+    />
+  ));
+
+  const pathData = points.map((point, index) =>
+    `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+  ).join(' ') + ' Z';
+
+  return (
+    <div className="radar-chart-container">
+      <svg
+        width={size + padding}
+        height={size + padding}
+        viewBox={`0 0 ${size + padding} ${size + padding}`}
+        className="radar-chart"
+      >
+        <g transform={`translate(${padding / 2}, ${padding / 2})`}>
+          {backgroundCircles}
+          {axisLines}
+          <path d={pathData} />
+          {points.map((point, index) => (
+            <g key={index}>
+              <circle cx={point.x} cy={point.y} r="4" />
+              <text
+                x={point.labelX}
+                y={point.labelY}
+                textAnchor="middle"
+                dominantBaseline="middle"
+              >
+                {point.label}
+              </text>
+            </g>
+          ))}
+        </g>
+      </svg>
+    </div>
+  );
+};
+
+// ResultsPage Component
 const ResultsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -138,80 +218,41 @@ const ResultsPage = () => {
     };
   };
 
-  const RadarChart = ({ factorScores }) => {
-    const size = 400; // Radar chart size
-    const padding = 50; // Extra padding for labels
-    const center = size / 2;
-    const maxRadius = center - 40;
-    const factors = Object.keys(factorScores);
-  
-    const points = factors.map((factor, index) => {
-      const angle = (index * 2 * Math.PI) / factors.length - Math.PI / 2;
-      const score = factorScores[parseInt(factor)];
-      const radius = score * maxRadius;
-  
-      return {
-        x: center + Math.cos(angle) * radius,
-        y: center + Math.sin(angle) * radius,
-        labelX: center + Math.cos(angle) * (maxRadius + 20),
-        labelY: center + Math.sin(angle) * (maxRadius + 20),
-        label: factorNames[parseInt(factor)],
-        score: score,
-      };
-    });
-  
-    const backgroundCircles = [0.2, 0.4, 0.6, 0.8, 1.0].map((level) => (
-      <circle
-        key={level}
-        cx={center}
-        cy={center}
-        r={level * maxRadius}
-        className="background-circle"
-      />
-    ));
-  
-    const axisLines = points.map((point, index) => (
-      <line
-        key={index}
-        x1={center}
-        y1={center}
-        x2={center + Math.cos((index * 2 * Math.PI) / factors.length - Math.PI / 2) * maxRadius}
-        y2={center + Math.sin((index * 2 * Math.PI) / factors.length - Math.PI / 2) * maxRadius}
-        className="axis-line"
-      />
-    ));
-  
-    const pathData = points.map((point, index) =>
-      `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
-    ).join(' ') + ' Z';
-  
-    return (
-      <div className="radar-chart-container">
-        <svg
-          width={size + padding}
-          height={size + padding}
-          viewBox={`0 0 ${size + padding} ${size + padding}`}
-          className="radar-chart"
-        >
-          <g transform={`translate(${padding / 2}, ${padding / 2})`}>
-            {backgroundCircles}
-            {axisLines}
-            <path d={pathData} />
-            {points.map((point, index) => (
-              <g key={index}>
-                <circle cx={point.x} cy={point.y} r="4" />
-                <text
-                  x={point.labelX}
-                  y={point.labelY}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                >
-                  {point.label}
-                </text>
-              </g>
-            ))}
-          </g>
-        </svg>
-      </div>
-    );
+  const factorImages = {
+    1: '/images/smart-speaker.png',
+    2: '/images/wired-earbuds.png',
+    3: '/images/jukebox.png',
+    4: '/images/noise-cancelling-headphones.png',
+    5: '/images/studio-headphones.png',
+    6: '/images/airpods.png',
+    7: '/images/vinyl-crate.png',
+    8: '/images/boombox.png',
   };
+
+  if (!results) {
+    return <div>No results to display</div>;
+  }
+
+  return (
+    <div className="results-page">
+      <div className="results-layout">
+        <div className="radar-chart-section">
+          <RadarChart factorScores={results.factorScores} factorNames={factorNames} />
+        </div>
+        <div className="results-info">
+          <h1>Your Music Listening Profile</h1>
+          <h2>You are a: {results.topFactor.name}</h2>
+          <p>Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
+          <p>{results.topFactor.description}</p>
+          <img
+            src={factorImages[results.topFactor.number]}
+            alt={results.topFactor.name}
+            className="factor-image"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ResultsPage;

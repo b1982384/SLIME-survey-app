@@ -79,3 +79,15 @@
     stroke: #e5e7eb; /* Axis line color */
     stroke-width: 1;
   }
+
+
+  .factor-image {
+    max-width: 300px; /* Set the maximum width */
+    max-height: 300px; /* Set the maximum height */
+    width: auto; /* Maintain aspect ratio */
+    height: auto; /* Maintain aspect ratio */
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    object-fit: contain; /* Ensure the image fits within the box */
+  }
