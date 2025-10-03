@@ -2,10 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './result.css';
 
+// Types
+type FactorScores = Record<number, number>;
+type FactorNames = Record<number, string>;
+type QuestionToFactor = Record<number, number>;
+type FactorImages = Record<number, string>;
+
+type TopFactor = {
+  number: number;
+  name: string;
+  score: number;
+  description: string;
+};
+
+type Results = {
+  factorScores: FactorScores;
+  topFactor: TopFactor;
+};
+
 // RadarChart Component
-const RadarChart = ({ factorScores, factorNames }) => {
+type RadarChartProps = {
+  factorScores: FactorScores;
+  factorNames: FactorNames;
+};
+
+const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) => {
   const size = 400; // Radar chart size
-  const padding = 50; // Extra padding for labels
+  const padding = 56; // Extra padding for labels
   const center = size / 2;
   const maxRadius = center - 40;
   const factors = Object.keys(factorScores);
@@ -35,7 +58,7 @@ const RadarChart = ({ factorScores, factorNames }) => {
     />
   ));
 
-  const axisLines = points.map((point, index) => (
+  const axisLines = points.map((_point, index) => (
     <line
       key={index}
       x1={center}
@@ -85,15 +108,15 @@ const RadarChart = ({ factorScores, factorNames }) => {
 const ResultsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const responses = location.state?.responses || [];
+  const responses: number[] = location.state?.responses || [];
 
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [isStraightlined, setIsStraightlined] = useState(false);
 
-  // Factor mappings
-  const questionToFactor = {
+  // Factor mappings with proper typing
+  const questionToFactor: QuestionToFactor = {
     0: 1, 1: 1, 2: 1, // Factor 1
     3: 2, 4: 2, 5: 2, // Factor 2
     6: 3, 7: 3, 8: 3, // Factor 3
@@ -105,26 +128,27 @@ const ResultsPage = () => {
   };
 
   const negativelyWeighted = new Set([4, 12]); // Example: Questions with negative weighting
-  const factorNames = {
-    1: "Algorithmic Openness",
-    2: "Algorithmic Skepticism",
-    3: "Hoarding",
-    4: "Individualistic Musicking",
-    5: "Deep Listening",
-    6: "Musical Omnivorism",
-    7: "Searching",
-    8: "Curation & Sociality",
+  
+  const factorNames: FactorNames = {
+    1: "An Open Explorer",
+    2: "A Skeptical Explorer",
+    3: "A Music Hoarder",
+    4: "An Individualistic Listener",
+    5: "A Deep Listener",
+    6: "A Musical Omnivore",
+    7: "A Searcher",
+    8: "A Curator & Social Listener",
   };
 
-  const factorDescriptions = {
-    1: "Algorithmic Openness - Smart Speaker. Like a Smart Speaker, you’re always ready to hear what’s next. You trust the algorithm to guide you to fresh discoveries that still align with your personal tastes.",
-    2: "Algorithmic Skepticism - Wired Earbuds. You’re Wired Earbuds — simple, direct, and in full control. No autoplay, no surprises: just the music you choose, the way you want it.",
-    3: "Hoarding – Jukebox. Like a Jukebox, you are overflowing with songs, playlists, and hidden gems. Each track is catalogued into your personal archive, and you’re always ready to play the perfect one on demand.",
+  const factorDescriptions: FactorNames = {
+    1: "Algorithmic Openness - Smart Speaker. Like a Smart Speaker, you're always ready to hear what's next. You trust the algorithm to guide you to fresh discoveries that still align with your personal tastes.",
+    2: "Algorithmic Skepticism - Wired Earbuds. You're Wired Earbuds — simple, direct, and in full control. No autoplay, no surprises: just the music you choose, the way you want it.",
+    3: "Hoarding – Jukebox. Like a Jukebox, you are overflowing with songs, playlists, and hidden gems. Each track is catalogued into your personal archive, and you're always ready to play the perfect one on demand.",
     4: "Individualistic Musicking – Noise-Cancelling Headphones. You tune out the noise of popularity and platforms. Your listening is private, intentional, and completely yours.",
     5: "Deep Listening – Studio Headphones. Like Studio Headphones your listening is tuned for clarity and depth. You listen closely, savor full albums, and treat music like a rich, immersive world.",
-    6: "Musical Omnivorism – AirPods. You’re AirPods, a trendy listener who is always bouncing between moods and genres with ease. Your music is woven into your everyday life.",
+    6: "Musical Omnivorism – AirPods. You're AirPods, a trendy listener who is always bouncing between moods and genres with ease. Your music is woven into your everyday life.",
     7: "Searching – Vinyl Crate. You are a Vinyl Crate, always digging for the next discovery. You love flipping through the unfamiliar and novel, hunting for gems others might overlook.",
-    8: "Curation & Sociality – Boombox. Bold and sociable, you’re the Boombox. Music isn’t just for you — it’s a vibe you broadcast, connecting people and setting the mood.",
+    8: "Curation & Sociality – Boombox. Bold and sociable, you're the Boombox. Music isn't just for you — it's a vibe you broadcast, connecting people and setting the mood.",
   };
 
   const fivePointIndices = new Set(Array.from({ length: 9 }, (_, i) => i + 15)); // Questions 16-24
@@ -156,9 +180,9 @@ const ResultsPage = () => {
     setLoading(false);
   }, [responses, navigate]);
 
-  const calculateFactorScores = (responses) => {
-    const factorScores = {};
-    const factorQuestionCounts = {};
+  const calculateFactorScores = (responses: number[]): Results => {
+    const factorScores: FactorScores = {};
+    const factorQuestionCounts: Record<number, number> = {};
 
     // Initialize scores and counts
     for (let i = 1; i <= 8; i++) {
@@ -173,7 +197,7 @@ const ResultsPage = () => {
       const factor = questionToFactor[i];
       if (!factor) continue;
 
-      let normalizedScore;
+      let normalizedScore: number;
       const responseValue = responses[i];
 
       // Normalize scores to a 0-1 scale
@@ -193,7 +217,7 @@ const ResultsPage = () => {
     }
 
     // Average scores by the number of questions per factor
-    for (let factor in factorScores) {
+    for (const factor in factorScores) {
       const factorNum = parseInt(factor);
       if (factorQuestionCounts[factorNum] > 0) {
         factorScores[factorNum] = factorScores[factorNum] / factorQuestionCounts[factorNum];
@@ -212,13 +236,13 @@ const ResultsPage = () => {
       topFactor: {
         number: topFactorNumber,
         name: factorNames[topFactorNumber],
-        score: topFactorEntry[1],
+        score: parseFloat(topFactorEntry[1].toString()),
         description: factorDescriptions[topFactorNumber],
       },
     };
   };
 
-  const factorImages = {
+  const factorImages: FactorImages = {
     1: '/images/smart-speaker.png',
     2: '/images/wired-earbuds.png',
     3: '/images/jukebox.png',
@@ -228,6 +252,18 @@ const ResultsPage = () => {
     7: '/images/vinyl-crate.png',
     8: '/images/boombox.png',
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (isStraightlined) {
+    return <div className = "straightlined-message">Your listener profile is ... boring. Please try again with more honest answers!</div>;
+  }
 
   if (!results) {
     return <div>No results to display</div>;
@@ -241,7 +277,7 @@ const ResultsPage = () => {
         </div>
         <div className="results-info">
           <h1>Your Music Listening Profile</h1>
-          <h2>You are a: {results.topFactor.name}</h2>
+          <h2>You are . . . {results.topFactor.name}</h2>
           <p>Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
           <p>{results.topFactor.description}</p>
           <img

@@ -1,129 +1,160 @@
-/* Layout for the full questions list */
+/* Base responsive layout */
 .questions-container {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 3vw, 24px);
+  padding: clamp(12px, 3vw, 24px);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* A single question followed by the emoji scale */
 .question-block {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
 }
 
 .question-text {
-    font-weight: 600;
-    font-size: 1rem;
+  font-weight: 600;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  line-height: 1.4;
+  padding: 0 8px;
 }
 
-/* Row of emoji options */
+/* Responsive emoji row */
 .scale-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: clamp(2px, 1vw, 5px);
+  overflow-x: auto;
+  padding: 8px 0;
 }
 
-/* Each emoji item */
+/* Responsive emoji buttons */
 .p-4 {
-    padding: 16px;
-    text-align: center;
-    border-radius: 50%;
-    margin: 0 5px;
-    width: 120px;
-    height: 120px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+  padding: clamp(8px, 2vw, 16px);
+  text-align: center;
+  border-radius: 50%;
+  width: clamp(60px, 12vw, 120px);
+  height: clamp(60px, 12vw, 120px);
+  min-width: 50px;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+  flex-shrink: 0;
 }
 
 .p-4:hover {
-    transform: translateY(-2.4px);
-    box-shadow: 0 10px 17px rgba(0, 0, 0, 0.612);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .p-4.selected {
-    border-color: rgba(0, 0, 0, 0.571);
-    box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.477);
+  border-color: rgba(0, 0, 0, 0.571);
+  box-shadow: 0 0 0 clamp(3px, 1vw, 6px) rgba(0, 0, 0, 0.477);
 }
 
-/* Emoji styling */
+/* Responsive emoji size */
 .p-4 span {
-    font-size: 2rem;
-    margin-bottom: 5px;
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  margin-bottom: clamp(2px, 1vw, 5px);
+  line-height: 1;
 }
 
-/* Label styling */
+/* Responsive label */
 .p-4 p {
-    font-size: 0.8rem;
-    margin: 0;
-    color: white;
-    font-weight: bold;
+  font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+  margin: 0;
+  color: white;
+  font-weight: bold;
+  line-height: 1.2;
 }
 
-/* Beautiful Likert Scale Color Palette - Emoji Harmonized */
-.bg-maroon-400 {
-    background-color: #d47373; /* warm rose - complements angry emoji */
-  }
-  .bg-red-400 {
-    background-color: #f09880; /* light coral - softer red for sad emoji */
-  }
-  .bg-orange-400 {
-    background-color: #f3c598; /* warm peach - matches neutral emoji undertones */
-  }
-  .bg-yellow-400 {
-    background-color: #ddd891c4; /* creamy yellow - bright like happy emoji */
-  }
-  .bg-green-400 {
-    background-color: #95eacb; /* sage mint - calm and pleasant */
-  }
-  .bg-turquoise-400 {
-    background-color: #84dcde; /* seafoam mint - fresh and positive */
-  }
-  .bg-blue-400 {
-    background-color: #88b9d3; /* powder blue - serene and confident */
-  }
-  
-  .submit-button {
-    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-    display: block;
-    margin: 0 auto;
-    border: 3px solid #221501;
-    border-radius: 32px;
-    box-shadow: #251600 4px 6px 0 0;
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 30px;
-    padding: 12px 45px;
-    line-height: 40px;
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: 20px;
-  }
+/* Color palette */
+.bg-maroon-400 { background-color: #d47373; }
+.bg-red-400 { background-color: #f09880; }
+.bg-orange-400 { background-color: #f3c598; }
+.bg-yellow-400 { background-color: #ddd891c4; }
+.bg-green-400 { background-color: #95eacb; }
+.bg-turquoise-400 { background-color: #84dcde; }
+.bg-blue-400 { background-color: #88b9d3; }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-color: #fbf5ff; /* fallback so even outside wrapper matches */
-  }
+/* Demographics section */
+.demographics-section {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: clamp(16px, 3vw, 24px);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+}
 
-  .light-theme {
+.demographics-section h2 {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  margin-bottom: 1rem;
+}
+
+.demographic-field {
+  margin-bottom: 1rem;
+}
+
+.demographic-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+.demographic-field input,
+.demographic-field select {
+  width: 100%;
+  padding: clamp(8px, 2vw, 12px);
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  border: 2px solid #ddd;
+  border-radius: 8px;
+}
+
+/* Submit button */
+.submit-button {
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+  display: block;
+  margin: clamp(20px, 4vw, 40px) auto;
+  border: 3px solid #221501;
+  border-radius: 32px;
+  box-shadow: #251600 4px 6px 0 0;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  padding: clamp(10px, 2vw, 12px) clamp(30px, 6vw, 45px);
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  transform: scale(1.05);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #fbf5ff;
+}
+
+.light-theme {
   background-color: #fbf5ff;
   color: #221501;
   min-height: 100vh;
   transition: all 0.3s ease;
   padding-bottom: 2rem;
-}
-
-.submit-button:hover {
-  transform: scale(1.05);
 }
 
 .dark-theme {
@@ -136,7 +167,7 @@
 
 .dark-mode-toggle {
   text-align: center;
-  padding: 20px;
+  padding: clamp(12px, 3vw, 20px);
 }
 
 .toggle-btn {
@@ -144,8 +175,8 @@
   border: none;
   border-radius: 25px;
   color: white;
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: clamp(8px, 2vw, 10px) clamp(16px, 3vw, 20px);
+  font-size: clamp(0.85rem, 2vw, 1rem);
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -154,14 +185,13 @@
   transform: scale(1.05);
 }
 
-/* Dark theme overrides */
 .dark-theme .question-text {
   color: #ffffff;
 }
 
 .dark-theme .p-4.selected {
   border-color: rgb(255, 255, 255);
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.792);
+  box-shadow: 0 0 0 clamp(3px, 1vw, 6px) rgba(255, 255, 255, 0.792);
 }
 
 .dark-theme .submit-button {
@@ -172,10 +202,20 @@
 }
 
 .submit-error {
-  justify-self: center;
   color: red;
-  font-size: 1.3rem;
+  font-size: clamp(1rem, 3vw, 1.3rem);
   font-weight: 500;
   margin-top: 8px;
   text-align: center;
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 768px) {
+  .scale-row {
+    gap: 2px;
+  }
+  
+  .p-4 p {
+    display: none; /* Hide labels on very small screens if needed */
+  }
 }
