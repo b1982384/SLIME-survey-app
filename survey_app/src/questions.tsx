@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './questions.css';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
-const SEVEN_POINT_MOODS = [
+type MoodOption = {
+  emoji: string;
+  color: string;
+  label: string;
+  value: number;
+};
+
+const SEVEN_POINT_MOODS: MoodOption[] = [
   { emoji: '😠', color: 'bg-maroon-400', label: 'Strongly Disagree', value: 1 },
   { emoji: '☹️', color: 'bg-red-400', label: 'Disagree', value: 2 },
   { emoji: '😕', color: 'bg-orange-400', label: 'Somewhat Disagree', value: 3 },
@@ -13,58 +20,43 @@ const SEVEN_POINT_MOODS = [
   { emoji: '😀', color: 'bg-blue-400', label: 'Strongly Agree', value: 7 },
 ];
 
-const FIVE_POINT_MOODS = [
-  { emoji: '🕛', color: 'bg-maroon-400', label: ' Never', value: 1 },
+const FIVE_POINT_MOODS: MoodOption[] = [
+  { emoji: '🕛', color: 'bg-maroon-400', label: 'Never', value: 1 },
   { emoji: '🕒', color: 'bg-orange-400', label: 'Rarely', value: 2 },
   { emoji: '🕔', color: 'bg-yellow-400', label: 'Sometimes', value: 3 },
   { emoji: '🕠', color: 'bg-green-400', label: 'Often', value: 4 },
   { emoji: '🕢', color: 'bg-blue-400', label: 'Very Often', value: 5 },
 ];
 
-const SEVEN_POINT_QUESTIONS = [
-  "1. I like to explore songs from all genres",
-  "2. I feel like I play a strong role in how things are recommended to me",
-  "3. I worry that my music platform recommends music for its own interests not mine",
-  "4. I keep up with popular/trending songs",
-  "5. I think that popular artists are popular because they make better music",
-  "6. I can rely on my music platform's recommendations when I want to hear something new",
-  "7. I avoid app-curated playlists and mixes – I prefer my own",
-  "8. I frequently listen to music by artists I haven't heard before",
-  "9. I think that artists make better music when they aren't really popular",
-  "10. I prefer to skip songs the platform adds or suggests automatically",
-  "11. I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)",
-  "12. I don't like the music my friends listen to",
-  "13. I choose music without considering how I'm feeling",
-  "14. I feel uneasy letting the platform decide what to play next",
-  "15. I use music to better understand or make sense of my emotions"
+const SEVEN_POINT_QUESTIONS: string[] = [
+  "I like to explore songs from all genres",
+  "I feel like I play a strong role in how things are recommended to me",
+  "I worry that my music platform recommends music for its own interests not mine",
+  "I keep up with popular/trending songs",
+  "I think that popular artists are popular because they make better music",
+  "I can rely on my music platform's recommendations when I want to hear something new",
+  "I avoid app-curated playlists and mixes – I prefer my own",
+  "I frequently listen to music by artists I haven't heard before",
+  "I think that artists make better music when they aren't really popular",
+  "I prefer to skip songs the platform adds or suggests automatically",
+  "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)",
+  "I don't like the music my friends listen to",
+  "I choose music without considering how I'm feeling",
+  "I feel uneasy letting the platform decide what to play next",
+  "I use music to better understand or make sense of my emotions"
 ];
 
-
-const FIVE_POINT_QUESTIONS = [
-  "16. How often do you make and create playlists on your music platform?",
-  "17. How often do you listen to unfamiliar music?",
-  "18. How often do you make playlists for friends?",
-  "19. When you hear a new song from a playlist, autoplay, or other passive source, how often do you look up the artist or track to learn more?",
-  "20. How often do you listen to music via full albums?",
-  "21. How often do you collect physical music formats?",
-  "22. How often do you make playlists for yourself?",
-  "23. How often do you add to or edit your existing playlists?",
-  "24. When you hear a new song from a playlist, autoplay, or other passive source, how often do you save or like it to return to later?"
+const FIVE_POINT_QUESTIONS: string[] = [
+  "How often do you make and create playlists on your music platform?",
+  "How often do you listen to unfamiliar music?",
+  "How often do you make playlists for friends?",
+  "When you hear a new song from a playlist, autoplay, or other passive source, how often do you look up the artist or track to learn more?",
+  "How often do you listen to music via full albums?",
+  "How often do you collect physical music formats?",
+  "How often do you make playlists for yourself?",
+  "How often do you add to or edit your existing playlists?",
+  "When you hear a new song from a playlist, autoplay, or other passive source, how often do you save or like it to return to later?"
 ];
-
-type Mood = {
-  emoji: string;
-  color: string;
-  label: string;
-  value: number;
-};
-
-type EmojiRowProps = {
-  name: string;
-  selectedValue: number | null;
-  onSelect: (value: number) => void;
-  moods: Mood[];
-};
 
 type EmojiRowProps = {
   name: string;
@@ -84,11 +76,11 @@ const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect, mood
             type="button"
             role="radio"
             aria-checked={isSelected}
-            className={`mood-button ${mood.color}${isSelected ? ' selected' : ''}`}
+            className={`p-4 ${mood.color}${isSelected ? ' selected' : ''}`}
             onClick={() => onSelect(mood.value)}
           >
-            <span className="emoji-icon">{mood.emoji}</span>
-            <p className="emoji-label">{mood.label}</p>
+            <span>{mood.emoji}</span>
+            <p>{mood.label}</p>
           </button>
         );
       })}
@@ -106,12 +98,9 @@ const EmojiProgression: React.FC = () => {
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Demographics state
   const [age, setAge] = useState<string>('');
   const [gender, setGender] = useState<string>('');
 
-  // Randomize questions once on mount
   const randomizedQuestions = useMemo(() => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
       text,
@@ -127,7 +116,6 @@ const EmojiProgression: React.FC = () => {
 
     const allQuestions = [...sevenPointQs, ...fivePointQs];
     
-    // Fisher-Yates shuffle
     for (let i = allQuestions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
@@ -140,9 +128,7 @@ const EmojiProgression: React.FC = () => {
     Array(SEVEN_POINT_QUESTIONS.length + FIVE_POINT_QUESTIONS.length).fill(null)
   );
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   const handleSelect = (originalIndex: number, value: number) => {
     setResponses((prev) => {
@@ -153,9 +139,7 @@ const EmojiProgression: React.FC = () => {
   };
 
   const addResponse = async () => {
-    const allQuestionsAnswered = responses.every((response) => response !== null);
-    
-    if (!allQuestionsAnswered) {
+    if (!responses.every((r) => r !== null)) {
       setAnswerError(true);
       alert('Please answer all questions before submitting.');
       return;
@@ -171,28 +155,22 @@ const EmojiProgression: React.FC = () => {
       return acc;
     }, {});
 
-    // Add demographics
     formattedData['age'] = age;
     formattedData['gender'] = gender;
 
     try {
       const { data, error } = await supabase.from("responses").insert([formattedData]);
-
       if (error) {
-        console.error('Error updating supabase:', error.message);
-        alert('Error submitting responses. Please try again.');
+        console.error('Error:', error.message);
+        alert('Error submitting responses.');
       } else {
-        console.log('Success updating supabase:', data);
         navigate('/results');
       }
     } catch (err) {
-      console.error('Unexpected error:', err);
-      alert('An unexpected error occurred. Please try again.');
+      console.error('Error:', err);
+      alert('An unexpected error occurred.');
     }
   };
-
-  // Track which section we're in for the frequency heading
-  let frequencyHeaderShown = false;
 
   return (
     <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
@@ -202,43 +180,22 @@ const EmojiProgression: React.FC = () => {
         </button>
       </div>
 
-      <div className="survey-header">
-        <h1>Music Listening Survey</h1>
-        <p className="progress-text">
-          Answered: {responses.filter(r => r !== null).length} / {responses.length}
-        </p>
-      </div>
-
       <div className="questions-container">
         {randomizedQuestions.map((question, displayIndex) => {
-          const isSevenPoint = question.type === 'seven';
-          const moods = isSevenPoint ? SEVEN_POINT_MOODS : FIVE_POINT_MOODS;
+          const moods = question.type === 'seven' ? SEVEN_POINT_MOODS : FIVE_POINT_MOODS;
           
-          // Show frequency header before first 5-point question
-          const showFrequencyHeader = !isSevenPoint && !frequencyHeaderShown;
-          if (showFrequencyHeader) {
-            frequencyHeaderShown = true;
-          }
-
           return (
-            <React.Fragment key={displayIndex}>
-              {showFrequencyHeader && (
-                <div className="section-header">
-                  <h2>How often do you do the following?</h2>
-                </div>
-              )}
-              <div className="question-block">
-                <div className="question-text">
-                  <span className="question-number">{displayIndex + 1}.</span> {question.text}
-                </div>
-                <EmojiRow
-                  name={`q${question.originalIndex}`}
-                  selectedValue={responses[question.originalIndex]}
-                  onSelect={(value) => handleSelect(question.originalIndex, value)}
-                  moods={moods}
-                />
+            <div key={displayIndex} className="question-block">
+              <div className="question-text">
+                {displayIndex + 1}. {question.text}
               </div>
-            </React.Fragment>
+              <EmojiRow
+                name={`q${question.originalIndex}`}
+                selectedValue={responses[question.originalIndex]}
+                onSelect={(value) => handleSelect(question.originalIndex, value)}
+                moods={moods}
+              />
+            </div>
           );
         })}
       </div>
@@ -254,16 +211,11 @@ const EmojiProgression: React.FC = () => {
             max="120"
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            placeholder="Enter your age"
           />
         </div>
         <div className="demographic-field">
           <label htmlFor="gender">Gender:</label>
-          <select
-            id="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          >
+          <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
             <option value="">Select...</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -274,16 +226,8 @@ const EmojiProgression: React.FC = () => {
         </div>
       </div>
 
-      {answerError && (
-        <p className="submit-error">Please answer all questions</p>
-      )}
-
-      <button
-        onClick={addResponse}
-        className="submit-button"
-      >
-        SUBMIT
-      </button>
+      {answerError && <p className="submit-error">Please answer all questions</p>}
+      <button onClick={addResponse} className="submit-button">SUBMIT</button>
     </div>
   );
 };
