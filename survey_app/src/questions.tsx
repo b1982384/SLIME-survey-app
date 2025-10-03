@@ -34,21 +34,22 @@ const SEVEN_POINT_QUESTIONS = [
   "10. I prefer to skip songs the platform adds or suggests automatically",
   "11. I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)",
   "12. I don't like the music my friends listen to",
-  "13. I choose music without considering how I'm feeling (negatively weighted)",
+  "13. I choose music without considering how I'm feeling",
   "14. I feel uneasy letting the platform decide what to play next",
   "15. I use music to better understand or make sense of my emotions"
 ];
 
+
 const FIVE_POINT_QUESTIONS = [
-  "16. Please indicate how often you do the following statements: - I make and create playlists on my music platform",
-  "17. Please indicate how often you do the following statements: - I listen to unfamiliar music",
-  "18. I make playlists for friends",
-  "19. When I hear a new song from a playlist, autoplay, or other passive source, I look up the artist or track to learn more.",
-  "20. I will listen to music via… - Full albums",
-  "21. I collect physical music formats",
-  "22. I make playlists for myself",
-  "23. I add or edit my existing playlists",
-  "24. When I hear a new song from a playlist, autoplay, or other passive source, I save or like it to return to later."
+  "16. How often do you make and create playlists on your music platform?",
+  "17. How often do you listen to unfamiliar music?",
+  "18. How often do you make playlists for friends?",
+  "19. When you hear a new song from a playlist, autoplay, or other passive source, how often do you look up the artist or track to learn more?",
+  "20. How often do you listen to music via full albums?",
+  "21. How often do you collect physical music formats?",
+  "22. How often do you make playlists for yourself?",
+  "23. How often do you add to or edit your existing playlists?",
+  "24. When you hear a new song from a playlist, autoplay, or other passive source, how often do you save or like it to return to later?"
 ];
 
 type Mood = {
@@ -65,65 +66,124 @@ type EmojiRowProps = {
   moods: Mood[];
 };
 
-const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect, moods }) => (
-  <div className="scale-row" role="radiogroup" aria-label={name}>
-    {moods.map((mood) => {
-      const isSelected = selectedValue === mood.value;
-      return (
-        <button
-          key={mood.value}
-          type="button"
-          role="radio"
-          aria-checked={isSelected}
-          className={`p-4 ${mood.color}${isSelected ? ' selected' : ''}`}
-          onClick={() => onSelect(mood.value)}
-        >
-          <span>{mood.emoji}</span>
-          <p>{mood.label}</p>
-        </button>
-      );
-    })}
-  </div>
-);
+type EmojiRowProps = {
+  name: string;
+  selectedValue: number | null;
+  onSelect: (value: number) => void;
+  moods: MoodOption[];
+};
 
-const EmojiProgression = () => {
+const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect, moods }) => {
+  return (
+    <div className="scale-row" role="radiogroup" aria-label={name}>
+      {moods.map((mood) => {
+        const isSelected = selectedValue === mood.value;
+        return (
+          <button
+            key={mood.value}
+            type="button"
+            role="radio"
+            aria-checked={isSelected}
+            className={`mood-button ${mood.color}${isSelected ? ' selected' : ''}`}
+            onClick={() => onSelect(mood.value)}
+          >
+            <span className="emoji-icon">{mood.emoji}</span>
+            <p className="emoji-label">{mood.label}</p>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
+type Question = {
+  text: string;
+  type: 'seven' | 'five';
+  originalIndex: number;
+};
+
+const EmojiProgression: React.FC = () => {
   const navigate = useNavigate();
-  const [responsesState, setResponsesState] = useState<(number | null)[]>(
+  const [answerError, setAnswerError] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Demographics state
+  const [age, setAge] = useState<string>('');
+  const [gender, setGender] = useState<string>('');
+
+  // Randomize questions once on mount
+  const randomizedQuestions = useMemo(() => {
+    const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
+      text,
+      type: 'seven' as const,
+      originalIndex: index
+    }));
+
+    const fivePointQs: Question[] = FIVE_POINT_QUESTIONS.map((text, index) => ({
+      text,
+      type: 'five' as const,
+      originalIndex: index + SEVEN_POINT_QUESTIONS.length
+    }));
+
+    const allQuestions = [...sevenPointQs, ...fivePointQs];
+    
+    // Fisher-Yates shuffle
+    for (let i = allQuestions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+    }
+
+    return allQuestions;
+  }, []);
+
+  const [responses, setResponses] = useState<Array<number | null>>(
     Array(SEVEN_POINT_QUESTIONS.length + FIVE_POINT_QUESTIONS.length).fill(null)
   );
-  const [answerError, setAnswerError] = useState(false);
 
-  const handleSelect = (questionIndex: number, value: number) => {
-    setResponsesState((prev) => {
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  const handleSelect = (originalIndex: number, value: number) => {
+    setResponses((prev) => {
       const next = [...prev];
-      next[questionIndex] = value;
+      next[originalIndex] = value;
       return next;
     });
   };
 
   const addResponse = async () => {
-    const allQuestionsAnswered = responsesState.every((response) => response !== null);
-
+    const allQuestionsAnswered = responses.every((response) => response !== null);
+    
     if (!allQuestionsAnswered) {
       setAnswerError(true);
       alert('Please answer all questions before submitting.');
       return;
     }
 
-    const formattedData = responsesState.reduce((acc: Record<string, number | null>, response, index) => {
+    if (!age || !gender) {
+      alert('Please provide your age and gender.');
+      return;
+    }
+
+    const formattedData = responses.reduce<Record<string, number | null | string>>((acc, response, index) => {
       acc[`q${index + 1}`] = response;
       return acc;
     }, {});
 
+    // Add demographics
+    formattedData['age'] = age;
+    formattedData['gender'] = gender;
+
     try {
-      const { error } = await supabase.from("responses").insert([formattedData]);
+      const { data, error } = await supabase.from("responses").insert([formattedData]);
 
       if (error) {
         console.error('Error updating supabase:', error.message);
         alert('Error submitting responses. Please try again.');
       } else {
-        console.log('Navigating to results with responses:', responsesState);
-        navigate('/results', { state: { responses: responsesState } });
+        console.log('Success updating supabase:', data);
+        navigate('/results');
       }
     } catch (err) {
       console.error('Unexpected error:', err);
@@ -131,36 +191,99 @@ const EmojiProgression = () => {
     }
   };
 
+  // Track which section we're in for the frequency heading
+  let frequencyHeaderShown = false;
+
   return (
-    <div>
-      <div className="questions-container">
-        {SEVEN_POINT_QUESTIONS.map((q, index) => (
-          <div key={index} className="question-block">
-            <div className="question-text">{q}</div>
-            <EmojiRow
-              name={`q${index}`}
-              selectedValue={responsesState[index]}
-              onSelect={(value) => handleSelect(index, value)}
-              moods={SEVEN_POINT_MOODS}
-            />
-          </div>
-        ))}
+    <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
+      <div className="dark-mode-toggle">
+        <button onClick={toggleDarkMode} className="toggle-btn">
+          {isDarkMode ? '☀️' : '🌙'} {isDarkMode ? 'Light' : 'Dark'} Mode
+        </button>
       </div>
-      <div className="questions-container">
-        {FIVE_POINT_QUESTIONS.map((q, index) => (
-          <div key={SEVEN_POINT_QUESTIONS.length + index} className="question-block">
-            <div className="question-text">{q}</div>
-            <EmojiRow
-              name={`q${SEVEN_POINT_QUESTIONS.length + index}`}
-              selectedValue={responsesState[SEVEN_POINT_QUESTIONS.length + index]}
-              onSelect={(value) => handleSelect(SEVEN_POINT_QUESTIONS.length + index, value)}
-              moods={FIVE_POINT_MOODS}
-            />
-          </div>
-        ))}
+
+      <div className="survey-header">
+        <h1>Music Listening Survey</h1>
+        <p className="progress-text">
+          Answered: {responses.filter(r => r !== null).length} / {responses.length}
+        </p>
       </div>
-      {answerError && <p className="submit-error">Please answer all questions</p>}
-      <button onClick={addResponse} className="submit-button">SUBMIT</button>
+
+      <div className="questions-container">
+        {randomizedQuestions.map((question, displayIndex) => {
+          const isSevenPoint = question.type === 'seven';
+          const moods = isSevenPoint ? SEVEN_POINT_MOODS : FIVE_POINT_MOODS;
+          
+          // Show frequency header before first 5-point question
+          const showFrequencyHeader = !isSevenPoint && !frequencyHeaderShown;
+          if (showFrequencyHeader) {
+            frequencyHeaderShown = true;
+          }
+
+          return (
+            <React.Fragment key={displayIndex}>
+              {showFrequencyHeader && (
+                <div className="section-header">
+                  <h2>How often do you do the following?</h2>
+                </div>
+              )}
+              <div className="question-block">
+                <div className="question-text">
+                  <span className="question-number">{displayIndex + 1}.</span> {question.text}
+                </div>
+                <EmojiRow
+                  name={`q${question.originalIndex}`}
+                  selectedValue={responses[question.originalIndex]}
+                  onSelect={(value) => handleSelect(question.originalIndex, value)}
+                  moods={moods}
+                />
+              </div>
+            </React.Fragment>
+          );
+        })}
+      </div>
+
+      <div className="demographics-section">
+        <h2>About You</h2>
+        <div className="demographic-field">
+          <label htmlFor="age">Age:</label>
+          <input
+            id="age"
+            type="number"
+            min="13"
+            max="120"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            placeholder="Enter your age"
+          />
+        </div>
+        <div className="demographic-field">
+          <label htmlFor="gender">Gender:</label>
+          <select
+            id="gender"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          >
+            <option value="">Select...</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="non-binary">Non-binary</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      {answerError && (
+        <p className="submit-error">Please answer all questions</p>
+      )}
+
+      <button
+        onClick={addResponse}
+        className="submit-button"
+      >
+        SUBMIT
+      </button>
     </div>
   );
 };
