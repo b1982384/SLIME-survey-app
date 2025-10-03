@@ -98,8 +98,6 @@ const EmojiProgression: React.FC = () => {
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [age, setAge] = useState<string>('');
-  const [gender, setGender] = useState<string>('');
 
   const randomizedQuestions = useMemo(() => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
@@ -144,34 +142,30 @@ const EmojiProgression: React.FC = () => {
       alert('Please answer all questions before submitting.');
       return;
     }
-
-    if (!age || !gender) {
-      alert('Please provide your age and gender.');
-      return;
-    }
-
-    const formattedData = responses.reduce<Record<string, number | null | string>>((acc, response, index) => {
+  
+    const formattedData = responses.reduce<Record<string, number | null>>((acc, response, index) => {
       acc[`q${index + 1}`] = response;
       return acc;
     }, {});
-
-    formattedData['age'] = age;
-    formattedData['gender'] = gender;
-
+  
     try {
-      const { data, error } = await supabase.from("responses").insert([formattedData]);
+      const { error } = await supabase.from("responses").insert([formattedData]);
       if (error) {
-        console.error('Error:', error.message);
-        alert('Error submitting responses.');
-      } else {
-        navigate('/results');
+        console.error('Supabase insert error:', error);
+        alert(`Error submitting responses: ${error.message}`);
+        return;
       }
+  
+      // ✅ pass responses through navigate
+      navigate('/results', { state: { responses } });
+  
     } catch (err) {
-      console.error('Error:', err);
+      console.error('Unexpected error:', err);
       alert('An unexpected error occurred.');
     }
   };
-
+  
+  
   return (
     <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
       <div className="dark-mode-toggle">
@@ -198,32 +192,6 @@ const EmojiProgression: React.FC = () => {
             </div>
           );
         })}
-      </div>
-
-      <div className="demographics-section">
-        <h2>About You</h2>
-        <div className="demographic-field">
-          <label htmlFor="age">Age:</label>
-          <input
-            id="age"
-            type="number"
-            min="13"
-            max="120"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-          />
-        </div>
-        <div className="demographic-field">
-          <label htmlFor="gender">Gender:</label>
-          <select id="gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-            <option value="">Select...</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="non-binary">Non-binary</option>
-            <option value="prefer-not-to-say">Prefer not to say</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
       </div>
 
       {answerError && <p className="submit-error">Please answer all questions</p>}

@@ -13,6 +13,19 @@
     gap: 40px;
     align-items: flex-start;
   }
+
+  @media (max-width: 768px) {
+    .results-layout {
+      flex-direction: column; /* stack vertically */
+      align-items: center;
+    }
+  
+    .radar-chart-section,
+    .results-info {
+      width: 100%; /* take full width */
+      max-width: 500px; /* keep it from stretching too wide */
+    }
+  }
   
   .radar-chart-section {
     flex: 1;

@@ -28,7 +28,7 @@ type RadarChartProps = {
 
 const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) => {
   const size = 400; // Radar chart size
-  const padding = 50; // Extra padding for labels
+  const padding = 56; // Extra padding for labels
   const center = size / 2;
   const maxRadius = center - 40;
   const factors = Object.keys(factorScores);
@@ -130,8 +130,8 @@ const ResultsPage = () => {
   const negativelyWeighted = new Set([4, 12]); // Example: Questions with negative weighting
   
   const factorNames: FactorNames = {
-    1: "Algorithmically Open",
-    2: "Algorithmically Skeptical",
+    1: "An Open Explorer",
+    2: "A Skeptical Explorer",
     3: "A Music Hoarder",
     4: "An Individualistic Listener",
     5: "A Deep Listener",
@@ -277,7 +277,7 @@ const ResultsPage = () => {
         </div>
         <div className="results-info">
           <h1>Your Music Listening Profile</h1>
-          <h2>You are: {results.topFactor.name}</h2>
+          <h2>You are . . . {results.topFactor.name}</h2>
           <p>Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
           <p>{results.topFactor.description}</p>
           <img
