@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import './result.css';
+import React, { useState, useEffect, useRef } from 'react';
+import { Download, Share2 } from 'lucide-react';
 
 // Types
 type FactorScores = Record<number, number>;
@@ -20,15 +19,15 @@ type Results = {
   topFactor: TopFactor;
 };
 
-// radarchart Component
+// RadarChart Component
 type RadarChartProps = {
   factorScores: FactorScores;
-  factorNames: FactorNames; // custom
+  factorNames: FactorNames;
 };
 
-const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) => { // AI - generated radarchart
-  const size = 400; //  chart size
-  const padding = 56; // padding for labels --> CHANGE
+const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) => {
+  const size = 400;
+  const padding = 50;
   const center = size / 2;
   const maxRadius = center - 40;
   const factors = Object.keys(factorScores);
@@ -54,7 +53,9 @@ const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) =>
       cx={center}
       cy={center}
       r={level * maxRadius}
-      className="background-circle"
+      fill="none"
+      stroke="#e5e7eb"
+      strokeWidth="1"
     />
   ));
 
@@ -65,34 +66,43 @@ const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) =>
       y1={center}
       x2={center + Math.cos((index * 2 * Math.PI) / factors.length - Math.PI / 2) * maxRadius}
       y2={center + Math.sin((index * 2 * Math.PI) / factors.length - Math.PI / 2) * maxRadius}
-      className="axis-line"
+      stroke="#e5e7eb"
+      strokeWidth="1"
     />
   ));
 
   const pathData = points.map((point, index) =>
-    `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}` // connects dots of the radar plot 
-  ).join(' ') + ' Z'; 
+    `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+  ).join(' ') + ' Z';
 
   return (
-    <div className="radar-chart-container">
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'visible' }}>
       <svg
         width={size + padding}
         height={size + padding}
         viewBox={`0 0 ${size + padding} ${size + padding}`}
-        className="radar-chart"
+        style={{ maxWidth: '100%', height: 'auto' }}
       >
         <g transform={`translate(${padding / 2}, ${padding / 2})`}>
           {backgroundCircles}
           {axisLines}
-          <path d={pathData} />
+          <path 
+            d={pathData} 
+            fill="rgba(59, 130, 246, 0.3)"
+            stroke="rgb(59, 130, 246)"
+            strokeWidth="2"
+          />
           {points.map((point, index) => (
             <g key={index}>
-              <circle cx={point.x} cy={point.y} r="4" />
+              <circle cx={point.x} cy={point.y} r="4" fill="rgb(59, 130, 246)" />
               <text
                 x={point.labelX}
                 y={point.labelY}
                 textAnchor="middle"
                 dominantBaseline="middle"
+                fontSize="12"
+                fontWeight="600"
+                fill="rgb(75, 85, 99)"
               >
                 {point.label}
               </text>
@@ -104,30 +114,26 @@ const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) =>
   );
 };
 
-// result component
+// ResultsPage Component
 const ResultsPage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const responses: number[] = location.state?.responses || [];
-
+  const shareableRef = useRef<HTMLDivElement>(null);
+  const [responses] = useState<number[]>(Array.from({ length: 24 }, () => Math.floor(Math.random() * 5) + 2));
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isStraightlined, setIsStraightlined] = useState(false);
 
-  //  mappings with proper typing
   const questionToFactor: QuestionToFactor = {
-    0: 1, 1: 1, 2: 1, // Factor 1
-    3: 2, 4: 2, 5: 2, // Factor 2
-    6: 3, 7: 3, 8: 3, // Factor 3
-    9: 4, 10: 4, 11: 4, // Factor 4
-    12: 5, 13: 5, 14: 5, // Factor 5
-    15: 6, 16: 6, 17: 6, // Factor 6
-    18: 7, 19: 7, 20: 7, // Factor 7
-    21: 8, 22: 8, 23: 8, // Factor 8
+    0: 1, 1: 1, 2: 1,
+    3: 2, 4: 2, 5: 2,
+    6: 3, 7: 3, 8: 3,
+    9: 4, 10: 4, 11: 4,
+    12: 5, 13: 5, 14: 5,
+    15: 6, 16: 6, 17: 6,
+    18: 7, 19: 7, 20: 7,
+    21: 8, 22: 8, 23: 8,
   };
 
-  const negativelyWeighted = new Set([4, 12]); // Example: Questions with negative weighting
+  const negativelyWeighted = new Set([4, 12]);
   
   const factorNames: FactorNames = {
     1: "Algorithmically Open",
@@ -146,31 +152,24 @@ const ResultsPage = () => {
     3: "Hoarding – Jukebox. Like a Jukebox, you are overflowing with songs, playlists, and hidden gems. Each track is catalogued into your personal archive, and you're always ready to play the perfect one on demand.",
     4: "Individualistic Musicking – Noise-Cancelling Headphones. You tune out the noise of popularity and platforms. Your listening is private, intentional, and completely yours.",
     5: "Deep Listening – Studio Headphones. Like Studio Headphones your listening is tuned for clarity and depth. You listen closely, savor full albums, and treat music like a rich, immersive world.",
-    6: "Musical Omnivorism – AirPods.  You're AirPods, a trendy listener who is always bouncing between moods and genres with ease. Your music is woven into your everyday life.",
+    6: "Musical Omnivorism – AirPods. You're AirPods, a trendy listener who is always bouncing between moods and genres with ease. Your music is woven into your everyday life.",
     7: "Searching – Vinyl Crate. You are a Vinyl Crate, always digging for the next discovery. You love flipping through the unfamiliar and novel, hunting for gems others might overlook.",
     8: "Curation & Sociality – Boombox. Bold and sociable, you're the Boombox. Music isn't just for you — it's a vibe you broadcast, connecting people and setting the mood.",
   };
 
-  const fivePointIndices = new Set(Array.from({ length: 9 }, (_, i) => i + 15)); // Questions 16-24
+  const fivePointIndices = new Set(Array.from({ length: 9 }, (_, i) => i + 15));
 
   useEffect(() => {
-    if (responses.length === 0) {
-      setError('No responses provided.');
-      setTimeout(() => navigate('/questions'), 3000);
-      return;
-    }
-
-    // check if the user straightlined (all responses normalize to 0.5)
     const isNeutral = responses.every((response, index) => {
       if (fivePointIndices.has(index)) {
-        return (response - 1) / 4 === 0.5; // 5-point scale
+        return (response - 1) / 4 === 0.5;
       } else {
-        return (response - 1) / 6 === 0.5; // 7-point scale
+        return (response - 1) / 6 === 0.5;
       }
     });
 
     if (isNeutral) {
-      setIsStraightlined(true); // returns custom page
+      setIsStraightlined(true);
       setLoading(false);
       return;
     }
@@ -178,19 +177,17 @@ const ResultsPage = () => {
     const factorScores = calculateFactorScores(responses);
     setResults(factorScores);
     setLoading(false);
-  }, [responses, navigate]);
+  }, [responses]);
 
   const calculateFactorScores = (responses: number[]): Results => {
     const factorScores: FactorScores = {};
     const factorQuestionCounts: Record<number, number> = {};
 
-    // initialize scores and counts
     for (let i = 1; i <= 8; i++) {
       factorScores[i] = 0;
       factorQuestionCounts[i] = 0;
     }
 
-    // calculate scores for each question
     for (let i = 0; i < responses.length; i++) {
       if (responses[i] === null) continue;
 
@@ -200,14 +197,12 @@ const ResultsPage = () => {
       let normalizedScore: number;
       const responseValue = responses[i];
 
-      // normalize scores to a 0-1 scale
       if (fivePointIndices.has(i)) {
-        normalizedScore = (responseValue - 1) / 4; // 5-point scale
+        normalizedScore = (responseValue - 1) / 4;
       } else {
-        normalizedScore = (responseValue - 1) / 6; // 7-point scale
+        normalizedScore = (responseValue - 1) / 6;
       }
 
-      //  negative weighting if applicable
       if (negativelyWeighted.has(i)) {
         normalizedScore = 1 - normalizedScore;
       }
@@ -216,7 +211,6 @@ const ResultsPage = () => {
       factorQuestionCounts[factor]++;
     }
 
-    // average scores by the number of questions per factor
     for (const factor in factorScores) {
       const factorNum = parseInt(factor);
       if (factorQuestionCounts[factorNum] > 0) {
@@ -224,9 +218,8 @@ const ResultsPage = () => {
       }
     }
 
-  
     const topFactorEntry = Object.entries(factorScores).reduce((a, b) =>
-      factorScores[parseInt(a[0])] > factorScores[parseInt(b[0])] ? a : b  // top factor
+      factorScores[parseInt(a[0])] > factorScores[parseInt(b[0])] ? a : b
     );
 
     const topFactorNumber = parseInt(topFactorEntry[0]);
@@ -242,27 +235,53 @@ const ResultsPage = () => {
     };
   };
 
+  const handleDownloadImage = async () => {
+    if (!shareableRef.current) return;
+
+    try {
+      const html2canvas = (await import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm')).default;
+      const canvas = await html2canvas(shareableRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+      });
+      
+      const link = document.createElement('a');
+      link.download = 'my-music-profile.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    } catch (error) {
+      console.error('Error generating image:', error);
+      alert('Unable to generate image. Please try taking a screenshot instead.');
+    }
+  };
+
   const factorImages: FactorImages = {
-    1: '/images/smart-speaker.gif',
-    2: '/images/wired-headphones.gif',
-    3: '/images/jukebox.gif',
-    4: '/images/noise-cancelling-headphones.gif',
-    5: '/images/studio-headphones.gif',
-    6: '/images/airpods.gif',
-    7: '/images/vinyl-crate.gif',
-    8: '/images/boombox.gif',
+    1: '/images/smart-speaker.png',
+    2: '/images/wired-earbuds.png',
+    3: '/images/jukebox.png',
+    4: '/images/noise-cancelling-headphones.png',
+    5: '/images/studio-headphones.png',
+    6: '/images/airpods.png',
+    7: '/images/vinyl-crate.png',
+    8: '/images/boombox.png',
   };
 
   if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>Loading...</div>;
   }
 
   if (isStraightlined) {
-    return <div className = "straightlined-message">Your listener profile is ... boring. Please try again with more honest answers!</div>;
+    return (
+      <div style={{ 
+        marginTop: '100px', 
+        textAlign: 'center', 
+        fontSize: '40px', 
+        fontWeight: '700',
+        padding: '20px'
+      }}>
+        Your listener profile is ... boring. Please try again with more honest answers!
+      </div>
+    );
   }
 
   if (!results) {
@@ -270,23 +289,133 @@ const ResultsPage = () => {
   }
 
   return (
-    <div className="results-page">
-      <div className="results-layout">
-        <div className="radar-chart-section">
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '20px',
+      backgroundColor: '#f9f9f9',
+      minHeight: '100vh',
+      flexDirection: 'column',
+      gap: '20px'
+    }}>
+      <div ref={shareableRef} style={{
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '40px',
+        alignItems: 'flex-start',
+        maxWidth: '1200px',
+        width: '100%'
+      }} className="results-layout">
+        <div style={{ 
+          flex: 1,
+          order: 2
+        }} className="radar-section">
           <RadarChart factorScores={results.factorScores} factorNames={factorNames} />
         </div>
-        <div className="results-info">
-          <h1>Your Music Listening Profile</h1>
-          <h2>You are: {results.topFactor.name}</h2>
-          <p>Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
-          <p>{results.topFactor.description}</p>
+        <div style={{
+          flex: 1,
+          background: '#ffffff',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          order: 1
+        }} className="results-info">
+          <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Your Music Listening Profile</h1>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#3498db' }}>
+            You are: {results.topFactor.name}
+          </h2>
+          <p style={{ fontSize: '1rem', marginBottom: '10px', color: '#555' }}>
+            Score: {(results.topFactor.score * 100).toFixed(1)}%
+          </p>
+          <p style={{ fontSize: '1rem', marginBottom: '10px', color: '#555' }}>
+            {results.topFactor.description}
+          </p>
           <img
             src={factorImages[results.topFactor.number]}
             alt={results.topFactor.name}
-            className="factor-image"
+            style={{
+              maxWidth: '300px',
+              maxHeight: '300px',
+              width: 'auto',
+              height: 'auto',
+              marginTop: '20px',
+              borderRadius: '10px',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              objectFit: 'contain'
+            }}
           />
         </div>
       </div>
+      
+      <div style={{
+        textAlign: 'center',
+        maxWidth: '600px',
+        padding: '20px',
+        background: '#ffffff',
+        borderRadius: '10px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+      }}>
+        <p style={{ 
+          fontSize: '0.9rem', 
+          color: '#666', 
+          marginBottom: '15px',
+          lineHeight: '1.5'
+        }}>
+          Share your results! Use the button below to download, or take a screenshot.
+        </p>
+        <button
+          onClick={handleDownloadImage}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '12px 24px',
+            fontSize: '1rem',
+            fontWeight: '600',
+            color: '#ffffff',
+            backgroundColor: '#3498db',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#2980b9';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#3498db';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+          }}
+        >
+          <Download size={20} />
+          Download Results
+        </button>
+      </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .results-layout {
+            flex-direction: column !important;
+            align-items: center !important;
+          }
+          .radar-section,
+          .results-info {
+            width: 100% !important;
+            max-width: 500px !important;
+          }
+          .results-info {
+            order: 1 !important;
+          }
+          .radar-section {
+            order: 2 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
