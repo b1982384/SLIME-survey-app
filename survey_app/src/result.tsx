@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Download, Share2 } from 'lucide-react';
+import { Download } from 'lucide-react';
+import './result.css'; // ✅ External CSS import
 
-// Types
 type FactorScores = Record<number, number>;
 type FactorNames = Record<number, string>;
 type QuestionToFactor = Record<number, number>;
@@ -16,10 +16,9 @@ type TopFactor = {
 
 type Results = {
   factorScores: FactorScores;
-  topFactor: TopFactor;
+  topFactor: TopFactor ;
 };
 
-// RadarChart Component
 type RadarChartProps = {
   factorScores: FactorScores;
   factorNames: FactorNames;
@@ -27,7 +26,7 @@ type RadarChartProps = {
 
 const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) => {
   const size = 400;
-  const padding = 50;
+  const padding = 40;
   const center = size / 2;
   const maxRadius = center - 40;
   const factors = Object.keys(factorScores);
@@ -36,7 +35,6 @@ const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) =>
     const angle = (index * 2 * Math.PI) / factors.length - Math.PI / 2;
     const score = factorScores[parseInt(factor)];
     const radius = score * maxRadius;
-
     return {
       x: center + Math.cos(angle) * radius,
       y: center + Math.sin(angle) * radius,
@@ -48,15 +46,7 @@ const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) =>
   });
 
   const backgroundCircles = [0.2, 0.4, 0.6, 0.8, 1.0].map((level) => (
-    <circle
-      key={level}
-      cx={center}
-      cy={center}
-      r={level * maxRadius}
-      fill="none"
-      stroke="#e5e7eb"
-      strokeWidth="1"
-    />
+    <circle key={level} cx={center} cy={center} r={level * maxRadius} fill="none" stroke="#e5e7eb" strokeWidth="1" />
   ));
 
   const axisLines = points.map((_point, index) => (
@@ -71,27 +61,15 @@ const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) =>
     />
   ));
 
-  const pathData = points.map((point, index) =>
-    `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
-  ).join(' ') + ' Z';
+  const pathData = points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ') + ' Z';
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'visible' }}>
-      <svg
-        width={size + padding}
-        height={size + padding}
-        viewBox={`0 0 ${size + padding} ${size + padding}`}
-        style={{ maxWidth: '100%', height: 'auto' }}
-      >
+    <div className="radar-container">
+      <svg width={size + padding} height={size + padding} viewBox={`0 0 ${size + padding} ${size + padding}`}>
         <g transform={`translate(${padding / 2}, ${padding / 2})`}>
           {backgroundCircles}
           {axisLines}
-          <path 
-            d={pathData} 
-            fill="rgba(59, 130, 246, 0.3)"
-            stroke="rgb(59, 130, 246)"
-            strokeWidth="2"
-          />
+          <path d={pathData} fill="rgba(59, 130, 246, 0.3)" stroke="rgb(59, 130, 246)" strokeWidth="2" />
           {points.map((point, index) => (
             <g key={index}>
               <circle cx={point.x} cy={point.y} r="4" fill="rgb(59, 130, 246)" />
@@ -114,7 +92,6 @@ const RadarChart: React.FC<RadarChartProps> = ({ factorScores, factorNames }) =>
   );
 };
 
-// ResultsPage Component
 const ResultsPage = () => {
   const shareableRef = useRef<HTMLDivElement>(null);
   const [responses] = useState<number[]>(Array.from({ length: 24 }, () => Math.floor(Math.random() * 5) + 2));
@@ -134,7 +111,6 @@ const ResultsPage = () => {
   };
 
   const negativelyWeighted = new Set([4, 12]);
-  
   const factorNames: FactorNames = {
     1: "Algorithmically Open",
     2: "Algorithmically Skeptical",
@@ -147,14 +123,14 @@ const ResultsPage = () => {
   };
 
   const factorDescriptions: FactorNames = {
-    1: "Algorithmic Openness - Smart Speaker. Like a Smart Speaker, you're always ready to hear what's next. You trust the algorithm to guide you to fresh discoveries that still align with your personal tastes.",
-    2: "Algorithmic Skepticism - Wired Earbuds. You're Wired Earbuds — simple, direct, and in full control. No autoplay, no surprises: just the music you choose, the way you want it.",
-    3: "Hoarding – Jukebox. Like a Jukebox, you are overflowing with songs, playlists, and hidden gems. Each track is catalogued into your personal archive, and you're always ready to play the perfect one on demand.",
-    4: "Individualistic Musicking – Noise-Cancelling Headphones. You tune out the noise of popularity and platforms. Your listening is private, intentional, and completely yours.",
-    5: "Deep Listening – Studio Headphones. Like Studio Headphones your listening is tuned for clarity and depth. You listen closely, savor full albums, and treat music like a rich, immersive world.",
-    6: "Musical Omnivorism – AirPods. You're AirPods, a trendy listener who is always bouncing between moods and genres with ease. Your music is woven into your everyday life.",
-    7: "Searching – Vinyl Crate. You are a Vinyl Crate, always digging for the next discovery. You love flipping through the unfamiliar and novel, hunting for gems others might overlook.",
-    8: "Curation & Sociality – Boombox. Bold and sociable, you're the Boombox. Music isn't just for you — it's a vibe you broadcast, connecting people and setting the mood.",
+    1: "Algorithmic Openness - Smart Speaker...",
+    2: "Algorithmic Skepticism - Wired Earbuds...",
+    3: "Hoarding – Jukebox...",
+    4: "Individualistic Musicking – Noise-Cancelling Headphones...",
+    5: "Deep Listening – Studio Headphones...",
+    6: "Musical Omnivorism – AirPods...",
+    7: "Searching – Vinyl Crate...",
+    8: "Curation & Sociality – Boombox...",
   };
 
   const fivePointIndices = new Set(Array.from({ length: 9 }, (_, i) => i + 15));
@@ -182,48 +158,33 @@ const ResultsPage = () => {
   const calculateFactorScores = (responses: number[]): Results => {
     const factorScores: FactorScores = {};
     const factorQuestionCounts: Record<number, number> = {};
-
     for (let i = 1; i <= 8; i++) {
       factorScores[i] = 0;
       factorQuestionCounts[i] = 0;
     }
-
     for (let i = 0; i < responses.length; i++) {
       if (responses[i] === null) continue;
-
       const factor = questionToFactor[i];
       if (!factor) continue;
-
       let normalizedScore: number;
       const responseValue = responses[i];
-
       if (fivePointIndices.has(i)) {
         normalizedScore = (responseValue - 1) / 4;
       } else {
         normalizedScore = (responseValue - 1) / 6;
       }
-
-      if (negativelyWeighted.has(i)) {
-        normalizedScore = 1 - normalizedScore;
-      }
-
+      if (negativelyWeighted.has(i)) normalizedScore = 1 - normalizedScore;
       factorScores[factor] += normalizedScore;
       factorQuestionCounts[factor]++;
     }
-
     for (const factor in factorScores) {
-      const factorNum = parseInt(factor);
-      if (factorQuestionCounts[factorNum] > 0) {
-        factorScores[factorNum] = factorScores[factorNum] / factorQuestionCounts[factorNum];
-      }
+      const f = parseInt(factor);
+      if (factorQuestionCounts[f] > 0) factorScores[f] = factorScores[f] / factorQuestionCounts[f];
     }
-
     const topFactorEntry = Object.entries(factorScores).reduce((a, b) =>
       factorScores[parseInt(a[0])] > factorScores[parseInt(b[0])] ? a : b
     );
-
     const topFactorNumber = parseInt(topFactorEntry[0]);
-
     return {
       factorScores,
       topFactor: {
@@ -237,21 +198,16 @@ const ResultsPage = () => {
 
   const handleDownloadImage = async () => {
     if (!shareableRef.current) return;
-
     try {
-      const html2canvas = (await import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm')).default;
-      const canvas = await html2canvas(shareableRef.current, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-      });
-      
+      const html2canvas = (await import("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm")).default;
+      const canvas = await html2canvas(shareableRef.current, { backgroundColor: '#fff', scale: 2 });
       const link = document.createElement('a');
       link.download = 'my-music-profile.png';
       link.href = canvas.toDataURL();
       link.click();
     } catch (error) {
       console.error('Error generating image:', error);
-      alert('Unable to generate image. Please try taking a screenshot instead.');
+      alert('Unable to generate image.');
     }
   };
 
@@ -266,156 +222,32 @@ const ResultsPage = () => {
     8: '/images/boombox.png',
   };
 
-  if (loading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>Loading...</div>;
-  }
-
-  if (isStraightlined) {
-    return (
-      <div style={{ 
-        marginTop: '100px', 
-        textAlign: 'center', 
-        fontSize: '40px', 
-        fontWeight: '700',
-        padding: '20px'
-      }}>
-        Your listener profile is ... boring. Please try again with more honest answers!
-      </div>
-    );
-  }
-
-  if (!results) {
-    return <div>No results to display</div>;
-  }
+  if (loading) return <div className="loading">Loading...</div>;
+  if (isStraightlined)
+    return <div className="boring">Your listener profile is ... boring. Please try again!</div>;
+  if (!results) return <div>No results to display</div>;
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '20px',
-      backgroundColor: '#f9f9f9',
-      minHeight: '100vh',
-      flexDirection: 'column',
-      gap: '20px'
-    }}>
-      <div ref={shareableRef} style={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: '40px',
-        alignItems: 'flex-start',
-        maxWidth: '1200px',
-        width: '100%'
-      }} className="results-layout">
-        <div style={{ 
-          flex: 1,
-          order: 2
-        }} className="radar-section">
+    <div className="results-page">
+      <div ref={shareableRef} className="results-layout">
+        <div className="radar-section">
           <RadarChart factorScores={results.factorScores} factorNames={factorNames} />
         </div>
-        <div style={{
-          flex: 1,
-          background: '#ffffff',
-          padding: '20px',
-          borderRadius: '10px',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          order: 1
-        }} className="results-info">
-          <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Your Music Listening Profile</h1>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#3498db' }}>
-            You are: {results.topFactor.name}
-          </h2>
-          <p style={{ fontSize: '1rem', marginBottom: '10px', color: '#555' }}>
-            Score: {(results.topFactor.score * 100).toFixed(1)}%
-          </p>
-          <p style={{ fontSize: '1rem', marginBottom: '10px', color: '#555' }}>
-            {results.topFactor.description}
-          </p>
-          <img
-            src={factorImages[results.topFactor.number]}
-            alt={results.topFactor.name}
-            style={{
-              maxWidth: '300px',
-              maxHeight: '300px',
-              width: 'auto',
-              height: 'auto',
-              marginTop: '20px',
-              borderRadius: '10px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              objectFit: 'contain'
-            }}
-          />
+        <div className="results-info">
+          <h1>Your Music Listening Profile</h1>
+          <h2>You are: {results.topFactor.name}</h2>
+          <p className="score">Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
+          <p>{results.topFactor.description}</p>
+          <img src={factorImages[results.topFactor.number]} alt={results.topFactor.name} />
         </div>
       </div>
-      
-      <div style={{
-        textAlign: 'center',
-        maxWidth: '600px',
-        padding: '20px',
-        background: '#ffffff',
-        borderRadius: '10px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-      }}>
-        <p style={{ 
-          fontSize: '0.9rem', 
-          color: '#666', 
-          marginBottom: '15px',
-          lineHeight: '1.5'
-        }}>
-          Share your results! Use the button below to download, or take a screenshot.
-        </p>
-        <button
-          onClick={handleDownloadImage}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '12px 24px',
-            fontSize: '1rem',
-            fontWeight: '600',
-            color: '#ffffff',
-            backgroundColor: '#3498db',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s ease'
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#2980b9';
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = '#3498db';
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-          }}
-        >
-          <Download size={20} />
-          Download Results
+
+      <div className="share-section">
+        <p>Share your results! Use the button below to download, or take a screenshot.</p>
+        <button className="download-btn" onClick={handleDownloadImage}>
+          <Download size={20} /> Download Results
         </button>
       </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .results-layout {
-            flex-direction: column !important;
-            align-items: center !important;
-          }
-          .radar-section,
-          .results-info {
-            width: 100% !important;
-            max-width: 500px !important;
-          }
-          .results-info {
-            order: 1 !important;
-          }
-          .radar-section {
-            order: 2 !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };

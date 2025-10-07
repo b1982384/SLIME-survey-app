@@ -1,112 +1,204 @@
+/* ResultsPage.css
+   Matches the TSX you shared:
+   - .results-layout
+   - .radar-section
+   - .results-info
+   - The share block is targeted via `.results-layout + div` (because your share block has no class)
+   If you add `className="results-page"` to the top wrapper later, the .results-page rules here will apply too.
+*/
+
+/* Optional top-level wrapper (recommended to add className="results-page" to the root div) */
 .results-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background-color: #f9f9f9;
-    min-height: 100vh;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Main two-column layout (the element with className="results-layout") */
+.results-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  align-items: flex-start;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* Radar container (element with className="radar-section") */
+.radar-section {
+  flex: 1;
+  order: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+}
+
+/* Make the inner radar wrapper and SVG responsive */
+.radar-section > div,
+.radar-section svg {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* SVG visuals (use !important to reliably override attribute values set inline) */
+.radar-section svg path {
+  fill: rgba(59, 130, 246, 0.3) !important;
+  stroke: rgb(59, 130, 246) !important;
+  stroke-width: 2 !important;
+}
+
+/* Small point markers use r="4" in your SVG; target those separately */
+.radar-section svg circle[r="4"] {
+  fill: rgb(59, 130, 246) !important;
+}
+
+/* Background grid circles (any circle without r="4") */
+.radar-section svg circle:not([r="4"]) {
+  fill: none !important;
+  stroke: #e5e7eb !important;
+  stroke-width: 1 !important;
+}
+
+/* Axis lines */
+.radar-section svg line {
+  stroke: #e5e7eb !important;
+  stroke-width: 1 !important;
+}
+
+/* Labels */
+.radar-section svg text {
+  font-size: 12px;
+  font-weight: 600;
+  fill: rgb(75, 85, 99) !important;
+  text-anchor: middle;
+}
+
+/* Results info card (element with className="results-info") */
+.results-info {
+  flex: 1;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  order: 1;
+}
+
+.results-info h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.results-info h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #3498db;
+}
+
+.results-info p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+/* Factor image inside results-info */
+.results-info img {
+  max-width: 300px;
+  max-height: 300px;
+  width: auto;
+  height: auto;
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  object-fit: contain;
+}
+
+/* Share block — your TSX renders a plain div right after .results-layout,
+   so we target that sibling. If you add a class to the share block, replace this selector. */
+.results-layout + div {
+  text-align: center;
+  max-width: 600px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.results-layout + div p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+/* Download button inside the share block (targets the button element directly) */
+.results-layout + div > button,
+.results-layout + div button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #3498db;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.18s ease;
+}
+
+/* Hover / focus styles (these apply unless inline JS overrides them) */
+.results-layout + div button:hover,
+.results-layout + div button:focus {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading & straightlined messages (if you add className to those divs later) */
+.loading-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.straightlined-message {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 40px;
+  font-weight: 700;
+  padding: 20px;
+}
+
+/* Responsive behavior (matches the inline media rule you had) */
+@media (max-width: 768px) {
   .results-layout {
-    display: flex;
-    flex-direction: row;
-    gap: 40px;
-    align-items: flex-start;
-  }
-
-  @media (max-width: 768px) {
-    .results-layout {
-      flex-direction: column; /* stack vertically */
-      align-items: center;
-    }
-  
-    .radar-chart-section,
-    .results-info {
-      width: 100%; /* take full width */
-      max-width: 500px; /* keep it from stretching too wide */
-    }
-  }
-  
-  .radar-chart-section {
-    flex: 1;
-  }
-  
-  .results-info {
-    flex: 1;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .results-info h1 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-  }
-  
-  .results-info h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #3498db;
-  }
-  
-  .results-info p {
-    font-size: 1rem;
-    margin-bottom: 10px;
-    color: #555;
-  }
-  
- 
-  .radar-chart-container {
-    display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    overflow: visible;
-  }
-  
-  .radar-chart {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  .radar-chart path {
-    fill: rgba(59, 130, 246, 0.3); /* Radar area fill */
-    stroke: rgb(59, 130, 246); /* Radar area border */
-    stroke-width: 2;
-  }
-  
-  .straightlined-message{
-    margin-top: 100px;
-    text-align: center;
-    font-size: 40px;
-    font-weight: 700;
   }
 
-  .radar-chart text {
-    font-size: 0.75rem; /* Text size */
-    font-weight: 600; /* Text weight */
-    fill: rgb(75, 85, 99); /* Text color */
-  }
-  
-  .radar-chart .background-circle {
-    fill: none;
-    stroke: #e5e7eb; /* Background circle color */
-    stroke-width: 1;
-  }
-  
-  .radar-chart .axis-line {
-    stroke: #e5e7eb; /* Axis line color */
-    stroke-width: 1;
+  .radar-section,
+  .results-info {
+    width: 100%;
+    max-width: 500px;
   }
 
-
-  .factor-image {
-    max-width: 300px; /* Set the maximum width */
-    max-height: 300px; /* Set the maximum height */
-    width: auto; /* Maintain aspect ratio */
-    height: auto; /* Maintain aspect ratio */
-    margin-top: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    object-fit: contain; /* Ensure the image fits within the box */
+  .results-info {
+    order: 1 !important;
   }
+
+  .radar-section {
+    order: 2 !important;
+  }
+}
