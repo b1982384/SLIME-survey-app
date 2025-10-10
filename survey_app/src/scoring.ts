@@ -14,3 +14,5 @@ export function calculateFactorScores(responses: number[]) {
 
   return scores;
 }
+
+

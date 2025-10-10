@@ -30,16 +30,16 @@ const FIVE_POINT_MOODS: MoodOption[] = [
 
 const SEVEN_POINT_QUESTIONS: string[] = [
   "I like to explore songs from all genres",
-  "I feel like I play a strong role in how things are recommended to me",
-  "I worry that my music platform recommends music for its own interests not mine",
+  "I feel like I play a strong role in how things are recommended to me", // factor 1
+  "I worry that my music platform recommends music for its own interests not mine", 
   "I keep up with popular/trending songs",
   "I think that popular artists are popular because they make better music",
-  "I can rely on my music platform's recommendations when I want to hear something new",
+  "I can rely on my music platform's recommendations when I want to hear something new", // factor 1
   "I avoid app-curated playlists and mixes – I prefer my own",
   "I frequently listen to music by artists I haven't heard before",
   "I think that artists make better music when they aren't really popular",
   "I prefer to skip songs the platform adds or suggests automatically",
-  "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)",
+  "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)", // factor 1
   "I don't like the music my friends listen to",
   "I choose music without considering how I'm feeling",
   "I feel uneasy letting the platform decide what to play next",
@@ -201,3 +201,6 @@ const EmojiProgression: React.FC = () => { // main component
 };
 
 export default EmojiProgression;
+
+
+//https://www.react-graph-gallery.com/radar-chart
