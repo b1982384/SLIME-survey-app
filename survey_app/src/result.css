@@ -203,3 +203,30 @@
   }
 }
 
+
+/* radar o */
+.radar-section .recharts-radar .recharts-polygon {
+  fill: none !important;
+  fill-opacity: 0 !important;
+  stroke: #500fe7 !important; /* dark navy for contrast */
+  stroke-width: 3 !important;
+}
+
+/*  dots */
+.radar-section .recharts-radar .recharts-dot {
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
+  stroke-width: 2 !important;
+}
+
+/* grid */
+.radar-section .recharts-polar-grid .recharts-polar-grid-concentric path {
+  stroke: #413f3f75 !important;
+  opacity: 0.9;
+}
+
+.radar-section .recharts-polar-grid .recharts-polar-grid-angle line {
+  stroke: #454f63 !important;
+  opacity: 0.6;
+}
+

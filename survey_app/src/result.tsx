@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Download } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-import { supabase } from './supabaseClient';
 import {
   RadarChart,
   PolarGrid,
@@ -9,13 +8,6 @@ import {
   PolarRadiusAxis,
   Radar,
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Cell
 } from 'recharts';
 import './result.css';
 
@@ -33,12 +25,81 @@ type TopFactor = {
 type Results = {
   factorScores: FactorScores;
   topFactor: TopFactor;
-  percentiles: Record<number, number>;
 };
 
-type DistributionData = {
-  factor: number;
-  bins: { range: string; count: number; highlight?: boolean }[];
+const RADIAN = Math.PI / 180;
+
+// Robust tick renderer: use x/y when provided; otherwise compute from cx/cy + angle
+interface AngleLabelProps {
+  x?: number;
+  y?: number;
+  cx?: number;
+  cy?: number;
+  payload?: {
+    value?: string;
+    coordinate?: number;
+  };
+  radius?: number;
+  outerRadius?: number;
+}
+
+const AngleLabel = (props: AngleLabelProps) => {
+  const { x, y, cx, cy, payload } = props;
+  const OFFSET = 20;
+
+  // If x/y exist, nudge label outward along vector from center
+  if (
+    typeof x === 'number' &&
+    typeof y === 'number' &&
+    typeof cx === 'number' &&
+    typeof cy === 'number'
+  ) {
+    const vx = x - cx;
+    const vy = y - cy;
+    const len = Math.sqrt(vx * vx + vy * vy) || 1;
+    const tx = x + (vx / len) * OFFSET;
+    const ty = y + (vy / len) * OFFSET;
+
+    return (
+      <text
+        x={tx}
+        y={ty}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fill="#111827"
+        fontSize={12}
+        fontWeight={600}
+      >
+        {payload?.value}
+      </text>
+    );
+  }
+
+  // Fallback: compute using center + angle (payload.coordinate is degrees)
+  const angle = typeof payload?.coordinate === 'number' ? payload.coordinate : 0;
+  const cx0 = typeof props.cx === 'number' ? props.cx : 0;
+  const cy0 = typeof props.cy === 'number' ? props.cy : 0;
+  const baseRadius =
+    (typeof props.radius === 'number' ? props.radius : 0) ||
+    (typeof props.outerRadius === 'number' ? props.outerRadius : 0);
+
+  const r = baseRadius + OFFSET;
+  const tx = cx0 + r * Math.cos(-angle * RADIAN);
+  const ty = cy0 + r * Math.sin(-angle * RADIAN);
+
+  return (
+    <text
+      x={tx}
+      y={ty}
+      textAnchor="middle"
+      dominantBaseline="central"
+      fill="#111827"
+      fontSize={12}
+      fontWeight={600}
+    >
+      {payload?.value}
+    </text>
+  );
 };
 
 const ResultsPage = () => {
@@ -51,54 +112,22 @@ const ResultsPage = () => {
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(true);
   const [isStraightlined, setIsStraightlined] = useState(false);
-  const [distributions, setDistributions] = useState<DistributionData[]>([]);
 
   // Correct mapping based on your factor definitions
   // Questions are 0-indexed, so subtract 1 from question numbers
   const questionToFactor: Record<number, number> = {
-    // Factor 1: Platform trust & influence (7-point questions)
-    5: 1,  // "I can rely on my music platform's recommendations..."
-    10: 1, // "I enjoy the music my music platform plays when it takes over..."
-    1: 1,  // "I feel like I play a strong role in how things are recommended to me"
-    
-    // Factor 2: Platform control avoidance (7-point questions)
-    13: 2, // "I feel uneasy letting the platform decide what to play next"
-    9: 2,  // "I prefer to skip songs the platform adds or suggests automatically"
-    6: 2,  // "I avoid app-curated playlists and mixes – I prefer my own"
-    
-    // Factor 3: Playlist creation (5-point questions, indices 15-23)
-    22: 3, // "How often do you add to or edit your existing playlists?"
-    21: 3, // "How often do you make playlists for yourself?"
-    15: 3, // "How often do you make and create playlists on your music platform?"
-    
-    // Factor 4: Independence & skepticism (7-point questions)
-    8: 4,  // "I think that artists make better music when they aren't really popular"
-    11: 4, // "I don't like the music my friends listen to"
-    2: 4,  // "I worry that my music platform recommends music for its own interests not mine"
-    
-    // Factor 5: Music approach & reflection (mixed)
-    19: 5, // "How often do you listen to music via full albums?" (5-point)
-    4: 5,  // "I think that popular artists are popular because they make better music" (7-point)
-    12: 5, // "I choose music without considering how I'm feeling" (7-point)
-    
-    // Factor 6: Discovery engagement (mixed)
-    3: 6,  // "I keep up with popular/trending songs" (7-point)
-    18: 6, // "When you hear a new song... how often do you look up the artist..." (5-point)
-    23: 6, // "When you hear a new song... how often do you save or like it..." (5-point)
-    
-    // Factor 7: Exploration (mixed)
-    16: 7, // "How often do you listen to unfamiliar music?" (5-point)
-    0: 7,  // "I like to explore songs from all genres" (7-point)
-    7: 7,  // "I frequently listen to music by artists I haven't heard before" (7-point)
-    
-    // Factor 8: Physical connection & emotion (mixed)
-    20: 8, // "How often do you collect physical music formats?" (5-point)
-    17: 8, // "How often do you make playlists for friends?" (5-point)
-    14: 8, // "I use music to better understand or make sense of my emotions" (7-point)
+    5: 1, 10: 1, 1: 1,
+    13: 2, 9: 2, 6: 2,
+    22: 3, 21: 3, 15: 3,
+    8: 4, 11: 4, 2: 4,
+    19: 5, 4: 5, 12: 5,
+    3: 6, 18: 6, 23: 6,
+    16: 7, 0: 7, 7: 7,
+    20: 8, 17: 8, 14: 8,
   };
 
   // Questions that should be reverse-scored
-  const negativelyWeighted = new Set([12]); // "I choose music without considering how I'm feeling" should be reversed
+  const negativelyWeighted = new Set([12]);
   
   const factorNames: FactorNames = {
     1: "Platform Trust",
@@ -126,19 +155,10 @@ const ResultsPage = () => {
   const fivePointIndices = new Set([15, 16, 17, 18, 19, 20, 21, 22, 23]);
 
   useEffect(() => {
-    fetchDistributions();
-    
     // Check for straightlining (all neutral responses)
     const isNeutral = responses.every((response: number, index: number) => {
       if (response === null) return false;
-      
-      if (fivePointIndices.has(index)) {
-        // For 5-point scale: neutral is 3 (middle value)
-        return response === 3;
-      } else {
-        // For 7-point scale: neutral is 4 (middle value)
-        return response === 4;
-      }
+      return fivePointIndices.has(index) ? response === 3 : response === 4;
     });
 
     if (isNeutral) {
@@ -151,89 +171,6 @@ const ResultsPage = () => {
     setResults(calculatedResults);
     setLoading(false);
   }, [responses]);
-
-  const fetchDistributions = async () => {
-    try {
-      // Fetch all responses from database
-      const { data, error } = await supabase
-        .from('responses')
-        .select('*');
-      
-      if (error) throw error;
-      
-      if (data && data.length > 0) {
-        // Calculate distributions for each factor
-        const factorDistributions = calculateDistributions(data);
-        setDistributions(factorDistributions);
-      }
-    } catch (error) {
-      console.error('Error fetching distributions:', error);
-    }
-  };
-
-  const calculateDistributions = (allResponses: { [key: string]: number | null }[]): DistributionData[] => {
-    const distributions: DistributionData[] = [];
-    
-    // Calculate factor scores for all responses
-    const allFactorScores: Record<number, number[]> = {};
-    for (let i = 1; i <= 8; i++) {
-      allFactorScores[i] = [];
-    }
-    
-    allResponses.forEach(responseRow => {
-      // Convert database format (q1, q2, etc.) to array
-      const responseArray = Array.from({ length: 24 }, (_, i) => responseRow[`q${i + 1}`]);
-      const scores = calculateFactorScoresForResponse(responseArray.filter((response): response is number => response !== null));
-      
-      for (let factor = 1; factor <= 8; factor++) {
-        if (scores[factor] !== undefined) {
-          allFactorScores[factor].push(scores[factor]);
-        }
-      }
-    });
-    
-    // Create distribution bins for each factor
-    for (let factor = 1; factor <= 8; factor++) {
-      const scores = allFactorScores[factor];
-      if (scores.length === 0) continue;
-      
-      // Create bins (0-20%, 20-40%, 40-60%, 60-80%, 80-100%)
-      const bins = [
-        { range: '0-20%', count: 0, min: 0, max: 0.2 },
-        { range: '20-40%', count: 0, min: 0.2, max: 0.4 },
-        { range: '40-60%', count: 0, min: 0.4, max: 0.6 },
-        { range: '60-80%', count: 0, min: 0.6, max: 0.8 },
-        { range: '80-100%', count: 0, min: 0.8, max: 1.0 },
-      ];
-      
-      // Count scores in each bin
-      scores.forEach(score => {
-        const binIndex = bins.findIndex(bin => score >= bin.min && score < bin.max);
-        if (binIndex !== -1) {
-          bins[binIndex].count++;
-        } else if (score === 1.0) {
-          bins[4].count++; // Include 1.0 in the last bin
-        }
-      });
-      
-      // Highlight current user's bin if we have results
-      if (results?.factorScores[factor] !== undefined) {
-        const userScore = results.factorScores[factor];
-        bins.forEach(bin => {
-          if (userScore >= bin.min && (userScore < bin.max || (userScore === 1.0 && bin.max === 1.0))) {
-            bin.highlight = true;
-          }
-        });
-      }
-      
-      distributions.push({
-        factor,
-        bins: bins.map(({ range, count, highlight }) => ({ range, count, highlight }))
-      });
-    }
-    
-    return distributions;
-  };
 
   const calculateFactorScoresForResponse = (responses: number[]): FactorScores => {
     const factorScores: FactorScores = {};
@@ -280,24 +217,6 @@ const ResultsPage = () => {
   const calculateFactorScores = (responses: number[]): Results => {
     const factorScores = calculateFactorScoresForResponse(responses);
     
-    // Calculate percentiles based on distributions
-    const percentiles: Record<number, number> = {};
-    distributions.forEach(dist => {
-      const userScore = factorScores[dist.factor];
-      if (userScore !== undefined) {
-        // Simple percentile calculation based on bins
-        let percentile = 0;
-        dist.bins.forEach(bin => {
-          if (bin.range === '0-20%' && userScore < 0.2) percentile = 10;
-          else if (bin.range === '20-40%' && userScore < 0.4) percentile = 30;
-          else if (bin.range === '40-60%' && userScore < 0.6) percentile = 50;
-          else if (bin.range === '60-80%' && userScore < 0.8) percentile = 70;
-          else if (bin.range === '80-100%') percentile = 90;
-        });
-        percentiles[dist.factor] = percentile;
-      }
-    });
-    
     // Find the top factor
     const topFactorEntry = Object.entries(factorScores).reduce((a, b) =>
       factorScores[parseInt(a[0])] > factorScores[parseInt(b[0])] ? a : b
@@ -313,7 +232,6 @@ const ResultsPage = () => {
         score: factorScores[topFactorNumber],
         description: factorDescriptions[topFactorNumber],
       },
-      percentiles
     };
   };
 
@@ -360,20 +278,26 @@ const ResultsPage = () => {
       <div ref={shareableRef} className="results-layout">
         <div className="radar-section">
           <ResponsiveContainer width="100%" height={400}>
-            <RadarChart data={radarData}>
-              <PolarGrid stroke="#e5e7eb" />
-              <PolarAngleAxis dataKey="factor" tick={{ fontSize: 12 }} />
-              <PolarRadiusAxis 
-                domain={[0, 100]} 
-                tick={{ fontSize: 10 }}
+            <RadarChart data={radarData} outerRadius="70%">
+              <PolarGrid stroke="#d1d5db" strokeWidth={1} />
+              <PolarAngleAxis
+                dataKey="factor"
+                tick={<AngleLabel />}
+                tickLine={false}
+              />
+              <PolarRadiusAxis
+                domain={[0, 100]}
+                tick={false}
                 axisLine={false}
               />
-              <Radar 
-                name="Your Score" 
-                dataKey="score" 
-                stroke="rgb(59, 130, 246)" 
-                fill="rgba(59, 130, 246, 0.3)" 
-                strokeWidth={2}
+              <Radar
+                dataKey="score"
+                stroke="#1f2937"
+                fill="none"
+                fillOpacity={0}
+                strokeWidth={3}
+                dot={{ fill: '#1f2937', r: 5, strokeWidth: 2, stroke: '#ffffff' }}
+                isAnimationActive={false}
               />
             </RadarChart>
           </ResponsiveContainer>
@@ -384,53 +308,9 @@ const ResultsPage = () => {
           <p className="score">Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
           <p>{results.topFactor.description}</p>
           <img src={factorImages[results.topFactor.number]} alt={results.topFactor.name} />
-          
-          {/* Percentile rankings */}
-          {Object.keys(results.percentiles).length > 0 && (
-            <div className="percentile-info">
-              <h3>Your Rankings:</h3>
-              {Object.entries(results.factorScores)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 3)
-                .map(([factor]) => (
-                  <p key={factor}>
-                    {factorNames[parseInt(factor)]}: Top {100 - (results.percentiles[parseInt(factor)] || 50)}%
-                  </p>
-                ))}
-            </div>
-          )}
+          <p>Drawings by Katie Lam</p>
         </div>
       </div>
-
-      {/* Distribution charts */}
-      {distributions.length > 0 && (
-        <div className="distributions-section">
-          <h2>Factor Distributions</h2>
-          <div className="distributions-grid">
-            {distributions.map(dist => (
-              <div key={dist.factor} className="distribution-chart">
-                <h3>{factorNames[dist.factor]}</h3>
-                <ResponsiveContainer width="100%" height={150}>
-                  <BarChart data={dist.bins}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="range" tick={{ fontSize: 10 }} />
-                    <YAxis tick={{ fontSize: 10 }} />
-                    <Tooltip />
-                    <Bar dataKey="count">
-                      {dist.bins.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={entry.highlight ? 'rgb(59, 130, 246)' : '#e5e7eb'} 
-                        />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       <div className="share-section">
         <p>Share your results! Use the button below to download, or take a screenshot.</p>
