@@ -103,7 +103,7 @@ const EmojiProgression: React.FC = () => { // main component
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
       text,
       type: 'seven' as const,
-      originalIndex: index
+      originalIndex: index // Randomize WITH OG index
     }));
 
     const fivePointQs: Question[] = FIVE_POINT_QUESTIONS.map((text, index) => ({
