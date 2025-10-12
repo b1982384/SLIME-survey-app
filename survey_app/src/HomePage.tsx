@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 
+
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [consentGiven, setConsentGiven] = useState(false);

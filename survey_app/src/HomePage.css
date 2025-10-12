@@ -1,4 +1,141 @@
+/* HomePage.css */
+
+:root {
+  --accent: #6c63ff;
+  --accent-dark: #5149e0;
+  --bg: #f8f7f4;
+  --text-dark: #222;
+  --text-light: #555;
+  --font-body: 'JetBrains Mono', monospace;
+  --font-display: 'Archivo Black', sans-serif;
+  --font-normal: 'Inter', sans-serif;
+}
+
+body {
+  background: linear-gradient(180deg, #ffffff 0%, #f4f3ff 100%);
+  font-family: var(--font-body);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+}
+
+.mono-test {
+  font-family: var(--font-normal);
+  font-size: 1.1rem;
+  color: #333;
+  background: #f0f0f0;
+  padding: 10px 14px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+
 .home-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.welcome-banner {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 25px;
+  letter-spacing: -1px;
+  animation: fadeInDown 0.8s ease;
+}
+
+.home-text {
+  font-size: 1.25rem;
+  color: var(--text-light);
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.consent-section {
+  background-color: #fdfdfd;
+  padding: 35px 30px;
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(191, 9, 215, 0.08);
+  animation: fadeIn 1s ease;
+}
+
+.consent-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-dark);
+  font-family: var(--font-body);
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.consent-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin: 15px 0;
+}
+
+.consent-checkbox input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.consent-error {
+  color: #e63946;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.take-survey-button {
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  color: white;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(108, 99, 255, 0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.take-survey-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(108, 99, 255, 0.4);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* .home-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 40px 20px;
@@ -55,4 +192,4 @@
 
 .take-survey-button:hover {
   background-color: #3a52a3;
-}
+} */
