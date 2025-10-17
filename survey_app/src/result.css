@@ -230,3 +230,7 @@
   opacity: 0.6;
 }
 
+
+.tiny-text {
+  font-size: 2px; /* Example: 8 pixels */
+}

@@ -7,13 +7,116 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  ResponsiveContainer,
 } from 'recharts';
 import './result.css';
+// ---- FREQUENCY LINE CHART COMPONENT ----
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer , ReferenceLine} from 'recharts';
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  TwitterShareButton,
+  TwitterIcon,
+  ThreadsShareButton
+} from 'react-share';
+
 
 type FactorScores = Record<number, number>;
 type FactorNames = Record<number, string>;
 type FactorImages = Record<number, string>;
+
+type FrequencyBin = {
+  center: number;
+  count: number;
+};
+
+interface FactorFrequencyChartProps {
+  data: FrequencyBin[];
+  factorLabel: string;
+  userScore?: number;
+}
+
+// testing fake data
+// ---- FAKE BINNED DATA FOR 8 FACTORS ----
+const FAKE_FACTOR_FREQUENCIES = [
+  // Each array below: 10 bins, x=center (0.05, 0.15, ...), count=fake frequency
+  [
+    { center: 0.05, count: 1 }, { center: 0.15, count: 2 }, { center: 0.25, count: 5 },
+    { center: 0.35, count: 10 }, { center: 0.45, count: 15 }, { center: 0.55, count: 18 },
+    { center: 0.65, count: 12 }, { center: 0.75, count: 9 }, { center: 0.85, count: 4 }, { center: 0.95, count: 1 }
+  ],
+  [
+    { center: 0.05, count: 0 }, { center: 0.15, count: 3 }, { center: 0.25, count: 7 },
+    { center: 0.35, count: 12 }, { center: 0.45, count: 14 }, { center: 0.55, count: 11 },
+    { center: 0.65, count: 13 }, { center: 0.75, count: 6 }, { center: 0.85, count: 2 }, { center: 0.95, count: 0 }
+  ],
+  // ...repeat for all 8 factors, or just copy and modify the above for demo!
+  [
+    { center: 0.05, count: 2 }, { center: 0.15, count: 6 }, { center: 0.25, count: 12 },
+    { center: 0.35, count: 17 }, { center: 0.45, count: 15 }, { center: 0.55, count: 10 },
+    { center: 0.65, count: 8 }, { center: 0.75, count: 7 }, { center: 0.85, count: 3 }, { center: 0.95, count: 1 }
+  ],
+  [
+    { center: 0.05, count: 4 }, { center: 0.15, count: 5 }, { center: 0.25, count: 8 },
+    { center: 0.35, count: 11 }, { center: 0.45, count: 13 }, { center: 0.55, count: 14 },
+    { center: 0.65, count: 13 }, { center: 0.75, count: 8 }, { center: 0.85, count: 4 }, { center: 0.95, count: 2 }
+  ],
+  [
+    { center: 0.05, count: 0 }, { center: 0.15, count: 1 }, { center: 0.25, count: 7 },
+    { center: 0.35, count: 13 }, { center: 0.45, count: 14 }, { center: 0.55, count: 16 },
+    { center: 0.65, count: 12 }, { center: 0.75, count: 9 }, { center: 0.85, count: 3 }, { center: 0.95, count: 0 }
+  ],
+  [
+    { center: 0.05, count: 3 }, { center: 0.15, count: 4 }, { center: 0.25, count: 10 },
+    { center: 0.35, count: 16 }, { center: 0.45, count: 15 }, { center: 0.55, count: 12 },
+    { center: 0.65, count: 11 }, { center: 0.75, count: 8 }, { center: 0.85, count: 4 }, { center: 0.95, count: 1 }
+  ],
+  [
+    { center: 0.05, count: 2 }, { center: 0.15, count: 3 }, { center: 0.25, count: 8 },
+    { center: 0.35, count: 14 }, { center: 0.45, count: 17 }, { center: 0.55, count: 15 },
+    { center: 0.65, count: 10 }, { center: 0.75, count: 7 }, { center: 0.85, count: 3 }, { center: 0.95, count: 1 }
+  ],
+  [
+    { center: 0.05, count: 1 }, { center: 0.15, count: 2 }, { center: 0.25, count: 6 },
+    { center: 0.35, count: 13 }, { center: 0.45, count: 15 }, { center: 0.55, count: 17 },
+    { center: 0.65, count: 14 }, { center: 0.75, count: 8 }, { center: 0.85, count: 3 }, { center: 0.95, count: 0 }
+  ]
+];
+
+
+
+const FactorFrequencyChart: React.FC<FactorFrequencyChartProps> = ({ data, factorLabel, userScore }) => {
+  // userScore: optional, value between 0 and 1
+  // Find the closest x for the userScore for vertical line
+  return (
+    <div style={{ width: 320, height: 180, margin: "1rem auto" }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis 
+            dataKey="center"
+            type="number"
+            domain={[0,1]}
+            ticks={[0,0.2,0.4,0.6,0.8,1.0]}
+            tickFormatter={v => `${Math.round(v*100)}%`}
+          />
+          <YAxis allowDecimals={false} />
+          <Tooltip 
+            formatter={(value, name) => [value, name === "count" ? "Respondents" : name]}
+            labelFormatter={v => `${Math.round(v*100)}%`}
+          />
+          <Line type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={3} dot={{r: 3}} />
+          {/* userScore vertical line */}
+          {typeof userScore === "number" && 
+            (<ReferenceLine x={userScore} stroke="#ef4444" strokeWidth={2} label="You" />
+
+            )}
+        </LineChart>
+      </ResponsiveContainer>
+      <div style={{textAlign: "center", fontWeight: "bold"}}>{factorLabel}</div>
+    </div>
+  );
+};
+
 
 type TopFactor = {
   number: number;
@@ -129,7 +232,7 @@ const ResultsPage = () => {
   // Questions that should be reverse-scored
   const negativelyWeighted = new Set([12]);
   
-  const factorNames: FactorNames = {
+  const factorNames: FactorNames = { // THIS IS NOW UPDATED -
     1: "Platform Trust",
     2: "Platform Control",
     3: "Playlist Creator",
@@ -141,14 +244,14 @@ const ResultsPage = () => {
   };
 
   const factorDescriptions: FactorNames = {
-    1: "You trust and embrace platform recommendations and algorithmic curation",
-    2: "You prefer maintaining control over your music choices",
-    3: "You actively create and curate playlists for yourself and others",
-    4: "You value independence in your music taste and are skeptical of mainstream",
-    5: "You engage deeply with music through albums and emotional reflection",
-    6: "You actively discover and engage with new music and trends",
-    7: "You explore diverse genres and unfamiliar artists",
-    8: "You connect with music physically and emotionally",
+    1: "You are a Smart Speaker! You’re always ready to hear what’s next, you have a high degree of musical openness, and you generally trust the algorithmic process to fresh discoveries that still align with your personal tastes.",
+    2: "You’re Wired Earbuds — simple, direct, and in full control. No autoplay, no surprises: just the music you choose, the way you want it.",
+    3: "You’re a Jukebox! You are overflowing with songs, playlists, and hidden gems. Each track is catalogued into your personal archive, and you’re always ready to play the perfect one on demand. You score high on emotional alignment, meaning you like to pick just the right tune for how you’re feeling at any given moment.",
+    4: "You are Noise-Cancelling Headphones. You tune out the noise of popularity and platforms. Your listening is private, intentional, and completely yours.",
+    5: "You are Studio Headphones. Like Studio Headphones, your listening is tuned for clarity and depth. You listen closely, savor full albums, and treat music like a rich, immersive world.",
+    6: "You are AirPods. Your music is woven into your daily life, and you love to dig deeper into new things. You score high on the omnivore score, meaning you have insatiable musical appetite and probably love to listen to music socially.",
+    7: "You are a Vinyl Crate, always digging for the next discovery. You love flipping through the unfamiliar and novel, hunting for gems others might overlook.",
+    8: "You are a Boombox. Bold and sociable, you’re the Boombox. Music isn’t just for you — it’s a vibe you broadcast, connecting people and setting the mood.",
   };
 
   // Indices 15-23 are 5-point questions (0-indexed)
@@ -238,7 +341,7 @@ const ResultsPage = () => {
   const handleDownloadImage = async () => {
     if (!shareableRef.current) return;
     try {
-      const html2canvas = (await import("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm")).default;
+      const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(shareableRef.current, { backgroundColor: '#fff', scale: 2 });
       const link = document.createElement('a');
       link.download = 'my-music-profile.png';
@@ -272,6 +375,7 @@ const ResultsPage = () => {
     score: results.factorScores[parseInt(key)] * 100,
     fullMark: 100
   }));
+
 
   return (
     <div className="results-page">
@@ -308,17 +412,53 @@ const ResultsPage = () => {
           <p className="score">Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
           <p>{results.topFactor.description}</p>
           <img src={factorImages[results.topFactor.number]} alt={results.topFactor.name} />
-          <p>Drawings by Katie Lam</p>
+          <p className="tiny-text">Illustrations by Katie Lam</p>
         </div>
       </div>
 
-      <div className="share-section">
+        {/* ---- FREQUENCY PLOTS ---- */}
+        <div className="factor-frequency-charts" style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
+          {Object.entries(factorNames).map(([key, name], idx) => (
+            <FactorFrequencyChart
+              key={key}
+              data={FAKE_FACTOR_FREQUENCIES[idx]}
+              factorLabel={name}
+              // Example: overlay this user's score on each chart
+              userScore={results?.factorScores[Number(key)]}
+            />
+          ))}
+        </div>
+        <div className="share-section">
         <p>Share your results! Use the button below to download, or take a screenshot.</p>
         <button className="download-btn" onClick={handleDownloadImage}>
           <Download size={20} /> Download Results
         </button>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '15px', justifyContent: 'center' }}>
+          <FacebookShareButton 
+            url="https://slime-survey-app-9smf-7u05z3uox-bwfs-projects.vercel.app"
+            hashtag="#MusicListeningProfile"
+          >
+            <FacebookIcon size={32} round />
+          </FacebookShareButton>
+    
+          <TwitterShareButton 
+            url="https://slime-survey-app-9smf-7u05z3uox-bwfs-projects.vercel.app"
+            title={`I am a ${results.topFactor.name}! What are you?`}
+            hashtags={["MusicListeningProfile", "MusicPersonality"]}
+          >
+            <TwitterIcon size={32} round />
+          </TwitterShareButton>
+
+          <ThreadsShareButton
+            url="https://slime-survey-app-9smf-7u05z3uox-bwfs-projects.vercel.app"
+            title={`I am a ${results.topFactor.name}! What are you?`}
+            hashtags={["MusicListeningProfile", "MusicPersonality"]}
+          >
+            <TwitterIcon size={32} round />
+          </ThreadsShareButton>
+        </div>
       </div>
-    </div>
+      </div>
   );
 };
 
