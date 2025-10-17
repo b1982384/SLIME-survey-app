@@ -139,6 +139,77 @@
   line-height: 1.5;
 }
 
+/* Center share section and stack elements */
+.share-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0;
+}
+
+/* Button styling: centered, pill, gradient, subtle shadow */
+.download-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  color: #fff;
+  border: 0;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(59,130,246,0.18);
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+  text-decoration: none;
+}
+
+/* Icon sizing inside button */
+.download-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Hover / focus / active states */
+.download-btn:hover,
+.download-btn:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(59,130,246,0.2);
+  outline: none;
+  opacity: 0.98;
+}
+
+.download-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(59,130,246,0.16);
+}
+
+/* Accessible focus ring for keyboard users */
+.download-btn:focus-visible {
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.16), 0 6px 18px rgba(59,130,246,0.18);
+}
+
+/* Style the social icons row so it sits nicely under the button */
+.share-section .social-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Small responsive tweak for narrow screens */
+@media (max-width: 420px) {
+  .download-btn {
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+}
+
 /* Download button inside the share block (targets the button element directly) */
 .results-layout + div > button,
 .results-layout + div button {
