@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Download } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   RadarChart,
   PolarGrid,
@@ -9,20 +9,30 @@ import {
   Radar,
 } from 'recharts';
 import './result.css';
-// ---- FREQUENCY LINE CHART COMPONENT ----
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer , ReferenceLine} from 'recharts';
+import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import {
   FacebookShareButton,
-  FacebookIcon,
   TwitterShareButton,
+  RedditShareButton,
+  LinkedinShareButton,
+  WhatsappShareButton,
+  TelegramShareButton,
+  PinterestShareButton,
+  EmailShareButton,
+  FacebookIcon,
   TwitterIcon,
-  ThreadsShareButton
+  RedditIcon,
+  LinkedinIcon,
+  WhatsappIcon,
+  TelegramIcon,
+  PinterestIcon,
+  EmailIcon,
 } from 'react-share';
-
 
 type FactorScores = Record<number, number>;
 type FactorNames = Record<number, string>;
 type FactorImages = Record<number, string>;
+type RealFactorNames = Record<number, string>;
 
 type FrequencyBin = {
   center: number;
@@ -35,10 +45,7 @@ interface FactorFrequencyChartProps {
   userScore?: number;
 }
 
-// testing fake data
-// ---- FAKE BINNED DATA FOR 8 FACTORS ----
 const FAKE_FACTOR_FREQUENCIES = [
-  // Each array below: 10 bins, x=center (0.05, 0.15, ...), count=fake frequency
   [
     { center: 0.05, count: 1 }, { center: 0.15, count: 2 }, { center: 0.25, count: 5 },
     { center: 0.35, count: 10 }, { center: 0.45, count: 15 }, { center: 0.55, count: 18 },
@@ -49,7 +56,6 @@ const FAKE_FACTOR_FREQUENCIES = [
     { center: 0.35, count: 12 }, { center: 0.45, count: 14 }, { center: 0.55, count: 11 },
     { center: 0.65, count: 13 }, { center: 0.75, count: 6 }, { center: 0.85, count: 2 }, { center: 0.95, count: 0 }
   ],
-  // ...repeat for all 8 factors, or just copy and modify the above for demo!
   [
     { center: 0.05, count: 2 }, { center: 0.15, count: 6 }, { center: 0.25, count: 12 },
     { center: 0.35, count: 17 }, { center: 0.45, count: 15 }, { center: 0.55, count: 10 },
@@ -82,41 +88,60 @@ const FAKE_FACTOR_FREQUENCIES = [
   ]
 ];
 
-
-
 const FactorFrequencyChart: React.FC<FactorFrequencyChartProps> = ({ data, factorLabel, userScore }) => {
-  // userScore: optional, value between 0 and 1
-  // Find the closest x for the userScore for vertical line
+  const gradientId = `grad-${factorLabel.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+
   return (
     <div style={{ width: 320, height: 180, margin: "1rem auto" }}>
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+        <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+          <defs>
+            <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
+              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.20}/>
+              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.03}/>
+            </linearGradient>
+          </defs>
+
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
+          <XAxis
             dataKey="center"
             type="number"
-            domain={[0,1]}
-            ticks={[0,0.2,0.4,0.6,0.8,1.0]}
-            tickFormatter={v => `${Math.round(v*100)}%`}
+            domain={[0, 1]}
+            ticks={[0.25, 0.5, 0.75, 1.0]}
+            tickFormatter={(v) => `${Math.round(v * 100)}%`}
           />
-          <YAxis allowDecimals={false} />
-          <Tooltip 
+          <YAxis hide domain={[0, 'dataMax']} />
+          <Tooltip
             formatter={(value, name) => [value, name === "count" ? "Respondents" : name]}
-            labelFormatter={v => `${Math.round(v*100)}%`}
+            labelFormatter={(v) => `${Math.round(v * 100)}%`}
           />
-          <Line type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={3} dot={{r: 3}} />
-          {/* userScore vertical line */}
-          {typeof userScore === "number" && 
-            (<ReferenceLine x={userScore} stroke="#ef4444" strokeWidth={2} label="You" />
 
-            )}
-        </LineChart>
+          <Area
+            type="monotone"
+            dataKey="count"
+            stroke="none"
+            fill={`url(#${gradientId})`}
+            isAnimationActive={false}
+          />
+
+          <Line
+            type="monotone"
+            dataKey="count"
+            stroke="#3b82f6"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+            isAnimationActive={false}
+          />
+
+          {typeof userScore === "number" && (
+            <ReferenceLine x={userScore} stroke="#ef4444" strokeWidth={2} label="You" />
+          )}
+        </AreaChart>
       </ResponsiveContainer>
-      <div style={{textAlign: "center", fontWeight: "bold"}}>{factorLabel}</div>
+      <div style={{ textAlign: "center", fontWeight: "bold" }}>{factorLabel}</div>
     </div>
   );
 };
-
 
 type TopFactor = {
   number: number;
@@ -132,7 +157,6 @@ type Results = {
 
 const RADIAN = Math.PI / 180;
 
-// Robust tick renderer: use x/y when provided; otherwise compute from cx/cy + angle
 interface AngleLabelProps {
   x?: number;
   y?: number;
@@ -150,7 +174,6 @@ const AngleLabel = (props: AngleLabelProps) => {
   const { x, y, cx, cy, payload } = props;
   const OFFSET = 20;
 
-  // If x/y exist, nudge label outward along vector from center
   if (
     typeof x === 'number' &&
     typeof y === 'number' &&
@@ -178,7 +201,6 @@ const AngleLabel = (props: AngleLabelProps) => {
     );
   }
 
-  // Fallback: compute using center + angle (payload.coordinate is degrees)
   const angle = typeof payload?.coordinate === 'number' ? payload.coordinate : 0;
   const cx0 = typeof props.cx === 'number' ? props.cx : 0;
   const cy0 = typeof props.cy === 'number' ? props.cy : 0;
@@ -208,57 +230,50 @@ const AngleLabel = (props: AngleLabelProps) => {
 const ResultsPage = () => {
   const shareableRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  
-  // Get responses from navigation state, fallback to test data if not available
-  const responses = location.state?.responses || Array.from({ length: 24 }, () => Math.floor(Math.random() * 5) + 2);
-  
+  const navigate = useNavigate();
+
+  const readStoredResponses = (): number[] | null => {
+    try {
+      const raw = localStorage.getItem('surveyResponses');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const initialResponses = location.state?.responses ?? readStoredResponses() ?? null;
+  const [responses, setResponses] = useState<number[] | null>(initialResponses);
+
+  const [mounted, setMounted] = useState(false);
+
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(true);
   const [isStraightlined, setIsStraightlined] = useState(false);
 
-  // Correct mapping based on your factor definitions
-  // Questions are 0-indexed, so subtract 1 from question numbers
-  const questionToFactor: Record<number, number> = {
-    5: 1, 10: 1, 1: 1,
-    13: 2, 9: 2, 6: 2,
-    22: 3, 21: 3, 15: 3,
-    8: 4, 11: 4, 2: 4,
-    19: 5, 4: 5, 12: 5,
-    3: 6, 18: 6, 23: 6,
-    16: 7, 0: 7, 7: 7,
-    20: 8, 17: 8, 14: 8,
-  };
-
-  // Questions that should be reverse-scored
-  const negativelyWeighted = new Set([12]);
-  
-  const factorNames: FactorNames = { // THIS IS NOW UPDATED -
-    1: "Platform Trust",
-    2: "Platform Control",
-    3: "Playlist Creator",
-    4: "Independent Listener",
-    5: "Deep Listener",
-    6: "Discovery Engaged",
-    7: "Explorer",
-    8: "Physical & Emotional",
-  };
-
-  const factorDescriptions: FactorNames = {
-    1: "You are a Smart Speaker! You’re always ready to hear what’s next, you have a high degree of musical openness, and you generally trust the algorithmic process to fresh discoveries that still align with your personal tastes.",
-    2: "You’re Wired Earbuds — simple, direct, and in full control. No autoplay, no surprises: just the music you choose, the way you want it.",
-    3: "You’re a Jukebox! You are overflowing with songs, playlists, and hidden gems. Each track is catalogued into your personal archive, and you’re always ready to play the perfect one on demand. You score high on emotional alignment, meaning you like to pick just the right tune for how you’re feeling at any given moment.",
-    4: "You are Noise-Cancelling Headphones. You tune out the noise of popularity and platforms. Your listening is private, intentional, and completely yours.",
-    5: "You are Studio Headphones. Like Studio Headphones, your listening is tuned for clarity and depth. You listen closely, savor full albums, and treat music like a rich, immersive world.",
-    6: "You are AirPods. Your music is woven into your daily life, and you love to dig deeper into new things. You score high on the omnivore score, meaning you have insatiable musical appetite and probably love to listen to music socially.",
-    7: "You are a Vinyl Crate, always digging for the next discovery. You love flipping through the unfamiliar and novel, hunting for gems others might overlook.",
-    8: "You are a Boombox. Bold and sociable, you’re the Boombox. Music isn’t just for you — it’s a vibe you broadcast, connecting people and setting the mood.",
-  };
-
-  // Indices 15-23 are 5-point questions (0-indexed)
-  const fivePointIndices = new Set([15, 16, 17, 18, 19, 20, 21, 22, 23]);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    // Check for straightlining (all neutral responses)
+    if (location.state?.responses) {
+      try {
+        localStorage.setItem('surveyResponses', JSON.stringify(location.state.responses));
+      } catch {
+        // ignore
+      }
+    }
+    if (!responses && location.state?.responses) {
+      setResponses(location.state.responses);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!responses) {
+      setLoading(false);
+      return;
+    }
+
+    const fivePointIndices = new Set([15, 16, 17, 18, 19, 20, 21, 22, 23]);
     const isNeutral = responses.every((response: number, index: number) => {
       if (response === null) return false;
       return fivePointIndices.has(index) ? response === 3 : response === 4;
@@ -275,58 +290,111 @@ const ResultsPage = () => {
     setLoading(false);
   }, [responses]);
 
-  const calculateFactorScoresForResponse = (responses: number[]): FactorScores => {
+  useEffect(() => {
+    if (!loading && !responses) {
+      navigate('/', { replace: true });
+    }
+  }, [loading, responses, navigate]);
+
+  const questionToFactor: Record<number, number> = {
+    5: 1, 10: 1, 1: 1,
+    13: 2, 9: 2, 6: 2,
+    22: 3, 21: 3, 15: 3,
+    8: 4, 11: 4, 2: 4,
+    19: 5, 4: 5, 12: 5,
+    3: 6, 18: 6, 23: 6,
+    16: 7, 0: 7, 7: 7,
+    20: 8, 17: 8, 14: 8,
+  };
+
+  const negativelyWeighted = new Set([12]);
+
+  const realfactorNames: RealFactorNames = {
+    1: "Platform Trust",
+    2: "Platform Control",
+    3: "Playlist Creator",
+    4: "Independent Listener",
+    5: "Deep Listener",
+    6: "Discovery Engaged",
+    7: "Explorer",
+    8: "Physical & Emotional",
+  };
+
+  const factorNames: FactorNames = {
+    1: "Smart Speaker",
+    2: "Wired Earbuds",
+    3: "Jukebox",
+    4: "Noise-Cancelling Headphones",
+    5: "Studio Headphones",
+    6: "AirPods",
+    7: "Vinyl Crate",
+    8: "Boombox",
+  };
+
+  const factorDescriptions: FactorNames = {
+    1: "You’re a Smart Speaker – curious, open, and tuned in to what’s up next. Listeners like you have a high degree of musical openness and trust the process of discovery, whether it comes from a recommendation algorithm or a friend’s playlist. Your listening habits reflect a want to expand one’s musical palette and comfort with serendipity, new sounds that still fit your taste.",
+    2: "You’re Wired Earbuds – direct, deliberate, and happily analog in spirit. Listeners like you prefer to stay in control of what’s in the queue and value intentional listening over endless recommendations. For you, music is a space of agency, knowing what you want to play and when.",
+    3: "You’re a Jukebox –  a personal archive of sound and sentiment where every track has a time, place, and emotion attached. Listeners like you are deeply aware of how music maps onto mood, and you take pride in knowing exactly which song fits the moment.",
+    4: "You’re Noise-Cancelling Headphones — focused, discerning, and immune to the noise of trends. Listeners like you listen privately and intentionally, finding meaning in the music you choose rather than what’s surfaced for you. In other words, you strive for resonance over popularity.",
+    5: "You’re Studio Headphones — patient, analytical, and deeply engaged. Listeners like you are deeply engaged, not just hearing music, but truly listening to it. You likely take pleasure in the craft, structure, and texture of sound. Listeners like you tend to listen by full albums and use recommendations as starting point for exploration.",
+    6: "You’re AirPods — music plays an integral role in your everyday rhythm. Listeners like you are open to discovery, enjoy music as a social experience, and curious to find the next up and coming thing.",
+    7: "You’re a Vinyl Crate — the archetype of exploration. Listeners like you score high on discovery, flipping through the unfamiliar in search of something special, and often appreciate music as an act of curation, the process of finding meaning in what others might overlook.",
+    8: "You’re a Boombox — expressive, communal, and full of presence. For listeners like you, music is both a cultural relic and a way to connect. Listening is a shared experience – you curate the vibe, set the tone, and bring people together through sound. As a Boombox, you’re more likely to collect physical media like vinyl, and odds are, you’re the one on aux.",
+  };
+
+  const calculateFactorScoresForResponse = (responsesArr: number[]): FactorScores => {
     const factorScores: FactorScores = {};
     const factorQuestionCounts: Record<number, number> = {};
-    
+
     for (let i = 1; i <= 8; i++) {
       factorScores[i] = 0;
       factorQuestionCounts[i] = 0;
     }
-    
-    for (let i = 0; i < responses.length; i++) {
-      if (responses[i] === null) continue;
-      
+
+    for (let i = 0; i < responsesArr.length; i++) {
+      if (responsesArr[i] === null) continue;
+
       const factor = questionToFactor[i];
       if (!factor) continue;
-      
+
       let normalizedScore: number;
-      const responseValue = responses[i];
-      
+      const responseValue = responsesArr[i];
+
+      const fivePointIndices = new Set([15, 16, 17, 18, 19, 20, 21, 22, 23]);
+
       if (fivePointIndices.has(i)) {
         normalizedScore = (responseValue - 1) / 4;
       } else {
         normalizedScore = (responseValue - 1) / 6;
       }
-      
+
       if (negativelyWeighted.has(i)) {
         normalizedScore = 1 - normalizedScore;
       }
-      
+
       factorScores[factor] += normalizedScore;
       factorQuestionCounts[factor]++;
     }
-    
+
     for (const factor in factorScores) {
       const f = parseInt(factor);
       if (factorQuestionCounts[f] > 0) {
         factorScores[f] = factorScores[f] / factorQuestionCounts[f];
       }
     }
-    
+
     return factorScores;
   };
 
-  const calculateFactorScores = (responses: number[]): Results => {
-    const factorScores = calculateFactorScoresForResponse(responses);
-    
-    // Find the top factor
+  const calculateFactorScores = (responsesArr: number[]): Results => {
+    const factorScores = calculateFactorScoresForResponse(responsesArr);
+
     const topFactorEntry = Object.entries(factorScores).reduce((a, b) =>
       factorScores[parseInt(a[0])] > factorScores[parseInt(b[0])] ? a : b
     );
-    
+
     const topFactorNumber = parseInt(topFactorEntry[0]);
-    
+
     return {
       factorScores,
       topFactor: {
@@ -365,17 +433,24 @@ const ResultsPage = () => {
   };
 
   if (loading) return <div className="loading">Loading...</div>;
-  if (isStraightlined)
+
+  if (isStraightlined) {
     return <div className="boring">Your listener profile is ... boring. Please try again!</div>;
+  }
+
   if (!results) return <div>No results to display</div>;
 
-  // Prepare data for recharts radar chart
   const radarData = Object.keys(results.factorScores).map(key => ({
     factor: factorNames[parseInt(key)],
     score: results.factorScores[parseInt(key)] * 100,
     fullMark: 100
   }));
 
+  // share values used by all share buttons
+  const shareUrl = 'https://slime-survey-app-9smf-7u05z3uox-bwfs-projects.vercel.app';
+  const shareTitle = `I am a ${results.topFactor.name}! What are you?`;
+
+  const pinterestImage = `${shareUrl}/preview-image.png`;
 
   return (
     <div className="results-page">
@@ -415,50 +490,71 @@ const ResultsPage = () => {
           <p className="tiny-text">Illustrations by Katie Lam</p>
         </div>
       </div>
+      <h1>Factor Distributions</h1>
+      <div className="factor-frequency-charts" style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
+        {mounted && Object.entries(realfactorNames).map(([key, name], idx) => (
+          <FactorFrequencyChart
+            key={key}
+            data={FAKE_FACTOR_FREQUENCIES[idx]}
+            factorLabel={name}
+            userScore={results?.factorScores[Number(key)]}
+          />
+        ))}
+      </div>
 
-        {/* ---- FREQUENCY PLOTS ---- */}
-        <div className="factor-frequency-charts" style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
-          {Object.entries(factorNames).map(([key, name], idx) => (
-            <FactorFrequencyChart
-              key={key}
-              data={FAKE_FACTOR_FREQUENCIES[idx]}
-              factorLabel={name}
-              // Example: overlay this user's score on each chart
-              userScore={results?.factorScores[Number(key)]}
-            />
-          ))}
-        </div>
-        <div className="share-section">
-        <p>Share your results! Use the button below to download, or take a screenshot.</p>
+      <div>
+        <h3>Description of Results</h3>
+        <p>1.	Platform Trust - Values discovery through algorithms or others’ suggestions. Open-minded, curious, and comfortable letting recommendations guide their next listen. </p>
+        <p>2.	Platform Control - Prefers intentional listening and personal curation. Chooses what to play with purpose and enjoys full control over their music experience.</p>
+        <p>3.	Playlist Creator - Treats music as a diary of moments and moods. Each song carries personal meaning, and curation reflects emotional awareness and memory.</p>
+        <p>4.	Independent Listener - Listens privately and with discernment. Focuses on depth and authenticity in music rather than trends or external influence.</p>
+        <p>5.	Deep Listener - Immersed in the details of sound. Appreciates structure, production, and full albums, approaching music with patience and analytical curiosity.</p>
+        <p>6.	Discovery Engaged - Integrates music naturally into daily life. Enjoys finding new artists, sharing songs socially, and staying tuned to emerging trends.</p>
+        <p>7.	Explorer - Seeks out the unfamiliar. Finds joy in uncovering hidden gems and building meaning through exploration and diverse listening.</p>
+        <p>8.	Physical & Emotional - Listens communally and expressively. Uses music to create connection and atmosphere, often valuing tangible formats and shared experiences.</p>
+      </div>
+
+      <div className="share-section">
+        <p>Share your results! Use the button below to download, take a screenshot, or share to socials.</p>
         <button className="download-btn" onClick={handleDownloadImage}>
           <Download size={20} /> Download Results
         </button>
-        <div style={{ display: 'flex', gap: '10px', marginTop: '15px', justifyContent: 'center' }}>
-          <FacebookShareButton 
-            url="https://slime-survey-app-9smf-7u05z3uox-bwfs-projects.vercel.app"
-            hashtag="#MusicListeningProfile"
-          >
-            <FacebookIcon size={32} round />
+
+        <div className="social-row" style={{ display: 'flex', gap: '10px', marginTop: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <FacebookShareButton url={shareUrl} title={shareTitle} hashtag="#MusicListeningProfile">
+            <FacebookIcon size={36} round />
           </FacebookShareButton>
-    
-          <TwitterShareButton 
-            url="https://slime-survey-app-9smf-7u05z3uox-bwfs-projects.vercel.app"
-            title={`I am a ${results.topFactor.name}! What are you?`}
-            hashtags={["MusicListeningProfile", "MusicPersonality"]}
-          >
-            <TwitterIcon size={32} round />
+
+          <TwitterShareButton url={shareUrl} title={shareTitle} hashtags={["MusicListeningProfile","MusicPersonality"]}>
+            <TwitterIcon size={36} round />
           </TwitterShareButton>
 
-          <ThreadsShareButton
-            url="https://slime-survey-app-9smf-7u05z3uox-bwfs-projects.vercel.app"
-            title={`I am a ${results.topFactor.name}! What are you?`}
-            hashtags={["MusicListeningProfile", "MusicPersonality"]}
-          >
-            <TwitterIcon size={32} round />
-          </ThreadsShareButton>
+          <RedditShareButton url={shareUrl} title={shareTitle}>
+            <RedditIcon size={36} round />
+          </RedditShareButton>
+
+          <LinkedinShareButton url={shareUrl} title={shareTitle}>
+            <LinkedinIcon size={36} round />
+          </LinkedinShareButton>
+
+          <WhatsappShareButton url={shareUrl} title={shareTitle}>
+            <WhatsappIcon size={36} round />
+          </WhatsappShareButton>
+
+          <TelegramShareButton url={shareUrl} title={shareTitle}>
+            <TelegramIcon size={36} round />
+          </TelegramShareButton>
+
+          <PinterestShareButton url={shareUrl} media={pinterestImage} description={shareTitle}>
+            <PinterestIcon size={36} round />
+          </PinterestShareButton>
+
+          <EmailShareButton url={shareUrl} subject="Check out my Music Listening Profile!" body={`${shareTitle}\n\n${shareUrl}`}>
+            <EmailIcon size={36} round />
+          </EmailShareButton>
         </div>
       </div>
-      </div>
+    </div>
   );
 };
 
