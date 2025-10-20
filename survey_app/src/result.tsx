@@ -97,8 +97,8 @@ const FactorFrequencyChart: React.FC<FactorFrequencyChartProps> = ({ data, facto
         <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
           <defs>
             <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.20}/>
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.03}/>
+              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.90}/>
+              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.7}/>
             </linearGradient>
           </defs>
 
@@ -503,7 +503,7 @@ const ResultsPage = () => {
       </div>
 
       <div>
-        <h3>Description of Results</h3>
+        <h3>Description of Results</h3>\
         <p>1.	Platform Trust - Values discovery through algorithms or others’ suggestions. Open-minded, curious, and comfortable letting recommendations guide their next listen. </p>
         <p>2.	Platform Control - Prefers intentional listening and personal curation. Chooses what to play with purpose and enjoys full control over their music experience.</p>
         <p>3.	Playlist Creator - Treats music as a diary of moments and moods. Each song carries personal meaning, and curation reflects emotional awareness and memory.</p>
