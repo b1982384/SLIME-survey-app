@@ -441,7 +441,7 @@ const ResultsPage = () => {
   if (!results) return <div>No results to display</div>;
 
   const radarData = Object.keys(results.factorScores).map(key => ({
-    factor: factorNames[parseInt(key)],
+    factor: realfactorNames[parseInt(key)],
     score: results.factorScores[parseInt(key)] * 100,
     fullMark: 100
   }));
