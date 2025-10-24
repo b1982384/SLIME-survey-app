@@ -30,16 +30,16 @@ const FIVE_POINT_MOODS: MoodOption[] = [
 
 const SEVEN_POINT_QUESTIONS: string[] = [
   "I like to explore songs from all genres",
-  "I feel like I play a strong role in how things are recommended to me",
-  "I worry that my music platform recommends music for its own interests not mine",
+  "I feel like I play a strong role in how things are recommended to me", // factor 1
+  "I worry that my music platform recommends music for its own interests not mine", 
   "I keep up with popular/trending songs",
   "I think that popular artists are popular because they make better music",
-  "I can rely on my music platform's recommendations when I want to hear something new",
+  "I can rely on my music platform's recommendations when I want to hear something new", // factor 1
   "I avoid app-curated playlists and mixes – I prefer my own",
   "I frequently listen to music by artists I haven't heard before",
   "I think that artists make better music when they aren't really popular",
   "I prefer to skip songs the platform adds or suggests automatically",
-  "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)",
+  "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)", // factor 1
   "I don't like the music my friends listen to",
   "I choose music without considering how I'm feeling",
   "I feel uneasy letting the platform decide what to play next",
@@ -65,7 +65,7 @@ type EmojiRowProps = {
   moods: MoodOption[];
 };
 
-const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect, moods }) => {
+const EmojiRow: React.FC<EmojiRowProps> = ({ name, selectedValue, onSelect, moods }) => { // renders a row of emojis for a question
   return (
     <div className="scale-row" role="radiogroup" aria-label={name}>
       {moods.map((mood) => {
@@ -94,7 +94,7 @@ type Question = {
   originalIndex: number;
 };
 
-const EmojiProgression: React.FC = () => {
+const EmojiProgression: React.FC = () => { // main component
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -103,7 +103,7 @@ const EmojiProgression: React.FC = () => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
       text,
       type: 'seven' as const,
-      originalIndex: index
+      originalIndex: index // Randomize WITH OG index
     }));
 
     const fivePointQs: Question[] = FIVE_POINT_QUESTIONS.map((text, index) => ({
@@ -114,7 +114,7 @@ const EmojiProgression: React.FC = () => {
 
     const allQuestions = [...sevenPointQs, ...fivePointQs];
     
-    for (let i = allQuestions.length - 1; i > 0; i--) {
+    for (let i = allQuestions.length - 1; i > 0; i--) { // randomizes question
       const j = Math.floor(Math.random() * (i + 1));
       [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
     }
@@ -128,7 +128,7 @@ const EmojiProgression: React.FC = () => {
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
-  const handleSelect = (originalIndex: number, value: number) => {
+  const handleSelect = (originalIndex: number, value: number) => { // updated response array
     setResponses((prev) => {
       const next = [...prev];
       next[originalIndex] = value;
@@ -136,7 +136,7 @@ const EmojiProgression: React.FC = () => {
     });
   };
 
-  const addResponse = async () => {
+  const addResponse = async () => { // checks if every question is answered
     if (!responses.every((r) => r !== null)) {
       setAnswerError(true);
       alert('Please answer all questions before submitting.');
@@ -149,15 +149,15 @@ const EmojiProgression: React.FC = () => {
     }, {});
   
     try {
-      const { error } = await supabase.from("responses").insert([formattedData]);
+      const { error } = await supabase.from("responses").insert([formattedData]); // for supabase insertion
       if (error) {
-        console.error('Supabase insert error:', error);
+        console.error('Supabase insert error:', error); // put  data into the responses table in Supabase
         alert(`Error submitting responses: ${error.message}`);
         return;
       }
   
-      // ✅ pass responses through navigate
-      navigate('/results', { state: { responses } });
+      // pass responses through navigate
+      navigate('/results', { state: { responses } }); 
   
     } catch (err) {
       console.error('Unexpected error:', err);
@@ -166,7 +166,7 @@ const EmojiProgression: React.FC = () => {
   };
   
   
-  return (
+  return ( // jsx rendering!
     <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
       <div className="dark-mode-toggle">
         <button onClick={toggleDarkMode} className="toggle-btn">
@@ -201,3 +201,6 @@ const EmojiProgression: React.FC = () => {
 };
 
 export default EmojiProgression;
+
+
+//https://www.react-graph-gallery.com/radar-chart
