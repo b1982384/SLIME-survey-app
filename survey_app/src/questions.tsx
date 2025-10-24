@@ -11,39 +11,41 @@ type MoodOption = {
 };
 
 const SEVEN_POINT_MOODS: MoodOption[] = [
-  { emoji: '😠', color: 'bg-maroon-400', label: 'Strongly Disagree', value: 1 },
-  { emoji: '☹️', color: 'bg-red-400', label: 'Disagree', value: 2 },
-  { emoji: '😕', color: 'bg-orange-400', label: 'Somewhat Disagree', value: 3 },
-  { emoji: '😐', color: 'bg-yellow-400', label: 'Neutral', value: 4 },
-  { emoji: '🙂', color: 'bg-green-400', label: 'Somewhat Agree', value: 5 },
-  { emoji: '😊', color: 'bg-turquoise-400', label: 'Agree', value: 6 },
-  { emoji: '😀', color: 'bg-blue-400', label: 'Strongly Agree', value: 7 },
+  { emoji: '😠', color: 'bg-brand-1', label: 'Strongly Disagree', value: 1 },
+  { emoji: '☹️', color: 'bg-brand-2', label: 'Disagree', value: 2 },
+  { emoji: '😕', color: 'bg-brand-3', label: 'Somewhat Disagree', value: 3 },
+  { emoji: '😐', color: 'bg-brand-4', label: 'Neutral', value: 4 },
+  { emoji: '🙂', color: 'bg-brand-5', label: 'Somewhat Agree', value: 5 },
+  { emoji: '😊', color: 'bg-brand-6', label: 'Agree', value: 6 },
+  { emoji: '😀', color: 'bg-brand-7', label: 'Strongly Agree', value: 7 },
 ];
 
 const FIVE_POINT_MOODS: MoodOption[] = [
-  { emoji: '🕛', color: 'bg-maroon-400', label: 'Never', value: 1 },
-  { emoji: '🕒', color: 'bg-orange-400', label: 'Rarely', value: 2 },
-  { emoji: '🕔', color: 'bg-yellow-400', label: 'Sometimes', value: 3 },
-  { emoji: '🕠', color: 'bg-green-400', label: 'Often', value: 4 },
-  { emoji: '🕢', color: 'bg-blue-400', label: 'Very Often', value: 5 },
+  { emoji: '🕛', color: 'bg-brand-1', label: 'Never', value: 1 },
+  { emoji: '🕒', color: 'bg-brand-2', label: 'Rarely', value: 2 },
+  { emoji: '🕔', color: 'bg-brand-4', label: 'Sometimes', value: 3 },
+  { emoji: '🕠', color: 'bg-brand-6', label: 'Often', value: 4 },
+  { emoji: '🕢', color: 'bg-brand-7', label: 'Very Often', value: 5 },
 ];
 
+
+
 const SEVEN_POINT_QUESTIONS: string[] = [
-  "I like to explore songs from all genres",
-  "I feel like I play a strong role in how things are recommended to me", // factor 1
-  "I worry that my music platform recommends music for its own interests not mine", 
-  "I keep up with popular/trending songs",
-  "I think that popular artists are popular because they make better music",
-  "I can rely on my music platform's recommendations when I want to hear something new", // factor 1
-  "I avoid app-curated playlists and mixes – I prefer my own",
-  "I frequently listen to music by artists I haven't heard before",
-  "I think that artists make better music when they aren't really popular",
-  "I prefer to skip songs the platform adds or suggests automatically",
-  "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes)", // factor 1
-  "I don't like the music my friends listen to",
-  "I choose music without considering how I'm feeling",
-  "I feel uneasy letting the platform decide what to play next",
-  "I use music to better understand or make sense of my emotions"
+  "I like to explore songs from all genres.",
+  "I feel like I play a strong role in how things are recommended to me.", // factor 1
+  "I worry that my music platform recommends music for its own interests not mine.", 
+  "I keep up with popular/trending songs.",
+  "I think that popular artists are popular because they make better music.",
+  "I can rely on my music platform's recommendations when I want to hear something new.", // factor 1
+  "I avoid app-curated playlists and mixes – I prefer my own.",
+  "I frequently listen to music by artists I haven't heard before.",
+  "I think that artists make better music when they aren't really popular.",
+  "I prefer to skip songs the platform adds or suggests automatically.",
+  "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes).", // factor 1
+  "I don't like the music my friends listen to.",
+  "I choose music without considering how I'm feeling.",
+  "I feel uneasy letting the platform decide what to play next.",
+  "I use music to better understand or make sense of my emotions."
 ];
 
 const FIVE_POINT_QUESTIONS: string[] = [
@@ -97,7 +99,7 @@ type Question = {
 const EmojiProgression: React.FC = () => { // main component
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const randomizedQuestions = useMemo(() => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
@@ -173,6 +175,7 @@ const EmojiProgression: React.FC = () => { // main component
           {isDarkMode ? '☀️' : '🌙'} {isDarkMode ? 'Light' : 'Dark'} Mode
         </button>
       </div>
+      <h1 className="questions-title">What kind of listener are you?</h1>
 
       <div className="questions-container">
         {randomizedQuestions.map((question, displayIndex) => {
@@ -180,9 +183,24 @@ const EmojiProgression: React.FC = () => { // main component
           
           return (
             <div key={displayIndex} className="question-block">
+            <div className="question-index">QUESTION {displayIndex + 1}</div>
+            <div className="question-text">
+              {question.text}
+            </div>
+
+         
+
+              {/* <div className="question-text">
+                <span style={{ float: 'left', opacity: 0.6 }}>{displayIndex + 1}</span>
+                {question.text}
+              </div> */}
+{/* 
               <div className="question-text">
-                {displayIndex + 1}. {question.text}
-              </div>
+                <span style={{ float: 'left', opacity: 0.6 }}>
+                  Question {displayIndex + 1}
+                </span>
+                {question.text}
+              </div> */}
               <EmojiRow
                 name={`q${question.originalIndex}`}
                 selectedValue={responses[question.originalIndex]}
