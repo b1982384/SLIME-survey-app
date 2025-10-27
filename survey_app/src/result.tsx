@@ -503,7 +503,7 @@ const ResultsPage = () => {
       </div>
 
       <div>
-        <h3>Description of Results</h3>\
+        <h3>Description of Results</h3>
         <p>1.	Platform Trust - Values discovery through algorithms or others’ suggestions. Open-minded, curious, and comfortable letting recommendations guide their next listen. </p>
         <p>2.	Platform Control - Prefers intentional listening and personal curation. Chooses what to play with purpose and enjoys full control over their music experience.</p>
         <p>3.	Playlist Creator - Treats music as a diary of moments and moods. Each song carries personal meaning, and curation reflects emotional awareness and memory.</p>
