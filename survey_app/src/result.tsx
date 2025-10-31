@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import cornerBanner from './assets/corner_banner.png';
 import { Download } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -170,47 +171,64 @@ interface AngleLabelProps {
   outerRadius?: number;
 }
 
-const AngleLabel = (props: AngleLabelProps) => {
-  const { x, y, cx, cy, payload } = props;
-  const OFFSET = 20;
+interface AngleLabelProps {
+  cx?: number;
+  cy?: number;
+  radius?: number;
+  outerRadius?: number;
+  payload?: any;
+}
 
-  if (
-    typeof x === 'number' &&
-    typeof y === 'number' &&
-    typeof cx === 'number' &&
-    typeof cy === 'number'
-  ) {
-    const vx = x - cx;
-    const vy = y - cy;
-    const len = Math.sqrt(vx * vx + vy * vy) || 1;
-    const tx = x + (vx / len) * OFFSET;
-    const ty = y + (vy / len) * OFFSET;
+interface AngleLabelProps {
+  cx?: number;
+  cy?: number;
+  radius?: number;
+  outerRadius?: number;
+  payload?: any;
+}
 
-    return (
-      <text
-        x={tx}
-        y={ty}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fill="#111827"
-        fontSize={12}
-        fontWeight={600}
-      >
-        {payload?.value}
-      </text>
-    );
-  }
+// Type for radar data
+interface RadarData {
+  factor: string;
+  score: number;
+}
 
-  const angle = typeof payload?.coordinate === 'number' ? payload.coordinate : 0;
-  const cx0 = typeof props.cx === 'number' ? props.cx : 0;
-  const cy0 = typeof props.cy === 'number' ? props.cy : 0;
-  const baseRadius =
-    (typeof props.radius === 'number' ? props.radius : 0) ||
-    (typeof props.outerRadius === 'number' ? props.outerRadius : 0);
+const wrapText = (text: string, maxChars: number) => {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let currentLine = "";
 
-  const r = baseRadius + OFFSET;
-  const tx = cx0 + r * Math.cos(-angle * RADIAN);
-  const ty = cy0 + r * Math.sin(-angle * RADIAN);
+  words.forEach((word) => {
+    if ((currentLine + " " + word).trim().length <= maxChars) {
+      currentLine = (currentLine + " " + word).trim();
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  });
+  if (currentLine) lines.push(currentLine);
+
+  return lines;
+};
+
+const AngleLabel = (props: any) => {
+  const { cx, cy, payload, radius, outerRadius } = props;
+  const centerX = cx ?? 0;
+  const centerY = cy ?? 0;
+  const r = radius || outerRadius || 100;
+  const OFFSET = r * 0.35;
+  const fontSize = Math.max(r * 0.08, 12);
+
+  const angleRad = (payload?.coordinate ?? 0) * (Math.PI / 180);
+  const tx = centerX + (r + OFFSET) * Math.cos(-angleRad);
+  const ty = centerY + (r + OFFSET) * Math.sin(-angleRad);
+
+  // Flip bottom-half labels upright
+  const angleDeg = payload?.coordinate ?? 0;
+  const rotation = angleDeg > 90 && angleDeg < 270 ? 180 : 0;
+
+  // Wrap the label text
+  const lines = wrapText(payload?.value ?? "", 10); // 10 chars per line
 
   return (
     <text
@@ -218,14 +236,20 @@ const AngleLabel = (props: AngleLabelProps) => {
       y={ty}
       textAnchor="middle"
       dominantBaseline="central"
-      fill="#111827"
-      fontSize={12}
+      fontSize={fontSize}
       fontWeight={600}
+      fill="#111827"
+      transform={`rotate(${rotation}, ${tx}, ${ty})`}
     >
-      {payload?.value}
+      {lines.map((line, index) => (
+        <tspan key={index} x={tx} dy={index === 0 ? 0 : fontSize * 1.5}>
+          {line}
+        </tspan>
+      ))}
     </text>
   );
 };
+
 
 const ResultsPage = () => {
   const shareableRef = useRef<HTMLDivElement>(null);
@@ -406,20 +430,108 @@ const ResultsPage = () => {
     };
   };
 
+
+
+  
+
   const handleDownloadImage = async () => {
     if (!shareableRef.current) return;
+  
+    const h1 = shareableRef.current.querySelector('.results-info h1');
+    if (!h1) return;
+  
+    let tempCanvas;
+  
     try {
+      const text = h1.textContent.trim().toUpperCase();
+      const style = getComputedStyle(h1);
+      const fontFamily = "'Archivo Black', sans-serif";
+      const fontWeight = style.fontWeight || "bold";
+      const baseFontSize = parseFloat(style.fontSize);
+      const fontSize = baseFontSize * 1.1; // slightly bigger
+  
+      const h1Rect = h1.getBoundingClientRect();
+      const maxTextWidth = h1Rect.width;
+  
+      // Wrap text
+      const measureCanvas = document.createElement("canvas");
+      const measureCtx = measureCanvas.getContext("2d");
+      measureCtx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+  
+      const words = text.split(" ");
+      let lines = [];
+      let line = "";
+  
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line ? line + " " + words[n] : words[n];
+        if (measureCtx.measureText(testLine).width > maxTextWidth && line) {
+          lines.push(line);
+          line = words[n];
+        } else {
+          line = testLine;
+        }
+      }
+      lines.push(line);
+  
+      const lineHeight = fontSize;
+      const paddingTop = 8; // small gap at top and bottom
+      const canvasHeight = lines.length * lineHeight + paddingTop;
+  
+      // Create temporary canvas
+      tempCanvas = document.createElement("canvas");
+      tempCanvas.width = h1Rect.width;
+      tempCanvas.height = canvasHeight;
+  
+      const ctx = tempCanvas.getContext("2d");
+  
+      // Gradient fill
+      const gradient = ctx.createLinearGradient(0, 0, tempCanvas.width, 0);
+      gradient.addColorStop(0, "#A069E8");
+      gradient.addColorStop(1, "#47A6E0");
+      ctx.fillStyle = gradient;
+  
+      ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+  
+      // Draw each line with small top padding
+      lines.forEach((ln, i) => {
+        ctx.fillText(ln, tempCanvas.width / 2, paddingTop + i * lineHeight);
+      });
+  
+      // Position canvas absolutely over original h1
+      const parent = h1.parentNode;
+      tempCanvas.style.position = "absolute";
+      tempCanvas.style.left = `${h1.offsetLeft}px`;
+      tempCanvas.style.top = `${h1.offsetTop}px`;
+      tempCanvas.style.zIndex = "1000";
+  
+      h1.style.visibility = "hidden";
+      parent.appendChild(tempCanvas);
+  
+      // Capture screenshot
       const html2canvas = (await import("html2canvas")).default;
-      const canvas = await html2canvas(shareableRef.current, { backgroundColor: '#fff', scale: 2 });
-      const link = document.createElement('a');
-      link.download = 'my-music-profile.png';
-      link.href = canvas.toDataURL();
+      const canvas = await html2canvas(shareableRef.current, {
+        backgroundColor: null,
+        scale: 2,
+      });
+  
+      // Download
+      const link = document.createElement("a");
+      link.download = "my-music-profile.png";
+      link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (error) {
-      console.error('Error generating image:', error);
-      alert('Unable to generate image.');
+      console.error(error);
+      alert("Unable to generate image.");
+    } finally {
+      // Cleanup
+      if (tempCanvas) tempCanvas.remove();
+      if (h1) h1.style.visibility = "visible";
     }
   };
+  
+  
 
   const factorImages: FactorImages = {
     1: '/images/smart-speaker.gif',
@@ -454,21 +566,35 @@ const ResultsPage = () => {
 
   return (
     <div className="results-page">
+      <div className="corner-banners">
+      <img src={cornerBanner} alt="Top Banner" className="corner-banner top-left" />
+      <img src={cornerBanner} alt="Bottom Banner" className="corner-banner bottom-right" />
+      </div>
+
       <div ref={shareableRef} className="results-layout">
-        <div className="radar-section">
-          <ResponsiveContainer width="100%" height={400}>
-            <RadarChart data={radarData} outerRadius="70%">
+      <div className="results-info">
+          <h1>Your Music Listening Profile</h1>
+          <img
+            src={factorImages[results.topFactor.number]}
+            alt={results.topFactor.name}
+          />
+          <h4>Illustration by Katie Lam</h4>
+          <h2>You are a {results.topFactor.name}!</h2>
+           <h3 className="score">
+                Score: {(results.topFactor.score * 100).toFixed(1)}%
+              </h3>
+          <p>{results.topFactor.description}</p>  
+          <h2>Radar Chart</h2>        
+          <div className="radar-section">
+          <ResponsiveContainer width="100%" height={Math.min(window.innerWidth * 0.8, 400)}>
+            <RadarChart data={radarData} outerRadius="80%" margin={{ top: 40, right: 40, bottom: 40, left: 40 }} >
               <PolarGrid stroke="#d1d5db" strokeWidth={1} />
               <PolarAngleAxis
                 dataKey="factor"
                 tick={<AngleLabel />}
                 tickLine={false}
               />
-              <PolarRadiusAxis
-                domain={[0, 100]}
-                tick={false}
-                axisLine={false}
-              />
+              <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
               <Radar
                 dataKey="score"
                 stroke="#1f2937"
@@ -481,13 +607,6 @@ const ResultsPage = () => {
             </RadarChart>
           </ResponsiveContainer>
         </div>
-        <div className="results-info">
-          <h1>Your Music Listening Profile</h1>
-          <h2>You are: {results.topFactor.name}</h2>
-          <p className="score">Score: {(results.topFactor.score * 100).toFixed(1)}%</p>
-          <p>{results.topFactor.description}</p>
-          <img src={factorImages[results.topFactor.number]} alt={results.topFactor.name} />
-          <p className="tiny-text">Illustrations by Katie Lam</p>
         </div>
       </div>
       <h1>Factor Distributions</h1>
@@ -503,7 +622,7 @@ const ResultsPage = () => {
       </div>
 
       <div>
-        <h3>Description of Results</h3>\
+        <h3>Description of Results</h3>
         <p>1.	Platform Trust - Values discovery through algorithms or others’ suggestions. Open-minded, curious, and comfortable letting recommendations guide their next listen. </p>
         <p>2.	Platform Control - Prefers intentional listening and personal curation. Chooses what to play with purpose and enjoys full control over their music experience.</p>
         <p>3.	Playlist Creator - Treats music as a diary of moments and moods. Each song carries personal meaning, and curation reflects emotional awareness and memory.</p>

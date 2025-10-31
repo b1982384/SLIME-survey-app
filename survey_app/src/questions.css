@@ -92,7 +92,6 @@
 }
 
 .question-text {
-  font-family:'Franklin Gothic Medium', sans-serif;
   letter-spacing: -0.02em;
   font-weight: 400;
   font-size: clamp(1.1rem, 2vw, 1.4rem);
