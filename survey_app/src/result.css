@@ -7,17 +7,61 @@
    If you add `className="results-page"` to the top wrapper later, the .results-page rules here will apply too.
 */
 
-/* Optional top-level wrapper (recommended to add className="results-page" to the root div) */
 .results-page {
+  position: relative; /* 👈 make this the anchor for absolutely positioned banners */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-  min-height: 100vh;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* or center, if you prefer */
+  padding: 20px;
+  background: linear-gradient(
+    to bottom,
+    #1b1025 0%,   /* deep violet top */
+    #1c1844 25%,  /* indigo */
+    #1b2b57 50%,  /* blue-violet */
+    #132a3a 75%,  /* dark teal-blue */
+    #0f1f27 100%  /* near-black bottom */
+  );
+  color: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 2rem;
   gap: 20px;
+  overflow-x: hidden;
 }
+
+/* Corner banners layer */
+.corner-banners {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Shared banner style */
+.corner-banner {
+  position: absolute;
+  width: 300px;
+  height: auto;
+  opacity: 0.8;
+}
+
+/* top-left */
+.top-left {
+  top: 0;
+  left: 0;
+  transform: none;
+}
+
+/* bottom-right */
+.bottom-right {
+  bottom: 0;
+  right: 0;
+  transform: rotate(180deg);
+}
+
 
 /* Main two-column layout (the element with className="results-layout") */
 .results-layout {
@@ -27,6 +71,14 @@
   align-items: flex-start;
   max-width: 1200px;
   width: 100%;
+  z-index: 1;
+  background: rgba(53, 71, 101, 0.5); 
+  backdrop-filter: blur(5px); /* frosted glass blur */
+  -webkit-backdrop-filter: blur(12px); /* Safari support */
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25); /* subtle white edge */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #fff; /* text stays visible on tinted glass */
 }
 
 /* Radar container (element with className="radar-section") */
@@ -77,47 +129,85 @@
 .radar-section svg text {
   font-size: 12px;
   font-weight: 600;
-  fill: rgb(75, 85, 99) !important;
+  fill: rgba(255, 255, 255, 1);
+  text-anchor: middle;
+  dominant-baseline: middle;
   text-anchor: middle;
 }
 
 /* Results info card (element with className="results-info") */
 .results-info {
   flex: 1;
-  background: #ffffff;
+  background: transparent;
   padding: 40px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.6);
   order: 1;
+  z-index:1;
+}
+
+.results-info p{
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.5;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  padding: 1.5em;
+  color: rgba(255, 255, 255, 1);
+
+}
+
+.results-info img {
+  width: 100%;            /* take full width of container */
+  max-width: 500px;       /* but no larger than 500px */
+  height: auto;           /* maintain aspect ratio */
+  object-fit: cover;      /* crop if necessary */
+  object-position: bottom;/* crop from top if needed */
+  border-radius: 10px;    /* optional styling */
 }
 
 .results-info h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(2.5rem, 3vw, 2.6rem);
+  text-align: center;
+  letter-spacing: -0.02em;
+  margin-bottom: clamp(20px, 4vw, 40px);
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #A069E8, #47A6E0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeSlideIn 0.8s ease forwards;
+}
+
+.results-info h4 {
+  font-size: 12px;
+  text-align: center;
+  padding-bottom: 10px;
+  margin-left: 30%; /* push slightly left relative to container */
+  margin-right: auto; /* keep it flexible */
+  max-width: 80%; /* optional */
 }
 
 .results-info h2 {
-  font-size: 1.5rem;
+  font-family:'Franklin Gothic Medium', sans-serif;
+  font-size: 2rem;
   margin-bottom: 10px;
+  text-align: center;
   color: #3498db;
 }
 
-.results-info p {
-  font-size: 1rem;
+.results-info h3 {
+  font-family:'Franklin Gothic Medium', sans-serif;
+  font-size: 1.5rem;
   margin-bottom: 10px;
-  color: #555;
-}
-
-/* Factor image inside results-info */
-.results-info img {
-  max-width: 300px;
-  max-height: 300px;
-  width: auto;
-  height: auto;
-  margin-top: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  object-fit: contain;
+  text-align: center;
+  color: #3498db;
 }
 
 /* Share block — your TSX renders a plain div right after .results-layout,
@@ -146,6 +236,12 @@
   align-items: center;
   gap: 12px;
   padding: 18px 0;
+  font-family:'Franklin Gothic Medium', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #3498db;
+  z-index: 1;
 }
 
 /* Button styling: centered, pill, gradient, subtle shadow */
@@ -299,9 +395,4 @@
 .radar-section .recharts-polar-grid .recharts-polar-grid-angle line {
   stroke: #454f63 !important;
   opacity: 0.6;
-}
-
-
-.tiny-text {
-  font-size: 2px; /* Example: 8 pixels */
 }
