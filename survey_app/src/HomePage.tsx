@@ -15,6 +15,8 @@ const HomePage: React.FC = () => {
     navigate('/question'); // Change route to your survey page
   };
 
+  // adding user age input singel factor score
+
   return (
     <div className="home-container">
       <div className="welcome-banner">Welcome!</div>
