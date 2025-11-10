@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
     }
   
     // send values to the questions page
-    navigate('/questions', { state: { Age, SinglePredicter } });
+    navigate('/question', { state: { Age, SinglePredicter } });
   };
   
 

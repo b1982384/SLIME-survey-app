@@ -2,6 +2,9 @@ import React, { useState, useMemo } from 'react';
 import './questions.css';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
+
 
 type MoodOption = {
   emoji: string;
@@ -95,10 +98,29 @@ type Question = {
   originalIndex: number;
 };
 
+
+
 const EmojiProgression: React.FC = () => { // main component
+  const location = useLocation();
+  const { Age, SinglePredicter } = location.state || {};
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const insertParticipant = async () => {
+      if (!Age || !SinglePredicter) return;
+
+      const { error } = await supabase
+        .from('responses')
+        .insert([{ Age, Single_Pred: SinglePredicter }]);
+
+      if (error) console.error('Supabase insert error:', error);
+    };
+
+    insertParticipant();
+  }, [Age, SinglePredicter]);
+
 
   const randomizedQuestions = useMemo(() => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
@@ -137,7 +159,7 @@ const EmojiProgression: React.FC = () => { // main component
     });
   };
 
-  const addResponse = async () => { // checks if every question is answered
+  const addResponse = async () => {
     if (!responses.every((r) => r !== null)) {
       setAnswerError(true);
       alert('Please answer all questions before submitting.');
@@ -150,22 +172,28 @@ const EmojiProgression: React.FC = () => { // main component
     }, {});
   
     try {
-      const { error } = await supabase.from("responses").insert([formattedData]); // for supabase insertion
+      const { error } = await supabase.from("responses").insert([
+        {
+          ...formattedData,
+          Age: Age,
+          Single_Pred: SinglePredicter
+        }
+      ]);
+  
       if (error) {
-        console.error('Supabase insert error:', error); // put  data into the responses table in Supabase
+        console.error('Supabase insert error:', error);
         alert(`Error submitting responses: ${error.message}`);
         return;
       }
   
-      // pass responses through navigate
-      navigate('/results', { state: { responses } }); 
-  
+      navigate('/results', { state: { responses } });
     } catch (err) {
       console.error('Unexpected error:', err);
       alert('An unexpected error occurred.');
     }
   };
   
+
   
   return ( // jsx rendering!
     <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
