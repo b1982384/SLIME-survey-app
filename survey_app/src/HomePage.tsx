@@ -10,41 +10,22 @@ const HomePage: React.FC = () => {
   const [showConsentError, setShowConsentError] = useState(false);
   const [Age, setAge] = useState("");
   const [SinglePredicter, setSinglePredicter] = useState("");
-  // const addResponse = async () => { // checks if every question is answered
-  //   if (!responses.every((r) => r !== null)) {
-  //     setAnswerError(true);
-  //     alert('Please answer all questions before submitting.');
-  //     return;
-  //   }
   
-  //   const formattedData = responses.reduce<Record<string, number | null>>((acc, response, index) => {
-  //     acc[`q${index + 1}`] = response;
-  //     return acc;
-  //   }, {});
-  
-  //   try {
-  //     const { error } = await supabase.from("responses").insert([formattedData]); // for supabase insertion
-  //     if (error) {
-  //       console.error('Supabase insert error:', error); // put  data into the responses table in Supabase
-  //       alert(`Error submitting responses: ${error.message}`);
-  //       return;
-  //     }
-  
-  //     // pass responses through navigate
-  //     navigate('/results', { state: { responses } }); 
-  
-  //   } catch (err) {
-  //     console.error('Unexpected error:', err);
-  //     alert('An unexpected error occurred.');
-  //   }
-  // };
   const handleTakeSurvey = () => {
     if (!consentGiven) {
       setShowConsentError(true);
       return;
     }
-    navigate('/question'); // Change route to your survey page
+  
+    if (!Age || !SinglePredicter) {
+      alert("Please select your age and musician title before continuing.");
+      return;
+    }
+  
+    // send values to the questions page
+    navigate('/questions', { state: { Age, SinglePredicter } });
   };
+  
 
   return (
     <div className="home-container">
