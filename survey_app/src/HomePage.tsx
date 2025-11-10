@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
           <p className="consent-error">Please give consent to continue.</p>
         )}
           
-          <div className = "age-dropdown">
+          <div className = "age-dropdown">  // make a text - box integer input
             <select value={Age} onChange = {(event) => setAge(event.target.value)}>
               <option value="" disabled hidden>What is your age?</option>
               <option value="18-24">18-24</option>
