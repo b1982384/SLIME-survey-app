@@ -58,6 +58,7 @@ const FIVE_POINT_QUESTIONS: string[] = [
   "When you hear a new song from a playlist, autoplay, or other passive source, how often do you save or like it to return to later?"
 ];
 
+
 type EmojiRowProps = {
   name: string;
   selectedValue: number | null;
