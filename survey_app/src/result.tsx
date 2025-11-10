@@ -156,43 +156,6 @@ type Results = {
   topFactor: TopFactor;
 };
 
-const RADIAN = Math.PI / 180;
-
-interface AngleLabelProps {
-  x?: number;
-  y?: number;
-  cx?: number;
-  cy?: number;
-  payload?: {
-    value?: string;
-    coordinate?: number;
-  };
-  radius?: number;
-  outerRadius?: number;
-}
-
-interface AngleLabelProps {
-  cx?: number;
-  cy?: number;
-  radius?: number;
-  outerRadius?: number;
-  payload?: any;
-}
-
-interface AngleLabelProps {
-  cx?: number;
-  cy?: number;
-  radius?: number;
-  outerRadius?: number;
-  payload?: any;
-}
-
-// Type for radar data
-interface RadarData {
-  factor: string;
-  score: number;
-}
-
 const wrapText = (text: string, maxChars: number) => {
   const words = text.split(" ");
   const lines: string[] = [];
@@ -211,7 +174,18 @@ const wrapText = (text: string, maxChars: number) => {
   return lines;
 };
 
-const AngleLabel = (props: any) => {
+interface AngleLabelProps {
+  cx?: number;
+  cy?: number;
+  payload?: {
+    coordinate?: number;
+    value?: string;
+  };
+  radius?: number;
+  outerRadius?: number;
+}
+
+const AngleLabel = (props: AngleLabelProps) => {
   const { cx, cy, payload, radius, outerRadius } = props;
   const centerX = cx ?? 0;
   const centerY = cy ?? 0;
@@ -289,7 +263,7 @@ const ResultsPage = () => {
     if (!responses && location.state?.responses) {
       setResponses(location.state.responses);
     }
-  }, []);
+  }, [location.state.responses, responses]);
 
   useEffect(() => {
     if (!responses) {
@@ -440,10 +414,10 @@ const ResultsPage = () => {
     const h1 = shareableRef.current.querySelector('.results-info h1');
     if (!h1) return;
   
-    let tempCanvas;
+    let tempCanvas: HTMLCanvasElement | null = null;
   
     try {
-      const text = h1.textContent.trim().toUpperCase();
+      const text = h1.textContent ? h1.textContent.trim().toUpperCase() : '';
       const style = getComputedStyle(h1);
       const fontFamily = "'Archivo Black', sans-serif";
       const fontWeight = style.fontWeight || "bold";
@@ -456,10 +430,14 @@ const ResultsPage = () => {
       // Wrap text
       const measureCanvas = document.createElement("canvas");
       const measureCtx = measureCanvas.getContext("2d");
-      measureCtx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+      if (measureCtx) {
+        measureCtx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+      } else {
+        throw new Error("Unable to get 2D context for measure canvas.");
+      }
   
       const words = text.split(" ");
-      let lines = [];
+      const lines = [];
       let line = "";
   
       for (let n = 0; n < words.length; n++) {
@@ -485,6 +463,11 @@ const ResultsPage = () => {
       const ctx = tempCanvas.getContext("2d");
   
       // Gradient fill
+      if (!ctx) {
+        console.error("Unable to get 2D context for temporary canvas.");
+        return;
+      }
+
       const gradient = ctx.createLinearGradient(0, 0, tempCanvas.width, 0);
       gradient.addColorStop(0, "#A069E8");
       gradient.addColorStop(1, "#47A6E0");
@@ -496,18 +479,22 @@ const ResultsPage = () => {
   
       // Draw each line with small top padding
       lines.forEach((ln, i) => {
-        ctx.fillText(ln, tempCanvas.width / 2, paddingTop + i * lineHeight);
+        if (tempCanvas) {
+          ctx.fillText(ln, tempCanvas.width / 2, paddingTop + i * lineHeight);
+        }
       });
   
       // Position canvas absolutely over original h1
       const parent = h1.parentNode;
       tempCanvas.style.position = "absolute";
-      tempCanvas.style.left = `${h1.offsetLeft}px`;
-      tempCanvas.style.top = `${h1.offsetTop}px`;
+      tempCanvas.style.left = `${(h1 as HTMLElement).offsetLeft}px`;
+      tempCanvas.style.top = `${(h1 as HTMLElement).offsetTop}px`;
       tempCanvas.style.zIndex = "1000";
   
-      h1.style.visibility = "hidden";
-      parent.appendChild(tempCanvas);
+      (h1 as HTMLElement).style.visibility = "hidden";
+      if (parent) {
+        parent.appendChild(tempCanvas);
+      }
   
       // Capture screenshot
       const html2canvas = (await import("html2canvas")).default;
@@ -526,8 +513,8 @@ const ResultsPage = () => {
       alert("Unable to generate image.");
     } finally {
       // Cleanup
-      if (tempCanvas) tempCanvas.remove();
-      if (h1) h1.style.visibility = "visible";
+      if (tempCanvas && tempCanvas instanceof HTMLCanvasElement) tempCanvas.remove();
+      if (h1 && h1 instanceof HTMLElement) h1.style.visibility = "visible";
     }
   };
   
