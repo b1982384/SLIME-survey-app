@@ -1,7 +1,6 @@
-import React, { use, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
-import { supabase } from './supabaseClient';
 
 
 const HomePage: React.FC = () => {
@@ -26,7 +25,6 @@ const HomePage: React.FC = () => {
     navigate('/question', { state: { Age, SinglePredicter } });
   };
   
-
   return (
     <div className="home-container">
       <div className="welcome-banner">Welcome!</div>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import './questions.css';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
@@ -107,19 +107,19 @@ const EmojiProgression: React.FC = () => { // main component
   const [answerError, setAnswerError] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useEffect(() => {
-    const insertParticipant = async () => {
-      if (!Age || !SinglePredicter) return;
+  // useEffect(() => {
+  //   const insertParticipant = async () => {
+  //     if (!Age || !SinglePredicter) return;
 
-      const { error } = await supabase
-        .from('responses')
-        .insert([{ Age, Single_Pred: SinglePredicter }]);
+  //     const { error } = await supabase
+  //       .from('responses')
+  //       .insert([{ Age, Single_Pred: SinglePredicter }]);
 
-      if (error) console.error('Supabase insert error:', error);
-    };
+  //     if (error) console.error('Supabase insert error:', error);
+  //   };
 
-    insertParticipant();
-  }, [Age, SinglePredicter]);
+  //   insertParticipant();
+  // }, [Age, SinglePredicter]);
 
 
   const randomizedQuestions = useMemo(() => {
