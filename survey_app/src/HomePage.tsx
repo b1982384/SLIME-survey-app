@@ -55,15 +55,12 @@ const HomePage: React.FC = () => {
         {showConsentError && !consentGiven && (
           <p className="consent-error">Please give consent to continue.</p>
         )}
-          
+      
+
           <div className = "age-dropdown">  // make a text - box integer input
             <select value={Age} onChange = {(event) => setAge(event.target.value)}>
               <option value="" disabled hidden>What is your age?</option>
               <option value="18-24">18-24</option>
-              <option value="25-34">25-34</option>
-              <option value="35-44">35-44</option>
-              <option value="45-54">45-54</option>
-              <option value="55-64">55-64</option>
               <option value="65+">65+</option>
               <option value="Decline">Prefer not to say</option>
             </select>
