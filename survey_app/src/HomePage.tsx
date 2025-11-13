@@ -7,8 +7,8 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [consentGiven, setConsentGiven] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
-  const [Age, setAge] = useState("");
-  const [SinglePredicter, setSinglePredicter] = useState("");
+  // const [Age, setAge] = useState("");
+  // const [SinglePredicter, setSinglePredicter] = useState("");
   
   const handleTakeSurvey = () => {
     if (!consentGiven) {
@@ -16,13 +16,13 @@ const HomePage: React.FC = () => {
       return;
     }
   
-    if (!Age || !SinglePredicter) {
-      alert("Please select your age and musician title before continuing.");
-      return;
-    }
+    // if (!Age || !SinglePredicter) {
+    //   alert("Please select your age and musician title before continuing.");
+    //   return;
+    // }
   
     // send values to the questions page
-    navigate('/question', { state: { Age, SinglePredicter } });
+    navigate('/question');
   };
   
   return (
@@ -57,25 +57,6 @@ const HomePage: React.FC = () => {
         )}
       
 
-          <div className = "age-dropdown">  // make a text - box integer input
-            <select value={Age} onChange = {(event) => setAge(event.target.value)}>
-              <option value="" disabled hidden>What is your age?</option>
-              <option value="18-24">18-24</option>
-              <option value="65+">65+</option>
-              <option value="Decline">Prefer not to say</option>
-            </select>
-          </div>
-          <div className = "predictor-dropdown">
-            <select value={SinglePredicter} onChange={(event) => setSinglePredicter(event.target.value)}>
-              <option value = "" disabled hidden>Which title best describes you?</option>
-              <option value="Nonmusician">Nonmusician</option>
-              <option value="Music-loving nonmusician">Music-loving nonmusician</option>
-              <option value="Amateur musician">Amateur musician</option>
-              <option value="Serious amateur musician">Serious amateur musician</option>
-              <option value="Semi-professional musician">Semi-professional musician</option>
-              <option value="Professional musician">Professional musician</option>
-            </select>
-          </div>
         <button className="take-survey-button" onClick={handleTakeSurvey}>
           Take Survey
         </button>

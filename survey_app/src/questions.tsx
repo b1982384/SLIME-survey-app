@@ -107,20 +107,6 @@ const EmojiProgression: React.FC = () => { // main component
   const [answerError, setAnswerError] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // useEffect(() => {
-  //   const insertParticipant = async () => {
-  //     if (!Age || !SinglePredicter) return;
-
-  //     const { error } = await supabase
-  //       .from('responses')
-  //       .insert([{ Age, Single_Pred: SinglePredicter }]);
-
-  //     if (error) console.error('Supabase insert error:', error);
-  //   };
-
-  //   insertParticipant();
-  // }, [Age, SinglePredicter]);
-
 
   const randomizedQuestions = useMemo(() => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
@@ -201,6 +187,24 @@ const EmojiProgression: React.FC = () => { // main component
         <button onClick={toggleDarkMode} className="toggle-btn">
           {isDarkMode ? '☀️' : '🌙'} {isDarkMode ? 'Light' : 'Dark'} Mode
         </button>
+      </div>
+
+      <div className="demographic-info-container">
+        <div className = "age-dropdown">  // make a text - box integer input
+              <input value={Age} onChange = {(event) => setAge(event.target.value)}>
+              </input>
+            </div>
+            <div className = "predictor-dropdown">
+              <select value={SinglePredicter} onChange={(event) => setSinglePredicter(event.target.value)}>
+                <option value = "" disabled hidden>Which title best describes you?</option>
+                <option value="Nonmusician">Nonmusician</option>
+                <option value="Music-loving nonmusician">Music-loving nonmusician</option>
+                <option value="Amateur musician">Amateur musician</option>
+                <option value="Serious amateur musician">Serious amateur musician</option>
+                <option value="Semi-professional musician">Semi-professional musician</option>
+                <option value="Professional musician">Professional musician</option>
+              </select>
+            </div>
       </div>
 
       <div className="questions-container">
