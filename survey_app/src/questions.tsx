@@ -98,7 +98,14 @@ type Question = {
   originalIndex: number;
 };
 
-
+const DemographicInfo: React.FC = () => {
+ const [age, setAge] = useState(0);
+ const [race, setRace] = useState("");
+ const [gender, setGender] = useState("");
+ const [singlePredictor, setSinglePredicter] = useState("");
+ const [nationality, setNationality] = useState("");
+ const [streamFrequency, setStreamFrequency] = useState("");
+}
 
 const EmojiProgression: React.FC = () => { // main component
   const location = useLocation();
@@ -106,7 +113,6 @@ const EmojiProgression: React.FC = () => { // main component
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
 
   const randomizedQuestions = useMemo(() => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
