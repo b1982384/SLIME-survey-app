@@ -202,7 +202,18 @@ const EmojiProgression: React.FC = () => { // main component
           {isDarkMode ? '☀️' : '🌙'} {isDarkMode ? 'Light' : 'Dark'} Mode
         </button>
       </div>
+      <div className = "Definitions">
+      <p>
+      This survey is about your music listening habits and includes questions about your music preferences, how you use music streaming platforms, and how recommendation features affect your listening experience. Below are a few definitions to help clarify the terms we’ll be using - please review these carefully.
+      <br/><br/>
+- Music Streaming Platform or App: These refer to services like Spotify, Apple Music, YouTube, TIDAL, etc., where you can stream music on demand
+<br/><br/>
+- Algorithmic / Recommendation Features: These are automatic systems that suggest songs, albums, or artists based on your listening history or preferences. Examples include: Autoplay (when music keeps playing after your playlist or album ends), Smart Shuffle, Daily Mixes, Discover Weekly, Daylist, “Because you listened to…” suggestions
+<br/>- Platform-Curated Playlists or Mixes: These are playlists made by the music app (not by a person you know), often tailored to your taste or mood, like “Chill Vibes”, “Throwback Hits”, or “Your Summer Rewind”
+<br/><br/>
+</p>
 
+      </div>
       <div className="demographic-info-container">
         <label>Demographic Data</label>
         <div className = "age-input"> 
