@@ -1,9 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import './questions.css';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-
 
 
 type MoodOption = {
@@ -98,22 +96,21 @@ type Question = {
   originalIndex: number;
 };
 
-const DemographicInfo: React.FC = () => {
- const [age, setAge] = useState(0);
- const [race, setRace] = useState("");
- const [gender, setGender] = useState("");
- const [singlePredictor, setSinglePredicter] = useState("");
- const [nationality, setNationality] = useState("");
- const [streamFrequency, setStreamFrequency] = useState("");
-}
+
 
 const EmojiProgression: React.FC = () => { // main component
-  const location = useLocation();
-  const { Age, SinglePredicter } = location.state || {};
+  
+  const [age, setAge] = useState("");
+  const [race, setRace] = useState("");
+  const [gender, setGender] = useState("");
+  const [singlepredictor, setSinglePredictor] = useState("");
+  const [nationality, setNationality] = useState("");
+  const [streamFrequency, setStreamFrequency] = useState("");
+
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
+  
   const randomizedQuestions = useMemo(() => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
       text,
@@ -152,6 +149,13 @@ const EmojiProgression: React.FC = () => { // main component
   };
 
   const addResponse = async () => {
+    if (!age.trim() || !race.trim() || !singlepredictor.trim() || !streamFrequency.trim() || !gender.trim())
+    {
+      setAnswerError(true);
+      alert('Please answer demographic and baseline questions before submittin.')
+      return;
+    }
+
     if (!responses.every((r) => r !== null)) {
       setAnswerError(true);
       alert('Please answer all questions before submitting.');
@@ -167,8 +171,12 @@ const EmojiProgression: React.FC = () => { // main component
       const { error } = await supabase.from("responses").insert([
         {
           ...formattedData,
-          Age: Age,
-          Single_Pred: SinglePredicter
+          Age: age,
+          Single_Pred: singlepredictor,
+          Gender: gender,
+          Race: race,
+          Nationality: nationality,
+          Stream_Freq: streamFrequency,
         }
       ]);
   
@@ -196,12 +204,12 @@ const EmojiProgression: React.FC = () => { // main component
       </div>
 
       <div className="demographic-info-container">
-        <div className = "age-dropdown">  // make a text - box integer input
-              <input value={Age} onChange = {(event) => setAge(event.target.value)}>
+        <div className = "age-input"> 
+              <input value={age} placeholder="Age" onChange = {(event) => setAge(event.target.value)}>
               </input>
             </div>
             <div className = "predictor-dropdown">
-              <select value={SinglePredicter} onChange={(event) => setSinglePredicter(event.target.value)}>
+              <select value={singlepredictor} onChange={(event) => setSinglePredictor(event.target.value)}>
                 <option value = "" disabled hidden>Which title best describes you?</option>
                 <option value="Nonmusician">Nonmusician</option>
                 <option value="Music-loving nonmusician">Music-loving nonmusician</option>
@@ -210,6 +218,41 @@ const EmojiProgression: React.FC = () => { // main component
                 <option value="Semi-professional musician">Semi-professional musician</option>
                 <option value="Professional musician">Professional musician</option>
               </select>
+            </div>
+            <div className = "race-dropdown">
+              <select value={race} onChange={(event) => setRace(event.target.value)}>
+                <option value = "" disabled hidden>What is your race?</option>
+                <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+                <option value="Asian">Asian</option>
+                <option value="Black or African American">Black or African American</option>
+                <option value="Hispanic, Latino, or Spanish origin">Hispanic, Latino, or Spanish origin</option>
+                <option value="Middle Eastern or North African">Middle Eastern or North African</option>
+                <option value="White">White</option>
+              </select>
+              </div>
+              <div className = "gender-dropdown">
+              <select value={gender} onChange={(event) => setGender(event.target.value)}>
+                <option value = "" disabled hidden>What is your gender?</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Nonbinary">Nonbinary</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+              </div>
+              <div className = "frequency-dropdown">
+              <select value={streamFrequency} onChange={(event) => setStreamFrequency(event.target.value)}>
+                <option value = "" disabled hidden>How often do you use streaming platforms?</option>
+                <option value="Always">Always</option>
+                <option value="Often">Often</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="Rarely">Rarely</option>
+                <option value="Never">Never</option>
+              </select>
+            </div>
+            <div className = "nationality-input">
+            <label>In what country do you typically listen to music? (this is optional, and is meant to help us understand regional availability)</label>
+            <input value={nationality} placeholder="Nationality (optional)" onChange = {(event) => setNationality(event.target.value)}></input>
             </div>
       </div>
 
