@@ -204,6 +204,7 @@ const EmojiProgression: React.FC = () => { // main component
       </div>
 
       <div className="demographic-info-container">
+        <label>Demographic Data</label>
         <div className = "age-input"> 
               <input value={age} placeholder="Age" onChange = {(event) => setAge(event.target.value)}>
               </input>
