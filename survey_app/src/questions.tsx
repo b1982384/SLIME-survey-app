@@ -53,7 +53,7 @@ const FIVE_POINT_QUESTIONS: string[] = [
   "How often do you make playlists for friends?",
   "When you hear a new song from a playlist, autoplay, or other passive source, how often do you look up the artist or track to learn more?",
   "How often do you listen to music via full albums?",
-  "How often do you collect physical music formats?",
+  "How often do you collect physical music formats? (e.g., vinyl, CDs, cassette tapes)",
   "How often do you make playlists for yourself?",
   "How often do you add to or edit your existing playlists?",
   "When you hear a new song from a playlist, autoplay, or other passive source, how often do you save or like it to return to later?"
@@ -267,7 +267,7 @@ const EmojiProgression: React.FC = () => { // main component
 
 
         <div className="race-checkbox-group">
-        <div className="race-title">Race (select all that apply, optional)</div>
+        <div className="race-title">What is your race? (Select all that apply, optional)</div>
 
         {[
           "American Indian or Alaska Native",
