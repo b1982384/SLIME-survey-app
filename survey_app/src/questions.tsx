@@ -101,7 +101,7 @@ type Question = {
 const EmojiProgression: React.FC = () => { // main component
   
   const [age, setAge] = useState("");
-  const [race, setRace] = useState("");
+  const [race, setRace] = useState<string[]>([]);
   const [gender, setGender] = useState("");
   const [singlepredictor, setSinglePredictor] = useState("");
   const [nationality, setNationality] = useState("");
@@ -139,7 +139,15 @@ const EmojiProgression: React.FC = () => { // main component
   );
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
-
+  
+  const toggleRace = (value: string) => {
+    setRace(prev =>
+      prev.includes(value)
+        ? prev.filter(r => r !== value)
+        : [...prev, value]
+    );
+  };
+  
   const handleSelect = (originalIndex: number, value: number) => { // updated response array
     setResponses((prev) => {
       const next = [...prev];
@@ -174,7 +182,7 @@ const EmojiProgression: React.FC = () => { // main component
           Age: age,
           Single_Pred: singlepredictor,
           Gender: gender,
-          Race: race,
+          Race: race.length > 0 ? race : null,
           Nationality: nationality,
           Stream_Freq: streamFrequency,
         }
@@ -235,37 +243,52 @@ const EmojiProgression: React.FC = () => { // main component
 
         {/* STREAMING FREQUENCY — slider 1–5 */}
         <div className="frequency-slider">
-          <label>How often do you use music streaming platforms? * (1 = Never, 5 = Always)</label>
+          <label>How often do you use music streaming platforms? * (1–5)</label>
 
           <input
             type="range"
             min="1"
             max="5"
+            step="1"
             value={streamFrequency}
             onChange={(e) => setStreamFrequency(e.target.value)}
             className="slider"
           />
 
-          <div className="slider-value">
-            {streamFrequency === "1" ? "Never" :
-             streamFrequency === "2" ? "Rarely" :
-             streamFrequency === "3" ? "Sometimes" :
-             streamFrequency === "4" ? "Often" : "Always"}
+          {/* Tick marks */}
+          <div className="slider-ticks">
+            <span>1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
           </div>
         </div>
 
-        {/* RACE — optional single dropdown */}
-        <div className="race-dropdown">
-          <select value={race} onChange={(e) => setRace(e.target.value)}>
-            <option value="">Race (optional)</option>
-            <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
-            <option value="Asian">Asian</option>
-            <option value="Black or African American">Black or African American</option>
-            <option value="Hispanic, Latino, or Spanish origin">Hispanic, Latino, or Spanish origin</option>
-            <option value="Middle Eastern or North African">Middle Eastern or North African</option>
-            <option value="White">White</option>
-          </select>
-        </div>
+
+        <div className="race-checkbox-group">
+        <div className="race-title">Race (select all that apply, optional)</div>
+
+        {[
+          "American Indian or Alaska Native",
+          "Asian",
+          "Black or African American",
+          "Hispanic, Latino, or Spanish origin",
+          "Middle Eastern or North African",
+          "White"
+        ].map((option) => (
+          <label key={option} className="checkbox-item">
+            <input
+              type="checkbox"
+              checked={race.includes(option)}
+              onChange={() => toggleRace(option)}
+            />
+            <span>{option}</span>
+          </label>
+        ))}
+      </div>
+
+
 
         {/* GENDER — optional */}
         <div className="gender-dropdown">

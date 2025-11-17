@@ -271,3 +271,70 @@ html, body {
   font-size: clamp(0.95rem, 2.5vw, 1.1rem);
 }
 
+.slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+
+/* --- Race Checkbox Group --- */
+.race-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.race-checkbox-group label {
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+/* Each checkbox row */
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Actual checkbox element */
+.checkbox-item input[type="checkbox"] {
+  margin: 0;
+  padding: 0;
+  transform: scale(1.1);   /* slightly bigger = easier to tap */
+  cursor: pointer;
+}
+
+.checkbox-item span,
+.checkbox-item p {
+  margin: 0;
+  padding: 0;
+}
+
+
+.race-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin: 0;
+  padding: 0;
+  transform: scale(1.1);
+  cursor: pointer;
+  width: auto; /* ADD THIS - prevents checkbox from stretching */
+  flex-shrink: 0; /* ALSO ADD THIS - prevents checkbox from shrinking */
+}
+
+.checkbox-item span {
+  display: inline-block; /* keeps label text inline */
+}
+
