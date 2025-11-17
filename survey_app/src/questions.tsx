@@ -187,7 +187,7 @@ const EmojiProgression: React.FC = () => { // main component
       }
   
       navigate('/results', { state: { responses } });
-    } catch (err) {
+    } catch (err) { 
       console.error('Unexpected error:', err);
       alert('An unexpected error occurred.');
     }
@@ -233,7 +233,7 @@ const EmojiProgression: React.FC = () => { // main component
             </div>
             <div className = "race-dropdown">
               <select value={race} onChange={(event) => setRace(event.target.value)}>
-                <option value = "" disabled hidden>What is your race?</option>
+                <option value = "" disabled hidden>What is your race? SELECT ALL THAT APPLY</option>
                 <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
                 <option value="Asian">Asian</option>
                 <option value="Black or African American">Black or African American</option>
