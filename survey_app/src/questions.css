@@ -244,7 +244,7 @@ html, body {
   border-radius: 10px;
   border: 2px solid #d4c6e0;
   background-color: #fff;
-  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  font-size: clamp(0.8rem, 2vw, 1rem); /* CHANGED from clamp(1rem, 2.2vw, 1.15rem) */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -265,10 +265,10 @@ html, body {
 
 
 .nationality-input label {
-  font-weight: 600;
+  font-weight: 400;
   margin-bottom: 6px;
   display: block;
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.9rem, 2vw, 1rem); /* CHANGED from clamp(0.95rem, 2.5vw, 1.1rem) */
 }
 
 .slider-ticks {
