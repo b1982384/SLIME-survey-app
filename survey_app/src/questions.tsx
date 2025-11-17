@@ -105,7 +105,7 @@ const EmojiProgression: React.FC = () => { // main component
   const [gender, setGender] = useState("");
   const [singlepredictor, setSinglePredictor] = useState("");
   const [nationality, setNationality] = useState("");
-  const [streamFrequency, setStreamFrequency] = useState("");
+  const [streamFrequency, setStreamFrequency] = useState("3");
 
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
@@ -149,7 +149,7 @@ const EmojiProgression: React.FC = () => { // main component
   };
 
   const addResponse = async () => {
-    if (!age.trim() || !race.trim() || !singlepredictor.trim() || !streamFrequency.trim() || !gender.trim())
+    if (!singlepredictor.trim() || !streamFrequency.trim() || !age.trim())
     {
       setAnswerError(true);
       alert('Please answer demographic and baseline questions before submittin.')
@@ -216,56 +216,79 @@ const EmojiProgression: React.FC = () => { // main component
       </div>
       <div className="demographic-info-container">
         <label>Demographic Data</label>
-        <div className = "age-input"> 
-              <input value={age} placeholder="Age" onChange = {(event) => setAge(event.target.value)}>
-              </input>
-            </div>
-            <div className = "predictor-dropdown">
-              <select value={singlepredictor} onChange={(event) => setSinglePredictor(event.target.value)}>
-                <option value = "" disabled hidden>Which title best describes you?</option>
-                <option value="Nonmusician">Nonmusician</option>
-                <option value="Music-loving nonmusician">Music-loving nonmusician</option>
-                <option value="Amateur musician">Amateur musician</option>
-                <option value="Serious amateur musician">Serious amateur musician</option>
-                <option value="Semi-professional musician">Semi-professional musician</option>
-                <option value="Professional musician">Professional musician</option>
-              </select>
-            </div>
-            <div className = "race-dropdown">
-              <select value={race} onChange={(event) => setRace(event.target.value)}>
-                <option value = "" disabled hidden>What is your race? SELECT ALL THAT APPLY</option>
-                <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
-                <option value="Asian">Asian</option>
-                <option value="Black or African American">Black or African American</option>
-                <option value="Hispanic, Latino, or Spanish origin">Hispanic, Latino, or Spanish origin</option>
-                <option value="Middle Eastern or North African">Middle Eastern or North African</option>
-                <option value="White">White</option>
-              </select>
-              </div>
-              <div className = "gender-dropdown">
-              <select value={gender} onChange={(event) => setGender(event.target.value)}>
-                <option value = "" disabled hidden>What is your gender?</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Nonbinary">Nonbinary</option>
-                <option value="Other">Other</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-              </div>
-              <div className = "frequency-dropdown">
-              <select value={streamFrequency} onChange={(event) => setStreamFrequency(event.target.value)}>
-                <option value = "" disabled hidden>How often do you use streaming platforms?</option>
-                <option value="Always">Always</option>
-                <option value="Often">Often</option>
-                <option value="Sometimes">Sometimes</option>
-                <option value="Rarely">Rarely</option>
-                <option value="Never">Never</option>
-              </select>
-            </div>
-            <div className = "nationality-input">
-            <label>In what country do you typically listen to music? (this is optional, and is meant to help us understand regional availability)</label>
-            <input value={nationality} placeholder="Nationality (optional)" onChange = {(event) => setNationality(event.target.value)}></input>
-            </div>
+
+        <div className="age-input">
+          <input value={age} placeholder="Age *" onChange={(e) => setAge(e.target.value)} />
+        </div>
+
+        <div className="predictor-dropdown">
+          <select value={singlepredictor} onChange={(e) => setSinglePredictor(e.target.value)}>
+            <option value="" disabled hidden>Which title best describes you? *</option>
+            <option value="Nonmusician">Nonmusician</option>
+            <option value="Music-loving nonmusician">Music-loving nonmusician</option>
+            <option value="Amateur musician">Amateur musician</option>
+            <option value="Serious amateur musician">Serious amateur musician</option>
+            <option value="Semi-professional musician">Semi-professional musician</option>
+            <option value="Professional musician">Professional musician</option>
+          </select>
+        </div>
+
+        {/* STREAMING FREQUENCY — slider 1–5 */}
+        <div className="frequency-slider">
+          <label>How often do you use music streaming platforms? * (1 = Never, 5 = Always)</label>
+
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value={streamFrequency}
+            onChange={(e) => setStreamFrequency(e.target.value)}
+            className="slider"
+          />
+
+          <div className="slider-value">
+            {streamFrequency === "1" ? "Never" :
+             streamFrequency === "2" ? "Rarely" :
+             streamFrequency === "3" ? "Sometimes" :
+             streamFrequency === "4" ? "Often" : "Always"}
+          </div>
+        </div>
+
+        {/* RACE — optional single dropdown */}
+        <div className="race-dropdown">
+          <select value={race} onChange={(e) => setRace(e.target.value)}>
+            <option value="">Race (optional)</option>
+            <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+            <option value="Asian">Asian</option>
+            <option value="Black or African American">Black or African American</option>
+            <option value="Hispanic, Latino, or Spanish origin">Hispanic, Latino, or Spanish origin</option>
+            <option value="Middle Eastern or North African">Middle Eastern or North African</option>
+            <option value="White">White</option>
+          </select>
+        </div>
+
+        {/* GENDER — optional */}
+        <div className="gender-dropdown">
+          <select value={gender} onChange={(e) => setGender(e.target.value)}>
+            <option value="">Gender (optional)</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Nonbinary">Nonbinary</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+
+        {/* NATIONALITY — now optional */}
+        <div className="nationality-input">
+          <label>In what country do you typically listen to music? (Optional)</label>
+          <input
+            value={nationality}
+            placeholder="Country (optional)"
+            onChange={(e) => setNationality(e.target.value)}
+          />
+        </div>
+
       </div>
 
       <div className="questions-container">
