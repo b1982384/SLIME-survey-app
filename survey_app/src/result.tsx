@@ -325,8 +325,8 @@ const AngleLabel = (props: AngleLabelProps) => {
   const centerX = cx ?? 0;
   const centerY = cy ?? 0;
   const r = radius || outerRadius || 100;
-  const OFFSET = r * 0.35;
-  const fontSize = Math.max(r * 0.08, 12);
+  const OFFSET = Math.min(r * 0.25, 45);
+  const fontSize = Math.max(Math.min(r * 0.06, 14), 10);
 
   const angleRad = (payload?.coordinate ?? 0) * (Math.PI / 180);
   const tx = centerX + (r + OFFSET) * Math.cos(-angleRad);
@@ -351,7 +351,7 @@ const AngleLabel = (props: AngleLabelProps) => {
       transform={`rotate(${rotation}, ${tx}, ${ty})`}
     >
       {lines.map((line, index) => (
-        <tspan key={index} x={tx} dy={index === 0 ? 0 : fontSize * 1.5}>
+        <tspan key={index} x={tx} dy={index === 0 ? 0 : fontSize * 1.2}>
           {line}
         </tspan>
       ))}
@@ -600,7 +600,7 @@ const ResultsPage = () => {
           <div className="radar-section">
             <div className="radar-wrapper">
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={radarData} outerRadius="80%" margin={{ top: 40, right: 40, bottom: 40, left: 40 }} >
+                <RadarChart data={radarData} outerRadius="72%" margin={{ top: 24, right: 24, bottom: 24, left: 24 }} >
                   <PolarGrid stroke="#d1d5db" strokeWidth={1} />
                   <PolarAngleAxis
                     dataKey="factor"
