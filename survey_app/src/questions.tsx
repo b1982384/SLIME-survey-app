@@ -111,7 +111,7 @@ const EmojiProgression: React.FC = () => { // main component
 
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   
   const randomizedQuestions = useMemo(() => {
     const sevenPointQs: Question[] = SEVEN_POINT_QUESTIONS.map((text, index) => ({
