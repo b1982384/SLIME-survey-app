@@ -348,26 +348,71 @@ html, body {
 
 .definitions-box {
   max-width: 750px;
-  margin: 1.5rem auto;
-  padding: clamp(12px, 2.5vw, 20px);
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
-  font-size: clamp(0.75rem, 1.7vw, 0.9rem);
-  line-height: 1.45;
-  color: #221501;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin: 2rem auto;
+  padding: clamp(18px, 3vw, 26px);
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+  border-left: 6px solid #A069E8; /* subtle branded accent */
+  font-family: var(--font-normal); /* ensures NOT monospace */
+  color: #2a1f34;
+  line-height: 1.55;
 }
 
+/* Intro paragraph slightly larger, separated */
+.definitions-intro {
+  margin-bottom: 1.5rem;
+  font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+  font-weight: 500;
+  color: #3a2850;
+}
+
+/* Each definition block */
+.definition-item {
+  margin-bottom: 1rem;
+}
+
+/* Strong labels look like headers */
+.definition-item strong {
+  display: block;
+  font-size: clamp(0.9rem, 1.8vw, 1rem);
+  font-weight: 700;
+  color: #4B2A63;
+  margin-bottom: 0.25rem;
+}
+
+/* Definition text */
+.definition-item span {
+  display: block;
+  font-size: clamp(0.85rem, 1.7vw, 0.95rem);
+  color: #33273f;
+}
+
+/* Remove bottom margin for last item */
+.definition-item:last-child {
+  margin-bottom: 0;
+}
+
+/* -------- DARK THEME -------- */
 .dark-theme .definitions-box {
-  background: rgba(40, 40, 40, 0.7);
+  background: rgba(40, 40, 40, 0.65);
+  border-left: 6px solid #9f7aea;
   color: #ffffff;
-  border-left-color: #9f7aea;
-  box-shadow: 0 2px 8px rgba(255,255,255,0.06);
+  box-shadow: 0 3px 12px rgba(255,255,255,0.05);
 }
 
-.definitions-box p {
-  margin: 0;
+.dark-theme .definitions-intro {
+  color: #e8d8ff;
 }
+
+.dark-theme .definition-item strong {
+  color: #d4b8ff;
+}
+
+.dark-theme .definition-item span {
+  color: #ece6f5;
+}
+
 
 /* Mobile (768 px is like ipad size) specific adjustments */
 @media (max-width: 768px) {
