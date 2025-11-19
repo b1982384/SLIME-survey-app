@@ -3,6 +3,11 @@ import './questions.css';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
+import "@fontsource/space-grotesk/400.css";
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/600.css";
+import "@fontsource/space-grotesk/700.css";
+
 
 type MoodOption = {
   emoji: string;
@@ -240,6 +245,7 @@ const EmojiProgression: React.FC = () => { // main component
       <div className="demographic-info-container">
         <label>Demographic Data</label>
 
+        {/* AGE */}
         <div className="age-input">
           <input value={age} placeholder="Age *" onChange={(e) => setAge(e.target.value)} />
         </div>
@@ -258,7 +264,7 @@ const EmojiProgression: React.FC = () => { // main component
 
         {/* STREAMING FREQUENCY — slider 1–5 */}
         <div className="frequency-slider">
-          <label>How often do you use music streaming platforms? (e.g., Spotify, Apple Music) * (1–5)</label>
+          <label>How often do you use music streaming platforms?* (1 = Never, 5 = Always)</label>
 
           <input
             type="range"

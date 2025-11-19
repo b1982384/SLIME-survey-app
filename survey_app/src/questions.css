@@ -1,17 +1,27 @@
 /* Base responsive layout */
-.questions-title {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
-  text-align: center;
-  color: #4B2A63; /* your violet core */
-  letter-spacing: -0.02em;
-  margin-bottom: clamp(20px, 4vw, 40px);
-  text-transform: uppercase;
-  background: linear-gradient(90deg, #A069E8, #47A6E0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: fadeSlideIn 0.8s ease forwards;
+:root {
+  --font-normal: 'Space Grotesk', sans-serif;
+  --font-display: 'Archivo Black', sans-serif;
 }
+
+/* Override global monospace font from HomePage */
+body {
+  font-family: var(--font-normal) !important;
+}
+
+.questions-container,
+.definitions-box,
+.demographic-info-container,
+.question-block,
+.question-text,
+.definition-item span,
+.definition-item strong,
+.demographic-field,
+.race-checkbox-group,
+.checkbox-item span {
+  font-family: var(--font-normal) !important;
+}
+
 
 @keyframes fadeSlideIn {
   from {
@@ -24,6 +34,20 @@
   }
 }
 
+.questions-title {
+  font-family: 'Archivo Black', sans-serif !important;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  text-align: center;
+  color: #4B2A63; /* your violet core */
+  letter-spacing: -0.02em;
+  margin-bottom: clamp(20px, 4vw, 40px);
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #A069E8, #47A6E0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeSlideIn 0.8s ease forwards;
+}
+
 .questions-container {
   display: flex;
   flex-direction: column;
@@ -32,23 +56,6 @@
   max-width: 1200px;
   margin: 0 auto;
 }
-
-/* .question-block {
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 2vw, 12px);
-} */
-/* .question-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: clamp(8px, 2vw, 12px);
-  width: 100%;
-} */
-
 
 /* Responsive emoji row */
 .scale-row {
@@ -354,7 +361,7 @@ html, body {
   border-radius: 14px;
   box-shadow: 0 3px 12px rgba(0,0,0,0.06);
   border-left: 6px solid #A069E8; /* subtle branded accent */
-  font-family: var(--font-normal); /* ensures NOT monospace */
+  font-family: var(--font-normal) !important; /* ensures NOT monospace */
   color: #2a1f34;
   line-height: 1.55;
 }
@@ -514,11 +521,52 @@ html, body {
   font-size: clamp(0.9rem, 2vw, 1rem); /* CHANGED from clamp(0.95rem, 2.5vw, 1.1rem) */
 }
 
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Track */
+.slider::-webkit-slider-runnable-track {
+  height: 6px;
+  background: #ccc;
+  border-radius: 3px;
+}
+.slider::-moz-range-track {
+  height: 6px;
+  background: #ccc;
+  border-radius: 3px;
+}
+
+/* Thumb */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 24px; 
+  width: 24px;
+  border-radius: 50%;
+  background: #764ba2;
+  margin-top: -9px; /* aligns thumb with track center */
+  cursor: pointer;
+}
+.slider::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #764ba2;
+  cursor: pointer;
+}
+
+
 .slider-ticks {
   display: flex;
   justify-content: space-between;
-  padding: 0 4px;
-  margin-top: 4px;
+  padding: 0 20px;  
+  margin-top: 6px;
   font-size: 0.9rem;
   color: var(--text-color);
 }
