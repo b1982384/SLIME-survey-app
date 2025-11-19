@@ -214,7 +214,7 @@
   font-size: clamp(2.5rem, 3vw, 2.6rem);
   text-align: center;
   letter-spacing: -0.02em;
-  margin-bottom: clamp(20px, 4vw, 40px);
+  margin-bottom: clamp(0px, 4vw, 40px);
   text-transform: uppercase;
   background: linear-gradient(90deg, #A069E8, #47A6E0);
   -webkit-background-clip: text;
@@ -231,7 +231,7 @@
 }
 
 .results-info h2 {
-  font-family:'Franklin Gothic Medium', sans-serif;
+  /* font-family:'Franklin Gothic Medium', sans-serif; */
   font-size: 2rem;
   margin-bottom: 10px;
   text-align: center;
@@ -239,7 +239,7 @@
 }
 
 .results-info h3 {
-  font-family:'Franklin Gothic Medium', sans-serif;
+  /* font-family:'Franklin Gothic Medium', sans-serif; */
   font-size: 1.5rem;
   margin-bottom: 10px;
   text-align: center;

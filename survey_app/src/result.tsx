@@ -602,7 +602,8 @@ const ResultsPage = () => {
             alt={results.topFactor.name}
           />
           <h4>Illustration by Katie Lam</h4>
-          <h2>You are a <strong>{results.topFactor.name}</strong>!</h2>
+          <h2>You are a...</h2>
+          <h1>{results.topFactor.name}</h1>
           {/* <h3 className="score">
             Score: {(results.topFactor.score * 100).toFixed(1)}%
           </h3> */}
