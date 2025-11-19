@@ -565,7 +565,7 @@ html, body {
 .slider-ticks {
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;  
+  padding: 0 50px;  
   margin-top: 6px;
   font-size: 0.9rem;
   color: var(--text-color);
@@ -629,3 +629,11 @@ html, body {
   display: inline-block; /* keeps label text inline */
 }
 
+
+/* Standardize main content width */
+.definitions-box,
+.demographic-info-container {
+  max-width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
