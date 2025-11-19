@@ -596,31 +596,34 @@ const ResultsPage = () => {
         </div>
         </div>
       </div>
-      <h1>Factor Distributions</h1>
-      <div className="factor-frequency-charts" style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
-        {mounted && Object.entries(realfactorNames).map(([key, name], idx) => (
-          <FactorFrequencyChart
-            key={key}
-            data={FAKE_FACTOR_FREQUENCIES[idx]}
-            factorLabel={name}
-            userScore={results?.factorScores[Number(key)]}
-          />
-        ))}
-      </div>
 
-      <div>
+      <section className="results-section">
+        <h1>Factor Distributions</h1>
+        <div className="factor-frequency-charts">
+          {mounted && Object.entries(realfactorNames).map(([key, name], idx) => (
+            <FactorFrequencyChart
+              key={key}
+              data={FAKE_FACTOR_FREQUENCIES[idx]}
+              factorLabel={name}
+              userScore={results?.factorScores[Number(key)]}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="results-section">
         <h3>Description of Results</h3>
-        <p>1.	Platform Trust - Values discovery through algorithms or others’ suggestions. Open-minded, curious, and comfortable letting recommendations guide their next listen. </p>
-        <p>2.	Platform Control - Prefers intentional listening and personal curation. Chooses what to play with purpose and enjoys full control over their music experience.</p>
-        <p>3.	Playlist Creator - Treats music as a diary of moments and moods. Each song carries personal meaning, and curation reflects emotional awareness and memory.</p>
-        <p>4.	Independent Listener - Listens privately and with discernment. Focuses on depth and authenticity in music rather than trends or external influence.</p>
-        <p>5.	Deep Listener - Immersed in the details of sound. Appreciates structure, production, and full albums, approaching music with patience and analytical curiosity.</p>
-        <p>6.	Discovery Engaged - Integrates music naturally into daily life. Enjoys finding new artists, sharing songs socially, and staying tuned to emerging trends.</p>
-        <p>7.	Explorer - Seeks out the unfamiliar. Finds joy in uncovering hidden gems and building meaning through exploration and diverse listening.</p>
-        <p>8.	Physical & Emotional - Listens communally and expressively. Uses music to create connection and atmosphere, often valuing tangible formats and shared experiences.</p>
-      </div>
+        <p>1. Platform Trust - Values discovery through algorithms or others’ suggestions. Open-minded, curious, and comfortable letting recommendations guide their next listen.</p>
+        <p>2. Platform Control - Prefers intentional listening and personal curation. Chooses what to play with purpose and enjoys full control over their music experience.</p>
+        <p>3. Playlist Creator - Treats music as a diary of moments and moods. Each song carries personal meaning, and curation reflects emotional awareness and memory.</p>
+        <p>4. Independent Listener - Listens privately and with discernment. Focuses on depth and authenticity in music rather than trends or external influence.</p>
+        <p>5. Deep Listener - Immersed in the details of sound. Appreciates structure, production, and full albums, approaching music with patience and analytical curiosity.</p>
+        <p>6. Discovery Engaged - Integrates music naturally into daily life. Enjoys finding new artists, sharing songs socially, and staying tuned to emerging trends.</p>
+        <p>7. Explorer - Seeks out the unfamiliar. Finds joy in uncovering hidden gems and building meaning through exploration and diverse listening.</p>
+        <p>8. Physical & Emotional - Listens communally and expressively. Uses music to create connection and atmosphere, often valuing tangible formats and shared experiences.</p>
+      </section>
 
-      <div className="share-section">
+      <section className="results-section share-section">
         <p>Share your results! Use the button below to download, take a screenshot, or share to socials.</p>
         <button className="download-btn" onClick={handleDownloadImage}>
           <Download size={20} /> Download Results
@@ -659,7 +662,7 @@ const ResultsPage = () => {
             <EmailIcon size={36} round />
           </EmailShareButton>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

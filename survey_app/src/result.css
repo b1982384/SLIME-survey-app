@@ -3,9 +3,21 @@
    - .results-layout
    - .radar-section
    - .results-info
-   - The share block is targeted via `.results-layout + div` (because your share block has no class)
+   - .share-section (share + download CTA wrapper)
    If you add `className="results-page"` to the top wrapper later, the .results-page rules here will apply too.
 */
+
+/* Force consistent width for every section inside results-page */
+.results-page > :not(.corner-banners):not(.results-layout):not(.share-section) {
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
+}
+
 
 .results-page {
   position: relative; /* 👈 make this the anchor for absolutely positioned banners */
@@ -72,13 +84,49 @@
   max-width: 1200px;
   width: 100%;
   z-index: 1;
-  background: rgba(53, 71, 101, 0.5); 
-  backdrop-filter: blur(5px); /* frosted glass blur */
+  background: rgba(15, 23, 42, 0.65); 
+  backdrop-filter: blur(12px); /* frosted glass blur */
   -webkit-backdrop-filter: blur(12px); /* Safari support */
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.25); /* subtle white edge */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18); /* subtle white edge */
+  box-shadow: 0 25px 60px rgba(5, 8, 20, 0.4);
   color: #fff; /* text stays visible on tinted glass */
+  padding: 32px;
+}
+
+.results-section {
+  width: 100%;
+  max-width: 1200px;
+  background: rgba(15, 23, 42, 0.65);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 25px 60px rgba(5, 8, 20, 0.35);
+  padding: clamp(24px, 4vw, 40px);
+  margin-top: 30px;
+  color: rgba(240, 244, 255, 0.92);
+}
+
+.results-section h1,
+.results-section h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Archivo Black', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.results-section h1 {
+  font-size: clamp(2rem, 3vw, 2.3rem);
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #A069E8, #47A6E0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.results-section h3 {
+  font-size: clamp(1.4rem, 2vw, 1.8rem);
+  color: rgba(148, 191, 255, 0.95);
 }
 
 /* Radar container (element with className="radar-section") */
@@ -144,7 +192,7 @@
   flex-direction: column;
   text-align: center;
   align-items: center;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(240, 244, 255, 0.92);
   order: 1;
   z-index:1;
 }
@@ -152,15 +200,14 @@
 .results-info p{
   letter-spacing: -0.02em;
   font-weight: 400;
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-size: clamp(1rem, 2vw, 1.25rem);
   line-height: 1.5;
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
   position: relative;
-  padding: 1.5em;
-  color: rgba(255, 255, 255, 1);
-
+  padding: 1.5em 0.5em;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .results-info img {
@@ -188,10 +235,9 @@
 .results-info h4 {
   font-size: 12px;
   text-align: center;
-  padding-bottom: 10px;
-  margin-left: 30%; /* push slightly left relative to container */
-  margin-right: auto; /* keep it flexible */
-  max-width: 80%; /* optional */
+  padding-bottom: 16px;
+  margin: 0 auto 6px auto;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .results-info h2 {
@@ -210,38 +256,20 @@
   color: #3498db;
 }
 
-/* Share block — your TSX renders a plain div right after .results-layout,
-   so we target that sibling. If you add a class to the share block, replace this selector. */
-.results-layout + div {
-  text-align: center;
-  max-width: 600px;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
-}
-
-.results-layout + div p {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 15px;
-  line-height: 1.5;
-}
-
 /* Center share section and stack elements */
 .share-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 18px 0;
-  font-family:'Franklin Gothic Medium', sans-serif;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
   text-align: center;
-  color: #3498db;
-  z-index: 1;
+}
+
+.share-section p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(226, 232, 240, 0.9);
+  margin: 0;
 }
 
 /* Button styling: centered, pill, gradient, subtle shadow */
@@ -293,9 +321,11 @@
 .share-section .social-row {
   display: flex;
   gap: 10px;
-  margin-top: 6px;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  margin-top: 10px;
 }
 
 /* Small responsive tweak for narrow screens */
@@ -304,32 +334,6 @@
     padding: 9px 14px;
     font-size: 13px;
   }
-}
-
-/* Download button inside the share block (targets the button element directly) */
-.results-layout + div > button,
-.results-layout + div button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #ffffff;
-  background-color: #3498db;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.18s ease;
-}
-
-/* Hover / focus styles (these apply unless inline JS overrides them) */
-.results-layout + div button:hover,
-.results-layout + div button:focus {
-  background-color: #2980b9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Loading & straightlined messages (if you add className to those divs later) */
@@ -370,6 +374,44 @@
   }
 }
 
+.factor-frequency-charts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 18px;
+  margin: 30px auto 20px auto;
+  width: 100%;
+}
+
+.factor-frequency-charts > div {
+  flex: 1 1 280px;
+  background: rgba(15, 23, 42, 0.72);
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 12px 14px 18px 14px;
+  box-shadow: 0 15px 40px rgba(5, 8, 20, 0.45);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.factor-frequency-charts > div:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 25px 55px rgba(5, 8, 20, 0.5);
+}
+
+.factor-frequency-charts > div > div {
+  filter: drop-shadow(0 8px 20px rgba(2, 6, 23, 0.6));
+}
+
+.factor-frequency-charts > div > div + div {
+  font-size: 0.9rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 10px;
+  color: rgba(226, 232, 240, 0.88);
+}
+
 
 /* radar o */
 .radar-section .recharts-radar .recharts-polygon {
@@ -395,4 +437,36 @@
 .radar-section .recharts-polar-grid .recharts-polar-grid-angle line {
   stroke: #454f63 !important;
   opacity: 0.6;
+}
+
+.radar-wrapper {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .radar-wrapper {
+    max-width: 320px;
+  }
+}
+
+.recharts-default-tooltip {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid rgba(148, 163, 184, 0.5) !important;
+  border-radius: 10px !important;
+  padding: 8px 10px !important;
+  font-size: 12px !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 10px 25px rgba(2, 6, 23, 0.5);
+}
+
+.recharts-tooltip-item {
+  color: #f8fafc !important;
+}
+
+.recharts-tooltip-label {
+  color: rgba(148, 191, 255, 0.9) !important;
+  font-weight: 600 !important;
 }

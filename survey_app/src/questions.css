@@ -631,7 +631,7 @@ html, body {
 .questions-container,
 .definitions-box,
 .demographic-info-container {
-  max-width: 1200px;
+  max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
   padding-left: clamp(12px, 3vw, 32px);
