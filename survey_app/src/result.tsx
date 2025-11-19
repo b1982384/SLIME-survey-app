@@ -526,10 +526,13 @@ const ResultsPage = () => {
       });
 
       // Position canvas absolutely over original h1
-      const parent = h1.parentNode;
+      const parent = h1.parentNode as HTMLElement | null;
       tempCanvas.style.position = "absolute";
-      tempCanvas.style.left = `${(h1 as HTMLElement).offsetLeft}px`;
-      tempCanvas.style.top = `${(h1 as HTMLElement).offsetTop}px`;
+      const parentRect = parent?.getBoundingClientRect();
+      const leftOffset = parentRect ? h1Rect.left - parentRect.left : (h1 as HTMLElement).offsetLeft;
+      const topOffset = parentRect ? h1Rect.top - parentRect.top : (h1 as HTMLElement).offsetTop;
+      tempCanvas.style.left = `${leftOffset}px`;
+      tempCanvas.style.top = `${topOffset}px`;
       tempCanvas.style.zIndex = "1000";
 
       (h1 as HTMLElement).style.visibility = "hidden";
@@ -605,7 +608,7 @@ const ResultsPage = () => {
         className={`results-layout${isDownloadMode ? ' download-mode' : ''}`}
       >
         <div className="results-info">
-          <h1>Your Music Listening Profile</h1>
+          <h1>Your Listener Profile</h1>
           <img
             src={factorImages[results.topFactor.number]}
             alt={results.topFactor.name}
