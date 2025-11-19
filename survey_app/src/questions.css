@@ -209,14 +209,52 @@ html, body {
   text-align: center;
 }
 
-/* Mobile specific adjustments */
+/* Mobile (768 px is like ipad size) specific adjustments */
 @media (max-width: 768px) {
+
+  /* Slightly tighter spacing on mobile */
   .scale-row {
     gap: 2px;
+    overflow-x: auto; /* allow scrolling instead of shrinking */
   }
-  
+
+  /* Make emoji buttons taller and not circular */
+  .p-4 {
+    width: clamp(70px, 20vw, 110px);
+    height: clamp(90px, 25vw, 140px); 
+    border-radius: 16px;
+  }
+
+  /* Make label readable and allow wrapping */
   .p-4 p {
-    display: none; /* Hide labels on very small screens if needed */
+    font-size: 0.7rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+}
+
+/* Very small screens (narrow phones) */
+@media (max-width: 420px) {
+
+  .p-4 {
+    width: clamp(40px, 14vw, 55px);
+    height: clamp(55px, 18vw, 80px);
+    padding: 4px;
+    border-radius: 14px;
+  }
+
+  .p-4 span {
+    font-size: clamp(1rem, 5vw, 1.3rem);
+    margin-bottom: 2px;
+  }
+
+  .p-4 p {
+    font-size: 0.55rem;
+    line-height: 1.1;
+  }
+
+  .scale-row {
+    gap: 2px;
   }
 }
 
