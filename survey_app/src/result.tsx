@@ -326,7 +326,10 @@ const AngleLabel = (props: AngleLabelProps) => {
   const centerY = cy ?? 0;
   const r = radius || outerRadius || 100;
   const OFFSET = Math.min(r * 0.25, 45);
-  const fontSize = Math.max(Math.min(r * 0.06, 14), 10);
+  const isMobile = window.innerWidth < 600;
+  const fontSize = isMobile
+    ? Math.max(Math.min(r * 0.06, 14), 10)
+    : Math.max(Math.min(r * 0.1, 18), 12);
 
   const angleRad = (payload?.coordinate ?? 0) * (Math.PI / 180);
   const tx = centerX + (r + OFFSET) * Math.cos(-angleRad);
