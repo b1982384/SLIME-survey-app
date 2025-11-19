@@ -247,12 +247,12 @@ const EmojiProgression: React.FC = () => { // main component
 
         {/* AGE */}
         <div className="age-input">
-          <input value={age} placeholder="Age *" onChange={(e) => setAge(e.target.value)} />
+          <input value={age} placeholder="Age*" onChange={(e) => setAge(e.target.value)} />
         </div>
 
         <div className="predictor-dropdown">
           <select value={singlepredictor} onChange={(e) => setSinglePredictor(e.target.value)}>
-            <option value="" disabled>Which title best describes you? *</option>
+            <option value="" disabled>Which title best describes you?*</option>
             <option value="Nonmusician">Nonmusician</option>
             <option value="Music-loving nonmusician">Music-loving nonmusician</option>
             <option value="Amateur musician">Amateur musician</option>
@@ -327,7 +327,7 @@ const EmojiProgression: React.FC = () => { // main component
           <label>In what country do you typically listen to music? (Optional)</label>
           <input
             value={nationality}
-            placeholder="Country (optional)"
+            placeholder="Country"
             onChange={(e) => setNationality(e.target.value)}
           />
         </div>
