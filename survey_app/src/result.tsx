@@ -19,7 +19,7 @@ import {
   ReferenceLine,
 } from 'recharts';
 
-import type { TooltipProps } from 'recharts';
+import type { TooltipContentProps } from 'recharts';
 
 import './result.css';
 
@@ -114,16 +114,28 @@ const QUESTION_TO_FACTOR: Record<number, number> = {
 
 const NEGATIVELY_WEIGHTED = new Set([12]);
 
+// const REAL_FACTOR_NAMES: RealFactorNames = {
+//   1: "Platform Trust",
+//   2: "Platform Control",
+//   3: "Playlist Creator",
+//   4: "Independent Listener",
+//   5: "Deep Listener",
+//   6: "Discovery Engaged",
+//   7: "Explorer",
+//   8: "Physical & Emotional",
+// };
+
 const REAL_FACTOR_NAMES: RealFactorNames = {
-  1: "Platform Trust",
-  2: "Platform Control",
-  3: "Playlist Creator",
-  4: "Independent Listener",
-  5: "Deep Listener",
-  6: "Discovery Engaged",
-  7: "Explorer",
-  8: "Physical & Emotional",
+  1: "Lean-Back Listening",
+  2: "Skeptical of Algorithms",
+  3: "Emotional Alignment",
+  4: "Individuality",// & Non-Conformity",
+  5: "Deep Listening",
+  6: "Musical Omnivorism",
+  7: "Exploration",
+  8: "Curation",
 };
+
 
 const FACTOR_NAMES: FactorNames = {
   1: "Smart Speaker",
@@ -147,7 +159,7 @@ const FACTOR_DESCRIPTIONS: FactorNames = {
   8: "You’re a Boombox — expressive, communal, and full of presence. For listeners like you, music is both a cultural relic and a way to connect. Listening is a shared experience – you curate the vibe, set the tone, and bring people together through sound. As a Boombox, you’re more likely to collect physical media like vinyl, and odds are, you’re the one on aux.",
 };
 
-const FrequencyTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
+const FrequencyTooltip: React.FC<TooltipContentProps<number, string>> = ({ active, payload, label }) => {
   if (!active || !payload || payload.length === 0) return null;
 
   const entry = payload.find((item) => typeof item.value === 'number');
@@ -250,7 +262,7 @@ const FactorFrequencyChart: React.FC<FactorFrequencyChartProps> = ({ data, facto
             tickFormatter={(v) => `${Math.round(v * 100)}%`}
           />
           <YAxis hide domain={[0, 'dataMax']} />
-          <Tooltip content={<FrequencyTooltip />} />
+          <Tooltip<number, string> content={(props) => <FrequencyTooltip {...props} />} />
 
           <Area
             type="monotone"
@@ -432,10 +444,6 @@ const ResultsPage = () => {
     }
   }, [loading, responses, navigate]);
 
-
-
-
-
   const handleDownloadImage = async () => {
     if (!shareableRef.current) return;
 
@@ -594,12 +602,12 @@ const ResultsPage = () => {
             alt={results.topFactor.name}
           />
           <h4>Illustration by Katie Lam</h4>
-          <h2>You are a {results.topFactor.name}!</h2>
-          <h3 className="score">
+          <h2>You are a <strong>{results.topFactor.name}</strong>!</h2>
+          {/* <h3 className="score">
             Score: {(results.topFactor.score * 100).toFixed(1)}%
-          </h3>
+          </h3> */}
           <p>{results.topFactor.description}</p>
-          <h2>Radar Chart</h2>
+          <h2>Your Listening Traits</h2>
           <div className="radar-section">
             <div className="radar-wrapper">
               <ResponsiveContainer width="100%" height="100%">
@@ -628,7 +636,7 @@ const ResultsPage = () => {
       </div>
 
       <section className="results-section">
-        <h1>Factor Distributions</h1>
+        <h1>Trait Distributions</h1>
         <div className="factor-frequency-charts">
           {mounted && Object.entries(REAL_FACTOR_NAMES).map(([key, name], idx) => (
             <FactorFrequencyChart
@@ -642,15 +650,15 @@ const ResultsPage = () => {
       </section>
 
       <section className="results-section">
-        <h3>Description of Results</h3>
-        <p>1. Platform Trust - Values discovery through algorithms or others’ suggestions. Open-minded, curious, and comfortable letting recommendations guide their next listen.</p>
-        <p>2. Platform Control - Prefers intentional listening and personal curation. Chooses what to play with purpose and enjoys full control over their music experience.</p>
-        <p>3. Playlist Creator - Treats music as a diary of moments and moods. Each song carries personal meaning, and curation reflects emotional awareness and memory.</p>
-        <p>4. Independent Listener - Listens privately and with discernment. Focuses on depth and authenticity in music rather than trends or external influence.</p>
-        <p>5. Deep Listener - Immersed in the details of sound. Appreciates structure, production, and full albums, approaching music with patience and analytical curiosity.</p>
-        <p>6. Discovery Engaged - Integrates music naturally into daily life. Enjoys finding new artists, sharing songs socially, and staying tuned to emerging trends.</p>
-        <p>7. Explorer - Seeks out the unfamiliar. Finds joy in uncovering hidden gems and building meaning through exploration and diverse listening.</p>
-        <p>8. Physical & Emotional - Listens communally and expressively. Uses music to create connection and atmosphere, often valuing tangible formats and shared experiences.</p>
+        <h1>About Each Trait</h1>
+        <p>1. Lean-Back Listening: This factor indicates an openness to exploring music through recommendation and expanding one’s musical pallette. There is a high degree of algorithmic trust.</p>
+        <p>2. Skeptical of Algorithms: This factor demonstrates a low-degree of algorithmic trust, and a high degree for control. Scoring high on this factor usually means that people feel uneasy about letting recommendation algorithms decide one’s listening habits.</p>
+        <p>3. Emotional Alignment: This factor demonstrates an alignment of music with an emotional state, and also a general awareness of how algorithmic recommendation works. Scoring high in this factor generally means that one has a personal relationship with the music they listen to.</p>
+        <p>4. Individuality: Scoring high in this factor indicates a preference for personal alignment over popular opinion or mainstream trends. Individuals high in individuality tend to trust algorithms less and show little interest in recommendations from either friends or automated systems.</p>
+        <p>5. Deep Listening - Immersed in the details of sound. Appreciates structure, production, and full albums, approaching music with patience and analytical curiosity.</p>
+        <p>6. Musical Omnivorism: Participants scoring high in this measure are very open to new music, listen to music socially, and love to dig deeper into new arts, bands, as well as what’s trending.</p>
+        <p>7. Exploration: People scoring high in this measure like to explore everything, and will frequently listen to music that they haven’t heard before.</p>
+        <p>8. Curation: Scoring high in this measure means that you connect deeply to music on an emotional level, and you view music very socially. People scoring high in this tend to collect physical music, make playlists and mixes for their friends and family, and connect music to emotion.</p>
       </section>
 
       <section className="results-section share-section">
