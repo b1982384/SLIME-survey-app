@@ -431,12 +431,14 @@
   width: 100%;
   aspect-ratio: 1;
   max-width: 450px;
+  min-width: 300px;
   margin: 0 auto;
 }
 
 @media (max-width: 600px) {
   .radar-wrapper {
     max-width: 320px;
+    min-width: 240px;
   }
 }
 

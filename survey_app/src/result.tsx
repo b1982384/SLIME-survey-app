@@ -598,26 +598,28 @@ const ResultsPage = () => {
           <p>{results.topFactor.description}</p>
           <h2>Radar Chart</h2>
           <div className="radar-section">
-            <ResponsiveContainer width="100%" height={Math.min(window.innerWidth * 0.8, 400)}>
-              <RadarChart data={radarData} outerRadius="80%" margin={{ top: 40, right: 40, bottom: 40, left: 40 }} >
-                <PolarGrid stroke="#d1d5db" strokeWidth={1} />
-                <PolarAngleAxis
-                  dataKey="factor"
-                  tick={<AngleLabel />}
-                  tickLine={false}
-                />
-                <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-                <Radar
-                  dataKey="score"
-                  stroke="#1f2937"
-                  fill="none"
-                  fillOpacity={0}
-                  strokeWidth={3}
-                  dot={{ fill: '#1f2937', r: 5, strokeWidth: 2, stroke: '#ffffff' }}
-                  isAnimationActive={false}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
+            <div className="radar-wrapper">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={radarData} outerRadius="80%" margin={{ top: 40, right: 40, bottom: 40, left: 40 }} >
+                  <PolarGrid stroke="#d1d5db" strokeWidth={1} />
+                  <PolarAngleAxis
+                    dataKey="factor"
+                    tick={<AngleLabel />}
+                    tickLine={false}
+                  />
+                  <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+                  <Radar
+                    dataKey="score"
+                    stroke="#1f2937"
+                    fill="none"
+                    fillOpacity={0}
+                    strokeWidth={3}
+                    dot={{ fill: '#1f2937', r: 5, strokeWidth: 2, stroke: '#ffffff' }}
+                    isAnimationActive={false}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
