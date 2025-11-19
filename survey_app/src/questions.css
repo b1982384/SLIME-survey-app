@@ -256,7 +256,7 @@ html, body {
   }
 }
 
-/* Very small screens (narrow phones) */
+/* Very small screens (narrow phones - untested as vercel deployment down 11/18) */
 @media (max-width: 420px) {
 
   .p-4 {
