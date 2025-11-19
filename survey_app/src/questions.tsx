@@ -167,7 +167,7 @@ const EmojiProgression: React.FC = () => { // main component
     if (!singlepredictor.trim() || !streamFrequency.trim() || !age.trim())
     {
       setAnswerError(true);
-      alert('Please answer demographic and baseline questions before submittin.')
+      alert('Please answer required questions before submitting.')
       return;
     }
 

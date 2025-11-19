@@ -82,6 +82,19 @@
   padding: 32px;
 }
 
+.results-layout.download-mode {
+  background: #0f1f27;
+  border-color: #0f1f27;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.results-layout.download-mode .results-info img {
+  max-width: 360px;
+  object-fit: contain;
+}
+
 .results-section {
   width: 100%;
   max-width: 1000px;
@@ -207,6 +220,8 @@
   object-fit: cover;      /* crop if necessary */
   object-position: bottom;/* crop from top if needed */
   border-radius: 10px;    /* optional styling */
+  display: block;
+  margin: 0 auto;
 }
 
 .results-info h1 {

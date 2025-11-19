@@ -397,6 +397,7 @@ const ResultsPage = () => {
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(true);
   const [isStraightlined, setIsStraightlined] = useState(false);
+  const [isDownloadMode, setIsDownloadMode] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -444,6 +445,8 @@ const ResultsPage = () => {
     }
   }, [loading, responses, navigate]);
 
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
   const handleDownloadImage = async () => {
     if (!shareableRef.current) return;
 
@@ -453,6 +456,8 @@ const ResultsPage = () => {
     let tempCanvas: HTMLCanvasElement | null = null;
 
     try {
+      setIsDownloadMode(true);
+      await delay(50);
       const text = h1.textContent ? h1.textContent.trim().toUpperCase() : '';
       const style = getComputedStyle(h1);
       const fontFamily = "'Archivo Black', sans-serif";
@@ -535,7 +540,7 @@ const ResultsPage = () => {
       // Capture screenshot
       const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(shareableRef.current, {
-        backgroundColor: null,
+        backgroundColor: "#0f1f27",
         scale: 2,
       });
 
@@ -551,6 +556,7 @@ const ResultsPage = () => {
       // Cleanup
       if (tempCanvas && tempCanvas instanceof HTMLCanvasElement) tempCanvas.remove();
       if (h1 && h1 instanceof HTMLElement) h1.style.visibility = "visible";
+      setIsDownloadMode(false);
     }
   };
 
@@ -594,7 +600,10 @@ const ResultsPage = () => {
         <img src={cornerBanner} alt="Bottom Banner" className="corner-banner bottom-right" />
       </div>
 
-      <div ref={shareableRef} className="results-layout">
+      <div
+        ref={shareableRef}
+        className={`results-layout${isDownloadMode ? ' download-mode' : ''}`}
+      >
         <div className="results-info">
           <h1>Your Music Listening Profile</h1>
           <img
