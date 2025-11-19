@@ -9,6 +9,13 @@ body {
   font-family: var(--font-normal) !important;
 }
 
+.questions-shell {
+  width: min(100%, 1000px);
+  margin: 0 auto;
+  padding: clamp(16px, 4vw, 32px);
+  box-sizing: border-box;
+}
+
 .questions-container,
 .definitions-box,
 .demographic-info-container,
@@ -53,8 +60,10 @@ body {
   flex-direction: column;
   gap: clamp(16px, 3vw, 24px);
   padding: clamp(12px, 3vw, 24px);
-  max-width: 1200px;
+  max-width: 1000px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* Responsive emoji row */
@@ -62,11 +71,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: clamp(2px, 1vw, 5px);
-  overflow-x: auto;
   padding: 8px 0;
-  overflow:visible;
+  overflow: visible;
+}
+
+@media (min-width: 1024px) {
+  .scale-row {
+    flex-wrap: nowrap;
+  }
 }
 
 .question-block {
@@ -83,6 +97,7 @@ body {
   background: rgba(255, 255, 255, 0.05);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   overflow: visible;
+  box-sizing: border-box;
 }
 .question-index {
   position: absolute;
@@ -362,6 +377,9 @@ html, body {
   font-family: var(--font-normal) !important; /* ensures NOT monospace */
   color: #2a1f34;
   line-height: 1.55;
+  width: 100%;
+  max-width: 1000px;
+  box-sizing: border-box;
 }
 
 /* Intro paragraph slightly larger, separated */
@@ -424,17 +442,17 @@ html, body {
 
   /* Slightly tighter spacing on mobile */
   .scale-row {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 2px;
-    overflow-x: auto; /* allow scrolling instead of shrinking */
+    justify-content: space-between;
+    gap: 6px;
   }
 
   /* Make emoji buttons taller and not circular */
   .p-4 {
-    width: clamp(70px, 20vw, 110px);
-    height: clamp(90px, 25vw, 140px); 
-    border-radius: 16px;
+    width: calc(33.33% - 8px);
+    min-width: 90px;
+    height: auto;
+    border-radius: 18px;
+    padding: 12px 8px;
   }
 
   /* Make label readable and allow wrapping */
@@ -449,24 +467,25 @@ html, body {
 @media (max-width: 420px) {
 
   .p-4 {
-    width: clamp(40px, 14vw, 55px);
-    height: clamp(55px, 18vw, 80px);
-    padding: 4px;
-    border-radius: 14px;
+    width: calc(50% - 8px);
+    min-width: 0;
+    height: auto;
+    padding: 10px 6px;
+    border-radius: 16px;
   }
 
   .p-4 span {
-    font-size: clamp(1rem, 5vw, 1.3rem);
-    margin-bottom: 2px;
+    font-size: clamp(1.1rem, 5vw, 1.4rem);
+    margin-bottom: 4px;
   }
 
   .p-4 p {
-    font-size: 0.55rem;
+    font-size: 0.6rem;
     line-height: 1.1;
   }
 
   .scale-row {
-    gap: 2px;
+    gap: 4px;
   }
 }
 
@@ -479,6 +498,9 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: clamp(10px, 1.5vw, 18px);
+  width: 100%;
+  max-width: 1000px;
+  box-sizing: border-box;
 }
 
 .dark-theme .demographic-info-container {

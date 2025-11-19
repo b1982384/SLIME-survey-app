@@ -7,18 +7,6 @@
    If you add `className="results-page"` to the top wrapper later, the .results-page rules here will apply too.
 */
 
-/* Force consistent width for every section inside results-page */
-.results-page > :not(.corner-banners):not(.results-layout):not(.share-section) {
-  width: 100%;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 16px;
-  padding-right: 16px;
-  box-sizing: border-box;
-}
-
-
 .results-page {
   position: relative; /* 👈 make this the anchor for absolutely positioned banners */
   display: flex;
@@ -81,7 +69,7 @@
   flex-direction: row;
   gap: 40px;
   align-items: flex-start;
-  max-width: 1200px;
+  max-width: 1000px;
   width: 100%;
   z-index: 1;
   background: rgba(15, 23, 42, 0.65); 
@@ -96,7 +84,7 @@
 
 .results-section {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   background: rgba(15, 23, 42, 0.65);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -452,21 +440,26 @@
   }
 }
 
-.recharts-default-tooltip {
-  background-color: rgba(15, 23, 42, 0.95) !important;
-  border: 1px solid rgba(148, 163, 184, 0.5) !important;
-  border-radius: 10px !important;
-  padding: 8px 10px !important;
-  font-size: 12px !important;
-  color: #e2e8f0 !important;
+.factor-tooltip {
+  background-color: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #e2e8f0;
   box-shadow: 0 10px 25px rgba(2, 6, 23, 0.5);
+  min-width: 120px;
+  text-align: center;
 }
 
-.recharts-tooltip-item {
-  color: #f8fafc !important;
+.factor-tooltip__label {
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(148, 191, 255, 0.95);
+  margin-bottom: 6px;
 }
 
-.recharts-tooltip-label {
-  color: rgba(148, 191, 255, 0.9) !important;
-  font-weight: 600 !important;
+.factor-tooltip__value {
+  font-size: 1rem;
+  font-weight: 600;
 }

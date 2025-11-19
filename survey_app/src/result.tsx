@@ -8,9 +8,21 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
+  AreaChart,
+  Area,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
 } from 'recharts';
+
+import type { TooltipProps } from 'recharts';
+
 import './result.css';
-import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -89,6 +101,132 @@ const FAKE_FACTOR_FREQUENCIES = [
   ]
 ];
 
+const QUESTION_TO_FACTOR: Record<number, number> = {
+  5: 1, 10: 1, 1: 1,
+  13: 2, 9: 2, 6: 2,
+  22: 3, 21: 3, 15: 3,
+  8: 4, 11: 4, 2: 4,
+  19: 5, 4: 5, 12: 5,
+  3: 6, 18: 6, 23: 6,
+  16: 7, 0: 7, 7: 7,
+  20: 8, 17: 8, 14: 8,
+};
+
+const NEGATIVELY_WEIGHTED = new Set([12]);
+
+const REAL_FACTOR_NAMES: RealFactorNames = {
+  1: "Platform Trust",
+  2: "Platform Control",
+  3: "Playlist Creator",
+  4: "Independent Listener",
+  5: "Deep Listener",
+  6: "Discovery Engaged",
+  7: "Explorer",
+  8: "Physical & Emotional",
+};
+
+const FACTOR_NAMES: FactorNames = {
+  1: "Smart Speaker",
+  2: "Wired Earbuds",
+  3: "Jukebox",
+  4: "Noise-Cancelling Headphones",
+  5: "Studio Headphones",
+  6: "AirPods",
+  7: "Vinyl Crate",
+  8: "Boombox",
+};
+
+const FACTOR_DESCRIPTIONS: FactorNames = {
+  1: "You’re a Smart Speaker – curious, open, and tuned in to what’s up next. Listeners like you have a high degree of musical openness and trust the process of discovery, whether it comes from a recommendation algorithm or a friend’s playlist. Your listening habits reflect a want to expand one’s musical palette and comfort with serendipity, new sounds that still fit your taste.",
+  2: "You’re Wired Earbuds – direct, deliberate, and happily analog in spirit. Listeners like you prefer to stay in control of what’s in the queue and value intentional listening over endless recommendations. For you, music is a space of agency, knowing what you want to play and when.",
+  3: "You’re a Jukebox –  a personal archive of sound and sentiment where every track has a time, place, and emotion attached. Listeners like you are deeply aware of how music maps onto mood, and you take pride in knowing exactly which song fits the moment.",
+  4: "You’re Noise-Cancelling Headphones — focused, discerning, and immune to the noise of trends. Listeners like you listen privately and intentionally, finding meaning in the music you choose rather than what’s surfaced for you. In other words, you strive for resonance over popularity.",
+  5: "You’re Studio Headphones — patient, analytical, and deeply engaged. Listeners like you are deeply engaged, not just hearing music, but truly listening to it. You likely take pleasure in the craft, structure, and texture of sound. Listeners like you tend to listen by full albums and use recommendations as starting point for exploration.",
+  6: "You’re AirPods — music plays an integral role in your everyday rhythm. Listeners like you are open to discovery, enjoy music as a social experience, and curious to find the next up and coming thing.",
+  7: "You’re a Vinyl Crate — the archetype of exploration. Listeners like you score high on discovery, flipping through the unfamiliar in search of something special, and often appreciate music as an act of curation, the process of finding meaning in what others might overlook.",
+  8: "You’re a Boombox — expressive, communal, and full of presence. For listeners like you, music is both a cultural relic and a way to connect. Listening is a shared experience – you curate the vibe, set the tone, and bring people together through sound. As a Boombox, you’re more likely to collect physical media like vinyl, and odds are, you’re the one on aux.",
+};
+
+const FrequencyTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
+  if (!active || !payload || payload.length === 0) return null;
+
+  const entry = payload.find((item) => typeof item.value === 'number');
+  if (!entry || typeof entry.value !== 'number' || typeof label !== 'number') {
+    return null;
+  }
+
+  return (
+    <div className="factor-tooltip">
+      <div className="factor-tooltip__label">{`${Math.round(label * 100)}%`}</div>
+      <div className="factor-tooltip__value">{`${entry.value} Respondents`}</div>
+    </div>
+  );
+};
+
+const calculateFactorScoresForResponse = (responsesArr: number[]): FactorScores => {
+  const factorScores: FactorScores = {};
+  const factorQuestionCounts: Record<number, number> = {};
+
+  for (let i = 1; i <= 8; i++) {
+    factorScores[i] = 0;
+    factorQuestionCounts[i] = 0;
+  }
+
+  for (let i = 0; i < responsesArr.length; i++) {
+    if (responsesArr[i] === null) continue;
+
+    const factor = QUESTION_TO_FACTOR[i];
+    if (!factor) continue;
+
+    let normalizedScore: number;
+    const responseValue = responsesArr[i];
+
+    const fivePointIndices = new Set([15, 16, 17, 18, 19, 20, 21, 22, 23]);
+
+    if (fivePointIndices.has(i)) {
+      normalizedScore = (responseValue - 1) / 4;
+    } else {
+      normalizedScore = (responseValue - 1) / 6;
+    }
+
+    if (NEGATIVELY_WEIGHTED.has(i)) {
+      normalizedScore = 1 - normalizedScore;
+    }
+
+    factorScores[factor] += normalizedScore;
+    factorQuestionCounts[factor]++;
+  }
+
+  for (const factor in factorScores) {
+    const f = parseInt(factor);
+    if (factorQuestionCounts[f] > 0) {
+      factorScores[f] = factorScores[f] / factorQuestionCounts[f];
+    }
+  }
+
+  return factorScores;
+};
+
+const calculateFactorScores = (responsesArr: number[]): Results => {
+  const factorScores = calculateFactorScoresForResponse(responsesArr);
+
+  const topFactorEntry = Object.entries(factorScores).reduce((a, b) =>
+    factorScores[parseInt(a[0])] > factorScores[parseInt(b[0])] ? a : b
+  );
+
+  const topFactorNumber = parseInt(topFactorEntry[0]);
+
+  return {
+    factorScores,
+    topFactor: {
+      number: topFactorNumber,
+      name: FACTOR_NAMES[topFactorNumber],
+      score: factorScores[topFactorNumber],
+      description: FACTOR_DESCRIPTIONS[topFactorNumber],
+    },
+  };
+};
+
 const FactorFrequencyChart: React.FC<FactorFrequencyChartProps> = ({ data, factorLabel, userScore }) => {
   const gradientId = `grad-${factorLabel.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
 
@@ -98,8 +236,8 @@ const FactorFrequencyChart: React.FC<FactorFrequencyChartProps> = ({ data, facto
         <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
           <defs>
             <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.90}/>
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.7}/>
+              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.90} />
+              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.7} />
             </linearGradient>
           </defs>
 
@@ -112,10 +250,7 @@ const FactorFrequencyChart: React.FC<FactorFrequencyChartProps> = ({ data, facto
             tickFormatter={(v) => `${Math.round(v * 100)}%`}
           />
           <YAxis hide domain={[0, 'dataMax']} />
-          <Tooltip
-            formatter={(value, name) => [value, name === "count" ? "Respondents" : name]}
-            labelFormatter={(v) => `${Math.round(v * 100)}%`}
-          />
+          <Tooltip content={<FrequencyTooltip />} />
 
           <Area
             type="monotone"
@@ -294,128 +429,18 @@ const ResultsPage = () => {
     }
   }, [loading, responses, navigate]);
 
-  const questionToFactor: Record<number, number> = {
-    5: 1, 10: 1, 1: 1,
-    13: 2, 9: 2, 6: 2,
-    22: 3, 21: 3, 15: 3,
-    8: 4, 11: 4, 2: 4,
-    19: 5, 4: 5, 12: 5,
-    3: 6, 18: 6, 23: 6,
-    16: 7, 0: 7, 7: 7,
-    20: 8, 17: 8, 14: 8,
-  };
-
-  const negativelyWeighted = new Set([12]);
-
-  const realfactorNames: RealFactorNames = {
-    1: "Platform Trust",
-    2: "Platform Control",
-    3: "Playlist Creator",
-    4: "Independent Listener",
-    5: "Deep Listener",
-    6: "Discovery Engaged",
-    7: "Explorer",
-    8: "Physical & Emotional",
-  };
-
-  const factorNames: FactorNames = {
-    1: "Smart Speaker",
-    2: "Wired Earbuds",
-    3: "Jukebox",
-    4: "Noise-Cancelling Headphones",
-    5: "Studio Headphones",
-    6: "AirPods",
-    7: "Vinyl Crate",
-    8: "Boombox",
-  };
-
-  const factorDescriptions: FactorNames = {
-    1: "You’re a Smart Speaker – curious, open, and tuned in to what’s up next. Listeners like you have a high degree of musical openness and trust the process of discovery, whether it comes from a recommendation algorithm or a friend’s playlist. Your listening habits reflect a want to expand one’s musical palette and comfort with serendipity, new sounds that still fit your taste.",
-    2: "You’re Wired Earbuds – direct, deliberate, and happily analog in spirit. Listeners like you prefer to stay in control of what’s in the queue and value intentional listening over endless recommendations. For you, music is a space of agency, knowing what you want to play and when.",
-    3: "You’re a Jukebox –  a personal archive of sound and sentiment where every track has a time, place, and emotion attached. Listeners like you are deeply aware of how music maps onto mood, and you take pride in knowing exactly which song fits the moment.",
-    4: "You’re Noise-Cancelling Headphones — focused, discerning, and immune to the noise of trends. Listeners like you listen privately and intentionally, finding meaning in the music you choose rather than what’s surfaced for you. In other words, you strive for resonance over popularity.",
-    5: "You’re Studio Headphones — patient, analytical, and deeply engaged. Listeners like you are deeply engaged, not just hearing music, but truly listening to it. You likely take pleasure in the craft, structure, and texture of sound. Listeners like you tend to listen by full albums and use recommendations as starting point for exploration.",
-    6: "You’re AirPods — music plays an integral role in your everyday rhythm. Listeners like you are open to discovery, enjoy music as a social experience, and curious to find the next up and coming thing.",
-    7: "You’re a Vinyl Crate — the archetype of exploration. Listeners like you score high on discovery, flipping through the unfamiliar in search of something special, and often appreciate music as an act of curation, the process of finding meaning in what others might overlook.",
-    8: "You’re a Boombox — expressive, communal, and full of presence. For listeners like you, music is both a cultural relic and a way to connect. Listening is a shared experience – you curate the vibe, set the tone, and bring people together through sound. As a Boombox, you’re more likely to collect physical media like vinyl, and odds are, you’re the one on aux.",
-  };
-
-  const calculateFactorScoresForResponse = (responsesArr: number[]): FactorScores => {
-    const factorScores: FactorScores = {};
-    const factorQuestionCounts: Record<number, number> = {};
-
-    for (let i = 1; i <= 8; i++) {
-      factorScores[i] = 0;
-      factorQuestionCounts[i] = 0;
-    }
-
-    for (let i = 0; i < responsesArr.length; i++) {
-      if (responsesArr[i] === null) continue;
-
-      const factor = questionToFactor[i];
-      if (!factor) continue;
-
-      let normalizedScore: number;
-      const responseValue = responsesArr[i];
-
-      const fivePointIndices = new Set([15, 16, 17, 18, 19, 20, 21, 22, 23]);
-
-      if (fivePointIndices.has(i)) {
-        normalizedScore = (responseValue - 1) / 4;
-      } else {
-        normalizedScore = (responseValue - 1) / 6;
-      }
-
-      if (negativelyWeighted.has(i)) {
-        normalizedScore = 1 - normalizedScore;
-      }
-
-      factorScores[factor] += normalizedScore;
-      factorQuestionCounts[factor]++;
-    }
-
-    for (const factor in factorScores) {
-      const f = parseInt(factor);
-      if (factorQuestionCounts[f] > 0) {
-        factorScores[f] = factorScores[f] / factorQuestionCounts[f];
-      }
-    }
-
-    return factorScores;
-  };
-
-  const calculateFactorScores = (responsesArr: number[]): Results => {
-    const factorScores = calculateFactorScoresForResponse(responsesArr);
-
-    const topFactorEntry = Object.entries(factorScores).reduce((a, b) =>
-      factorScores[parseInt(a[0])] > factorScores[parseInt(b[0])] ? a : b
-    );
-
-    const topFactorNumber = parseInt(topFactorEntry[0]);
-
-    return {
-      factorScores,
-      topFactor: {
-        number: topFactorNumber,
-        name: factorNames[topFactorNumber],
-        score: factorScores[topFactorNumber],
-        description: factorDescriptions[topFactorNumber],
-      },
-    };
-  };
 
 
 
-  
 
   const handleDownloadImage = async () => {
     if (!shareableRef.current) return;
-  
+
     const h1 = shareableRef.current.querySelector('.results-info h1');
     if (!h1) return;
-  
+
     let tempCanvas: HTMLCanvasElement | null = null;
-  
+
     try {
       const text = h1.textContent ? h1.textContent.trim().toUpperCase() : '';
       const style = getComputedStyle(h1);
@@ -423,10 +448,10 @@ const ResultsPage = () => {
       const fontWeight = style.fontWeight || "bold";
       const baseFontSize = parseFloat(style.fontSize);
       const fontSize = baseFontSize * 1.1; // slightly bigger
-  
+
       const h1Rect = h1.getBoundingClientRect();
       const maxTextWidth = h1Rect.width;
-  
+
       // Wrap text
       const measureCanvas = document.createElement("canvas");
       const measureCtx = measureCanvas.getContext("2d");
@@ -435,11 +460,11 @@ const ResultsPage = () => {
       } else {
         throw new Error("Unable to get 2D context for measure canvas.");
       }
-  
+
       const words = text.split(" ");
       const lines = [];
       let line = "";
-  
+
       for (let n = 0; n < words.length; n++) {
         const testLine = line ? line + " " + words[n] : words[n];
         if (measureCtx.measureText(testLine).width > maxTextWidth && line) {
@@ -450,18 +475,18 @@ const ResultsPage = () => {
         }
       }
       lines.push(line);
-  
+
       const lineHeight = fontSize;
       const paddingTop = 8; // small gap at top and bottom
       const canvasHeight = lines.length * lineHeight + paddingTop;
-  
+
       // Create temporary canvas
       tempCanvas = document.createElement("canvas");
       tempCanvas.width = h1Rect.width;
       tempCanvas.height = canvasHeight;
-  
+
       const ctx = tempCanvas.getContext("2d");
-  
+
       // Gradient fill
       if (!ctx) {
         console.error("Unable to get 2D context for temporary canvas.");
@@ -472,37 +497,37 @@ const ResultsPage = () => {
       gradient.addColorStop(0, "#A069E8");
       gradient.addColorStop(1, "#47A6E0");
       ctx.fillStyle = gradient;
-  
+
       ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "top";
-  
+
       // Draw each line with small top padding
       lines.forEach((ln, i) => {
         if (tempCanvas) {
           ctx.fillText(ln, tempCanvas.width / 2, paddingTop + i * lineHeight);
         }
       });
-  
+
       // Position canvas absolutely over original h1
       const parent = h1.parentNode;
       tempCanvas.style.position = "absolute";
       tempCanvas.style.left = `${(h1 as HTMLElement).offsetLeft}px`;
       tempCanvas.style.top = `${(h1 as HTMLElement).offsetTop}px`;
       tempCanvas.style.zIndex = "1000";
-  
+
       (h1 as HTMLElement).style.visibility = "hidden";
       if (parent) {
         parent.appendChild(tempCanvas);
       }
-  
+
       // Capture screenshot
       const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(shareableRef.current, {
         backgroundColor: null,
         scale: 2,
       });
-  
+
       // Download
       const link = document.createElement("a");
       link.download = "my-music-profile.png";
@@ -517,8 +542,8 @@ const ResultsPage = () => {
       if (h1 && h1 instanceof HTMLElement) h1.style.visibility = "visible";
     }
   };
-  
-  
+
+
 
   const factorImages: FactorImages = {
     1: '/images/smart-speaker.gif',
@@ -540,7 +565,7 @@ const ResultsPage = () => {
   if (!results) return <div>No results to display</div>;
 
   const radarData = Object.keys(results.factorScores).map(key => ({
-    factor: realfactorNames[parseInt(key)],
+    factor: REAL_FACTOR_NAMES[parseInt(key)],
     score: results.factorScores[parseInt(key)] * 100,
     fullMark: 100
   }));
@@ -554,12 +579,12 @@ const ResultsPage = () => {
   return (
     <div className="results-page">
       <div className="corner-banners">
-      <img src={cornerBanner} alt="Top Banner" className="corner-banner top-left" />
-      <img src={cornerBanner} alt="Bottom Banner" className="corner-banner bottom-right" />
+        <img src={cornerBanner} alt="Top Banner" className="corner-banner top-left" />
+        <img src={cornerBanner} alt="Bottom Banner" className="corner-banner bottom-right" />
       </div>
 
       <div ref={shareableRef} className="results-layout">
-      <div className="results-info">
+        <div className="results-info">
           <h1>Your Music Listening Profile</h1>
           <img
             src={factorImages[results.topFactor.number]}
@@ -567,40 +592,40 @@ const ResultsPage = () => {
           />
           <h4>Illustration by Katie Lam</h4>
           <h2>You are a {results.topFactor.name}!</h2>
-           <h3 className="score">
-                Score: {(results.topFactor.score * 100).toFixed(1)}%
-              </h3>
-          <p>{results.topFactor.description}</p>  
-          <h2>Radar Chart</h2>        
+          <h3 className="score">
+            Score: {(results.topFactor.score * 100).toFixed(1)}%
+          </h3>
+          <p>{results.topFactor.description}</p>
+          <h2>Radar Chart</h2>
           <div className="radar-section">
-          <ResponsiveContainer width="100%" height={Math.min(window.innerWidth * 0.8, 400)}>
-            <RadarChart data={radarData} outerRadius="80%" margin={{ top: 40, right: 40, bottom: 40, left: 40 }} >
-              <PolarGrid stroke="#d1d5db" strokeWidth={1} />
-              <PolarAngleAxis
-                dataKey="factor"
-                tick={<AngleLabel />}
-                tickLine={false}
-              />
-              <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-              <Radar
-                dataKey="score"
-                stroke="#1f2937"
-                fill="none"
-                fillOpacity={0}
-                strokeWidth={3}
-                dot={{ fill: '#1f2937', r: 5, strokeWidth: 2, stroke: '#ffffff' }}
-                isAnimationActive={false}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
+            <ResponsiveContainer width="100%" height={Math.min(window.innerWidth * 0.8, 400)}>
+              <RadarChart data={radarData} outerRadius="80%" margin={{ top: 40, right: 40, bottom: 40, left: 40 }} >
+                <PolarGrid stroke="#d1d5db" strokeWidth={1} />
+                <PolarAngleAxis
+                  dataKey="factor"
+                  tick={<AngleLabel />}
+                  tickLine={false}
+                />
+                <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar
+                  dataKey="score"
+                  stroke="#1f2937"
+                  fill="none"
+                  fillOpacity={0}
+                  strokeWidth={3}
+                  dot={{ fill: '#1f2937', r: 5, strokeWidth: 2, stroke: '#ffffff' }}
+                  isAnimationActive={false}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
       <section className="results-section">
         <h1>Factor Distributions</h1>
         <div className="factor-frequency-charts">
-          {mounted && Object.entries(realfactorNames).map(([key, name], idx) => (
+          {mounted && Object.entries(REAL_FACTOR_NAMES).map(([key, name], idx) => (
             <FactorFrequencyChart
               key={key}
               data={FAKE_FACTOR_FREQUENCIES[idx]}
@@ -634,7 +659,7 @@ const ResultsPage = () => {
             <FacebookIcon size={36} round />
           </FacebookShareButton>
 
-          <TwitterShareButton url={shareUrl} title={shareTitle} hashtags={["MusicListeningProfile","MusicPersonality"]}>
+          <TwitterShareButton url={shareUrl} title={shareTitle} hashtags={["MusicListeningProfile", "MusicPersonality"]}>
             <TwitterIcon size={36} round />
           </TwitterShareButton>
 

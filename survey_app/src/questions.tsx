@@ -212,6 +212,7 @@ const EmojiProgression: React.FC = () => { // main component
   
   return ( // jsx rendering!
     <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
+      <div className="questions-shell">
       <div className="dark-mode-toggle">
         <button onClick={toggleDarkMode} className="toggle-btn">
           {isDarkMode ? '☀️' : '🌙'} {isDarkMode ? 'Light' : 'Dark'} Mode
@@ -371,6 +372,7 @@ const EmojiProgression: React.FC = () => { // main component
 
       {answerError && <p className="submit-error">Please answer all questions</p>}
       <button onClick={addResponse} className="submit-button">SUBMIT</button>
+      </div>
     </div>
   );
 };
