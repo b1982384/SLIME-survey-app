@@ -29,6 +29,34 @@
   overflow-x: hidden;
 }
 
+.definitions-box {
+
+  margin: 2rem auto;
+
+  padding: clamp(18px, 3vw, 26px);
+
+  background: rgba(255, 255, 255, 0.82);
+
+  border-radius: 14px;
+
+  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+
+  border-left: 6px solid #A069E8; /* subtle branded accent */
+
+  font-family: var(--font-normal) !important; /* ensures NOT monospace */
+
+  color: #2a1f34;
+
+  line-height: 1.55;
+
+  width: 100%;
+
+  max-width: 1000px;
+
+  box-sizing: border-box;
+
+}
+
 /* Corner banners layer */
 .corner-banners {
   position: absolute;
@@ -362,7 +390,7 @@
   padding: 20px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 668px) {
   .results-layout {
     flex-direction: column;
     align-items: center;
