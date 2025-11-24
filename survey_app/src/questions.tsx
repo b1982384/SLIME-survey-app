@@ -50,7 +50,7 @@ const SEVEN_POINT_QUESTIONS: string[] = [
   "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes).", // factor 1
   "I don't like the music my friends listen to.",
   "I choose music without considering how I'm feeling.",
-  "I feel uneasy letting the platform decide what to play next.",
+  "I feel uneasy letting the platform decide what to play next.", 
   "I use music to better understand or make sense of my emotions."
 ];
 
@@ -347,18 +347,6 @@ const EmojiProgression: React.FC = () => { // main component
             </div>
 
          
-
-              {/* <div className="question-text">
-                <span style={{ float: 'left', opacity: 0.6 }}>{displayIndex + 1}</span>
-                {question.text}
-              </div> */}
-{/* 
-              <div className="question-text">
-                <span style={{ float: 'left', opacity: 0.6 }}>
-                  Question {displayIndex + 1}
-                </span>
-                {question.text}
-              </div> */}
               <EmojiRow
                 name={`q${question.originalIndex}`}
                 selectedValue={responses[question.originalIndex]}
