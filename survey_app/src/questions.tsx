@@ -3,6 +3,11 @@ import './questions.css';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
+import "@fontsource/space-grotesk/400.css";
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/600.css";
+import "@fontsource/space-grotesk/700.css";
+
 
 type MoodOption = {
   emoji: string;
@@ -38,14 +43,14 @@ const SEVEN_POINT_QUESTIONS: string[] = [
   "I keep up with popular/trending songs.",
   "I think that popular artists are popular because they make better music.",
   "I can rely on my music platform's recommendations when I want to hear something new.", // factor 1
-  "I avoid app-curated playlists and mixes – I prefer my own.",
+  "I avoid playlists and mixes created by the streaming platform – I prefer my own",
   "I frequently listen to music by artists I haven't heard before.",
   "I think that artists make better music when they aren't really popular.",
   "I prefer to skip songs the platform adds or suggests automatically.",
   "I enjoy the music my music platform plays when it takes over (e.g. autoplay, radio, mixes).", // factor 1
   "I don't like the music my friends listen to.",
   "I choose music without considering how I'm feeling.",
-  "I feel uneasy letting the platform decide what to play next.",
+  "I feel uneasy letting the platform decide what to play next.", 
   "I use music to better understand or make sense of my emotions."
 ];
 
@@ -107,7 +112,7 @@ const EmojiProgression: React.FC = () => { // main component
   const [gender, setGender] = useState("");
   const [singlepredictor, setSinglePredictor] = useState("");
   const [nationality, setNationality] = useState("");
-  const [streamFrequency, setStreamFrequency] = useState("3");
+  const [streamFrequency, setStreamFrequency] = useState("1");
 
   const navigate = useNavigate();
   const [answerError, setAnswerError] = useState(false);
@@ -162,7 +167,7 @@ const EmojiProgression: React.FC = () => { // main component
     if (!singlepredictor.trim() || !streamFrequency.trim() || !age.trim())
     {
       setAnswerError(true);
-      alert('Please answer demographic and baseline questions before submittin.')
+      alert('Please answer required questions before submitting.')
       return;
     }
 
@@ -207,36 +212,48 @@ const EmojiProgression: React.FC = () => { // main component
   
   return ( // jsx rendering!
     <div className={isDarkMode ? 'dark-theme' : 'light-theme'}>
+      <div className="questions-shell">
       <div className="dark-mode-toggle">
         <button onClick={toggleDarkMode} className="toggle-btn">
           {isDarkMode ? '☀️' : '🌙'} {isDarkMode ? 'Light' : 'Dark'} Mode
         </button>
       </div>
-      <div className ="definitions-box">
-        <p>
-          This survey is about your music listening habits and includes questions about your music preferences, how you use music streaming platforms, and how recommendation features affect your listening experience. Below are a few definitions to help clarify the terms we’ll be using — please review these carefully.
-          <br /><br />
-
-          <strong>Music Streaming Platform or App:</strong> Services like Spotify, Apple Music, YouTube, TIDAL, etc., where you can stream music on demand.
-          <br /><br />
-
-          <strong>Algorithmic / Recommendation Features:</strong> Automatic systems that suggest songs, albums, or artists based on your listening history or preferences. Examples include Autoplay, Smart Shuffle, Daily Mixes, Discover Weekly, Daylist, “Because you listened to…” suggestions.
-          <br /><br />
-
-          <strong>Platform-Curated Playlists or Mixes:</strong> Playlists made by the music app (not by a person you know), often tailored to your taste or mood, like “Chill Vibes,” “Throwback Hits,” or “Your Summer Rewind.”
+      <h1 className="questions-title">What kind of listener are you?</h1>
+      
+      <div className="definitions-box">
+        <p className="definitions-intro">
+          In the age of streaming, how do you listen? This survey is about your music listening habits and includes questions about your music preferences, how you use music streaming platforms, and how recommendation features affect your listening experience.
         </p>
+
+        <div className="definition-item">
+          <strong>Music Streaming Platform</strong>
+          <span>Services like Spotify, Apple Music, YouTube, or TIDAL where you can listen to music on demand.</span>
+        </div>
+
+        <div className="definition-item">
+          <strong>Recommendation Features</strong>
+          <span>Automatic systems that suggest music based on your listening (e.g., Autoplay, Smart Shuffle, Daily
+            Mixes, Discover Weekly, "Because you listened to…").</span>
+        </div>
+
+        <div className="definition-item">
+          <strong>Platform-Curated Playlists or Mixes</strong>
+          <span>Playlists created by the streaming service, such as “Chill Vibes,” “Top Hits,” or “Your Summer
+            Rewind.”</span>
+        </div>
       </div>
 
       <div className="demographic-info-container">
         <label>Demographic Data</label>
 
+        {/* AGE */}
         <div className="age-input">
-          <input value={age} placeholder="Age *" onChange={(e) => setAge(e.target.value)} />
+          <input value={age} placeholder="Age*" onChange={(e) => setAge(e.target.value)} />
         </div>
 
         <div className="predictor-dropdown">
           <select value={singlepredictor} onChange={(e) => setSinglePredictor(e.target.value)}>
-            <option value="" disabled>Which title best describes you? *</option>
+            <option value="" disabled>Which title best describes you?*</option>
             <option value="Nonmusician">Nonmusician</option>
             <option value="Music-loving nonmusician">Music-loving nonmusician</option>
             <option value="Amateur musician">Amateur musician</option>
@@ -248,7 +265,7 @@ const EmojiProgression: React.FC = () => { // main component
 
         {/* STREAMING FREQUENCY — slider 1–5 */}
         <div className="frequency-slider">
-          <label>How often do you use music streaming platforms? * (1–5)</label>
+          <label>How often do you use music streaming platforms?* (1 = Never, 5 = Always)</label>
 
           <input
             type="range"
@@ -293,26 +310,25 @@ const EmojiProgression: React.FC = () => { // main component
         ))}
       </div>
 
-
-
         {/* GENDER — optional */}
         <div className="gender-dropdown">
           <select value={gender} onChange={(e) => setGender(e.target.value)}>
             <option value="">Gender (optional)</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Nonbinary">Nonbinary</option>
+            <option value="Woman">Woman</option>
+            <option value="Man">Man</option>
+            <option value="Non-binary">Non-binary</option>
             <option value="Other">Other</option>
             <option value="Prefer not to say">Prefer not to say</option>
           </select>
         </div>
+
 
         {/* NATIONALITY — now optional */}
         <div className="nationality-input">
           <label>In what country do you typically listen to music? (Optional)</label>
           <input
             value={nationality}
-            placeholder="Country (optional)"
+            placeholder="Country"
             onChange={(e) => setNationality(e.target.value)}
           />
         </div>
@@ -331,18 +347,6 @@ const EmojiProgression: React.FC = () => { // main component
             </div>
 
          
-
-              {/* <div className="question-text">
-                <span style={{ float: 'left', opacity: 0.6 }}>{displayIndex + 1}</span>
-                {question.text}
-              </div> */}
-{/* 
-              <div className="question-text">
-                <span style={{ float: 'left', opacity: 0.6 }}>
-                  Question {displayIndex + 1}
-                </span>
-                {question.text}
-              </div> */}
               <EmojiRow
                 name={`q${question.originalIndex}`}
                 selectedValue={responses[question.originalIndex]}
@@ -356,6 +360,7 @@ const EmojiProgression: React.FC = () => { // main component
 
       {answerError && <p className="submit-error">Please answer all questions</p>}
       <button onClick={addResponse} className="submit-button">SUBMIT</button>
+      </div>
     </div>
   );
 };
