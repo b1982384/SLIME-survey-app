@@ -19,22 +19,20 @@
   margin: 0 auto;
 }
 
-/* .question-block {
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 2vw, 12px);
-} */
-/* .question-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* Base responsive layout */
+.questions-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
   text-align: center;
-  gap: clamp(8px, 2vw, 12px);
-  width: 100%;
-} */
-
+  color: #4B2A63; /* your violet core */
+  letter-spacing: -0.02em;
+  margin-bottom: clamp(20px, 4vw, 40px);
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #A069E8, #47A6E0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeSlideIn 0.8s ease forwards;
+}
 
 /* Responsive emoji row */
 .scale-row {
