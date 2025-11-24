@@ -58,48 +58,344 @@ interface FactorFrequencyChartProps {
   userScore?: number;
 }
 
-const FAKE_FACTOR_FREQUENCIES = [
+const FAKE_FACTOR_FREQUENCIES =  [ // NO LONGER FAKE AS NOV 24
   [
-    { center: 0.05, count: 1 }, { center: 0.15, count: 2 }, { center: 0.25, count: 5 },
-    { center: 0.35, count: 10 }, { center: 0.45, count: 15 }, { center: 0.55, count: 18 },
-    { center: 0.65, count: 12 }, { center: 0.75, count: 9 }, { center: 0.85, count: 4 }, { center: 0.95, count: 1 }
+    {
+      "center": 0.05,
+      "count": 2
+    },
+    {
+      "center": 0.15,
+      "count": 1
+    },
+    {
+      "center": 0.25,
+      "count": 0
+    },
+    {
+      "center": 0.35,
+      "count": 7
+    },
+    {
+      "center": 0.45,
+      "count": 7
+    },
+    {
+      "center": 0.55,
+      "count": 16
+    },
+    {
+      "center": 0.65,
+      "count": 37
+    },
+    {
+      "center": 0.75,
+      "count": 32
+    },
+    {
+      "center": 0.85,
+      "count": 16
+    },
+    {
+      "center": 0.95,
+      "count": 4
+    }
   ],
   [
-    { center: 0.05, count: 0 }, { center: 0.15, count: 3 }, { center: 0.25, count: 7 },
-    { center: 0.35, count: 12 }, { center: 0.45, count: 14 }, { center: 0.55, count: 11 },
-    { center: 0.65, count: 13 }, { center: 0.75, count: 6 }, { center: 0.85, count: 2 }, { center: 0.95, count: 0 }
+    {
+      "center": 0.05,
+      "count": 2
+    },
+    {
+      "center": 0.15,
+      "count": 10
+    },
+    {
+      "center": 0.25,
+      "count": 22
+    },
+    {
+      "center": 0.35,
+      "count": 25
+    },
+    {
+      "center": 0.45,
+      "count": 14
+    },
+    {
+      "center": 0.55,
+      "count": 18
+    },
+    {
+      "center": 0.65,
+      "count": 18
+    },
+    {
+      "center": 0.75,
+      "count": 8
+    },
+    {
+      "center": 0.85,
+      "count": 3
+    },
+    {
+      "center": 0.95,
+      "count": 2
+    }
   ],
   [
-    { center: 0.05, count: 2 }, { center: 0.15, count: 6 }, { center: 0.25, count: 12 },
-    { center: 0.35, count: 17 }, { center: 0.45, count: 15 }, { center: 0.55, count: 10 },
-    { center: 0.65, count: 8 }, { center: 0.75, count: 7 }, { center: 0.85, count: 3 }, { center: 0.95, count: 1 }
+    {
+      "center": 0.05,
+      "count": 4
+    },
+    {
+      "center": 0.15,
+      "count": 7
+    },
+    {
+      "center": 0.25,
+      "count": 7
+    },
+    {
+      "center": 0.35,
+      "count": 8
+    },
+    {
+      "center": 0.45,
+      "count": 19
+    },
+    {
+      "center": 0.55,
+      "count": 40
+    },
+    {
+      "center": 0.65,
+      "count": 20
+    },
+    {
+      "center": 0.75,
+      "count": 10
+    },
+    {
+      "center": 0.85,
+      "count": 4
+    },
+    {
+      "center": 0.95,
+      "count": 3
+    }
   ],
   [
-    { center: 0.05, count: 4 }, { center: 0.15, count: 5 }, { center: 0.25, count: 8 },
-    { center: 0.35, count: 11 }, { center: 0.45, count: 13 }, { center: 0.55, count: 14 },
-    { center: 0.65, count: 13 }, { center: 0.75, count: 8 }, { center: 0.85, count: 4 }, { center: 0.95, count: 2 }
+    {
+      "center": 0.05,
+      "count": 3
+    },
+    {
+      "center": 0.15,
+      "count": 2
+    },
+    {
+      "center": 0.25,
+      "count": 19
+    },
+    {
+      "center": 0.35,
+      "count": 32
+    },
+    {
+      "center": 0.45,
+      "count": 18
+    },
+    {
+      "center": 0.55,
+      "count": 23
+    },
+    {
+      "center": 0.65,
+      "count": 16
+    },
+    {
+      "center": 0.75,
+      "count": 7
+    },
+    {
+      "center": 0.85,
+      "count": 1
+    },
+    {
+      "center": 0.95,
+      "count": 1
+    }
   ],
   [
-    { center: 0.05, count: 0 }, { center: 0.15, count: 1 }, { center: 0.25, count: 7 },
-    { center: 0.35, count: 13 }, { center: 0.45, count: 14 }, { center: 0.55, count: 16 },
-    { center: 0.65, count: 12 }, { center: 0.75, count: 9 }, { center: 0.85, count: 3 }, { center: 0.95, count: 0 }
+    {
+      "center": 0.05,
+      "count": 1
+    },
+    {
+      "center": 0.15,
+      "count": 1
+    },
+    {
+      "center": 0.25,
+      "count": 7
+    },
+    {
+      "center": 0.35,
+      "count": 18
+    },
+    {
+      "center": 0.45,
+      "count": 20
+    },
+    {
+      "center": 0.55,
+      "count": 40
+    },
+    {
+      "center": 0.65,
+      "count": 23
+    },
+    {
+      "center": 0.75,
+      "count": 10
+    },
+    {
+      "center": 0.85,
+      "count": 2
+    },
+    {
+      "center": 0.95,
+      "count": 0
+    }
   ],
   [
-    { center: 0.05, count: 3 }, { center: 0.15, count: 4 }, { center: 0.25, count: 10 },
-    { center: 0.35, count: 16 }, { center: 0.45, count: 15 }, { center: 0.55, count: 12 },
-    { center: 0.65, count: 11 }, { center: 0.75, count: 8 }, { center: 0.85, count: 4 }, { center: 0.95, count: 1 }
+    {
+      "center": 0.05,
+      "count": 4
+    },
+    {
+      "center": 0.15,
+      "count": 2
+    },
+    {
+      "center": 0.25,
+      "count": 8
+    },
+    {
+      "center": 0.35,
+      "count": 9
+    },
+    {
+      "center": 0.45,
+      "count": 13
+    },
+    {
+      "center": 0.55,
+      "count": 32
+    },
+    {
+      "center": 0.65,
+      "count": 18
+    },
+    {
+      "center": 0.75,
+      "count": 15
+    },
+    {
+      "center": 0.85,
+      "count": 14
+    },
+    {
+      "center": 0.95,
+      "count": 7
+    }
   ],
   [
-    { center: 0.05, count: 2 }, { center: 0.15, count: 3 }, { center: 0.25, count: 8 },
-    { center: 0.35, count: 14 }, { center: 0.45, count: 17 }, { center: 0.55, count: 15 },
-    { center: 0.65, count: 10 }, { center: 0.75, count: 7 }, { center: 0.85, count: 3 }, { center: 0.95, count: 1 }
+    {
+      "center": 0.05,
+      "count": 0
+    },
+    {
+      "center": 0.15,
+      "count": 3
+    },
+    {
+      "center": 0.25,
+      "count": 4
+    },
+    {
+      "center": 0.35,
+      "count": 11
+    },
+    {
+      "center": 0.45,
+      "count": 17
+    },
+    {
+      "center": 0.55,
+      "count": 22
+    },
+    {
+      "center": 0.65,
+      "count": 35
+    },
+    {
+      "center": 0.75,
+      "count": 12
+    },
+    {
+      "center": 0.85,
+      "count": 15
+    },
+    {
+      "center": 0.95,
+      "count": 3
+    }
   ],
   [
-    { center: 0.05, count: 1 }, { center: 0.15, count: 2 }, { center: 0.25, count: 6 },
-    { center: 0.35, count: 13 }, { center: 0.45, count: 15 }, { center: 0.55, count: 17 },
-    { center: 0.65, count: 14 }, { center: 0.75, count: 8 }, { center: 0.85, count: 3 }, { center: 0.95, count: 0 }
+    {
+      "center": 0.05,
+      "count": 12
+    },
+    {
+      "center": 0.15,
+      "count": 13
+    },
+    {
+      "center": 0.25,
+      "count": 18
+    },
+    {
+      "center": 0.35,
+      "count": 22
+    },
+    {
+      "center": 0.45,
+      "count": 13
+    },
+    {
+      "center": 0.55,
+      "count": 20
+    },
+    {
+      "center": 0.65,
+      "count": 13
+    },
+    {
+      "center": 0.75,
+      "count": 8
+    },
+    {
+      "center": 0.85,
+      "count": 2
+    },
+    {
+      "center": 0.95,
+      "count": 1
+    }
   ]
-];
+] ;
 
 const QUESTION_TO_FACTOR: Record<number, number> = {
   5: 1, 10: 1, 1: 1,
