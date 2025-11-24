@@ -170,7 +170,6 @@ const FrequencyTooltip: React.FC<TooltipContentProps<number, string>> = ({ activ
   return (
     <div className="factor-tooltip">
       <div className="factor-tooltip__label">{`${Math.round(label * 100)}%`}</div>
-      <div className="factor-tooltip__value">{`${entry.value} Respondents`}</div>
     </div>
   );
 };
