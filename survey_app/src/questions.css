@@ -1,35 +1,4 @@
 /* Base responsive layout */
-:root {
-  --font-normal: 'Space Grotesk', sans-serif;
-  --font-display: 'Archivo Black', sans-serif;
-}
-
-/* Override global monospace font from HomePage */
-body {
-  font-family: var(--font-normal) !important;
-}
-
-.questions-shell {
-  width: min(100%, 1000px);
-  margin: 0 auto;
-  padding: clamp(16px, 4vw, 32px);
-  box-sizing: border-box;
-}
-
-.questions-container,
-.definitions-box,
-.demographic-info-container,
-.question-block,
-.question-text,
-.definition-item span,
-.definition-item strong,
-.demographic-field,
-.race-checkbox-group,
-.checkbox-item span {
-  font-family: var(--font-normal) !important;
-}
-
-
 @keyframes fadeSlideIn {
   from {
     opacity: 0;
@@ -41,8 +10,18 @@ body {
   }
 }
 
+.questions-container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 3vw, 24px);
+  padding: clamp(12px, 3vw, 24px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Base responsive layout */
 .questions-title {
-  font-family: 'Archivo Black', sans-serif !important;
+  font-family: 'Archivo Black', sans-serif;
   font-size: clamp(1.8rem, 3vw, 2.6rem);
   text-align: center;
   color: #4B2A63; /* your violet core */
@@ -55,36 +34,16 @@ body {
   animation: fadeSlideIn 0.8s ease forwards;
 }
 
-.questions-container {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(16px, 3vw, 24px);
-  padding: clamp(12px, 3vw, 24px);
-  max-width: 1000px;
-  width: 100%;
-  margin: 0 auto;
-  box-sizing: border-box;
-  align-items: center;
-}
-
 /* Responsive emoji row */
 .scale-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: clamp(2px, 1vw, 10px);
-  padding: 6px clamp(6px, 3vw, 36px);
-  overflow: visible;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-@media (min-width: 1024px) {
-  .scale-row {
-    flex-wrap: nowrap;
-  }
+  flex-wrap: nowrap;
+  gap: clamp(2px, 1vw, 5px);
+  overflow-x: auto;
+  padding: 8px 0;
+  overflow:visible;
 }
 
 .question-block {
@@ -94,14 +53,13 @@ body {
   align-items: center;
   text-align: center;
   gap: clamp(8px, 2vw, 12px);
-  width: min(100%, 900px);
+  width: 100%;
   margin: 0 auto;
-  padding: clamp(28px, 3.5vw, 40px) clamp(20px, 4vw, 48px);
+  padding: clamp(24px, 3vw, 32px);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.05);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   overflow: visible;
-  box-sizing: border-box;
 }
 .question-index {
   position: absolute;
@@ -121,10 +79,9 @@ body {
   letter-spacing: -0.02em;
   font-weight: 400;
   font-size: clamp(1.1rem, 2vw, 1.4rem);
-  line-height: 1.35;
-  max-width: 780px;
-  margin: clamp(6px, 1vw, 12px) auto 0 auto;
-  margin-top: 0.75rem;
+  line-height: 1.2;
+  max-width: 800px;
+  margin: 0 auto;
   text-align: center;
   position: relative;
   padding-left: 1.5em; /* room for the number */
@@ -146,10 +103,10 @@ body {
   padding: clamp(8px, 2vw, 16px);
   text-align: center;
   border-radius: 50%;
-  width: clamp(60px, 10vw, 110px);
-  height: clamp(60px, 10vw, 110px);
-  min-width: 54px;
-  min-height: 54px;
+  width: clamp(60px, 12vw, 120px);
+  height: clamp(60px, 12vw, 120px);
+  min-width: 50px;
+  min-height: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -189,6 +146,7 @@ body {
   font-weight: bold;
   line-height: 1.2;
 }
+
 
 /* Color palette */
 .bg-maroon-400 { background-color: #d47373; }
@@ -373,128 +331,93 @@ html, body {
 }
 
 .definitions-box {
-  margin: 2rem auto;
-  padding: clamp(18px, 3vw, 26px);
-  background: rgba(255, 255, 255, 0.82);
-  border-radius: 14px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
-  border-left: 6px solid #A069E8; /* subtle branded accent */
-  font-family: var(--font-normal) !important; /* ensures NOT monospace */
-  color: #2a1f34;
-  line-height: 1.55;
-  width: 100%;
-  max-width: 1000px;
-  box-sizing: border-box;
+  max-width: 750px;
+  margin: 1.5rem auto;
+  padding: clamp(12px, 2.5vw, 20px);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  font-size: clamp(0.75rem, 1.7vw, 0.9rem);
+  line-height: 1.45;
+  color: #221501;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* Intro paragraph slightly larger, separated */
-.definitions-intro {
-  margin-bottom: 1.5rem;
-  font-size: clamp(0.95rem, 1.8vw, 1.05rem);
-  font-weight: 500;
-  color: #3a2850;
-}
-
-/* Each definition block */
-.definition-item {
-  margin-bottom: 1rem;
-}
-
-/* Strong labels look like headers */
-.definition-item strong {
-  display: block;
-  font-size: clamp(0.9rem, 1.8vw, 1rem);
-  font-weight: 700;
-  color: #4B2A63;
-  margin-bottom: 0.25rem;
-}
-
-/* Definition text */
-.definition-item span {
-  display: block;
-  font-size: clamp(0.85rem, 1.7vw, 0.95rem);
-  color: #33273f;
-}
-
-/* Remove bottom margin for last item */
-.definition-item:last-child {
-  margin-bottom: 0;
-}
-
-/* -------- DARK THEME -------- */
 .dark-theme .definitions-box {
-  background: rgba(40, 40, 40, 0.65);
-  border-left: 6px solid #9f7aea;
+  background: rgba(40, 40, 40, 0.7);
   color: #ffffff;
-  box-shadow: 0 3px 12px rgba(255,255,255,0.05);
+  border-left-color: #9f7aea;
+  box-shadow: 0 2px 8px rgba(255,255,255,0.06);
 }
 
-.dark-theme .definitions-intro {
-  color: #e8d8ff;
+.definitions-box p {
+  margin: 0;
 }
-
-.dark-theme .definition-item strong {
-  color: #d4b8ff;
-}
-
-.dark-theme .definition-item span {
-  color: #ece6f5;
-}
-
 
 /* Mobile (768 px is like ipad size) specific adjustments */
 @media (max-width: 768px) {
-
   /* Slightly tighter spacing on mobile */
   .scale-row {
-    justify-content: space-between;
-    gap: 6px;
+    gap: 1px;
+    overflow-x: visible; /* no scrolling needed */
+    padding: 8px 2px; /* minimal horizontal padding */
+    max-width: 100%; /* constrain to parent */
   }
 
-  /* Make emoji buttons taller and not circular */
+  /* Make emoji buttons taller and not circular - sized to fit all 7 */
   .p-4 {
-    width: calc(33.33% - 8px);
-    min-width: 90px;
-    height: auto;
-    border-radius: 18px;
-    padding: 12px 8px;
+    width: clamp(48px, 12.5vw, 85px);
+    height: clamp(70px, 17vw, 115px); 
+    border-radius: 14px;
   }
 
   /* Make label readable and allow wrapping */
   .p-4 p {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     white-space: normal;
-    line-height: 1.2;
+    line-height: 1.15;
   }
+
+  .question-block {
+      padding: clamp(16px, 3vw, 24px);
+      padding-top: 60px !important; /* Force extra top padding */
+      overflow: hidden;
+  }
+      
+  .question-index {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      top: 8px;
+    }
+  
 }
 
 /* Very small screens (narrow phones - untested as vercel deployment down 11/18) */
 @media (max-width: 420px) {
 
   .p-4 {
-    width: calc(50% - 8px);
-    min-width: 0;
-    height: auto;
-    padding: 10px 6px;
-    border-radius: 16px;
+    width: clamp(40px, 14vw, 55px);
+    height: clamp(55px, 18vw, 80px);
+    padding: 4px;
+    border-radius: 14px;
   }
 
   .p-4 span {
-    font-size: clamp(1.1rem, 5vw, 1.4rem);
-    margin-bottom: 4px;
+    font-size: clamp(1rem, 5vw, 1.3rem);
+    margin-bottom: 2px;
   }
 
   .p-4 p {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     line-height: 1.1;
   }
 
   .scale-row {
-    gap: 4px;
+    gap: 2px;
   }
 }
 
 .demographic-info-container {
+  max-width: 700px;
   margin: 2rem auto;
   padding: clamp(20px, 4vw, 32px);
   background: rgba(255, 255, 255, 0.7);
@@ -502,10 +425,7 @@ html, body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.5vw, 18px);
-  width: 100%;
-  max-width: 1000px;
-  box-sizing: border-box;
+  gap: clamp(16px, 2vw, 24px);
 }
 
 .dark-theme .demographic-info-container {
@@ -547,52 +467,11 @@ html, body {
   font-size: clamp(0.9rem, 2vw, 1rem); /* CHANGED from clamp(0.95rem, 2.5vw, 1.1rem) */
 }
 
-
-.slider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-/* Track */
-.slider::-webkit-slider-runnable-track {
-  height: 6px;
-  background: #ccc;
-  border-radius: 3px;
-}
-.slider::-moz-range-track {
-  height: 6px;
-  background: #ccc;
-  border-radius: 3px;
-}
-
-/* Thumb */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 24px; 
-  width: 24px;
-  border-radius: 50%;
-  background: #764ba2;
-  margin-top: -9px; /* aligns thumb with track center */
-  cursor: pointer;
-}
-.slider::-moz-range-thumb {
-  height: 24px;
-  width: 24px;
-  border-radius: 50%;
-  background: #764ba2;
-  cursor: pointer;
-}
-
-
 .slider-ticks {
   display: flex;
   justify-content: space-between;
-  padding: 0 24px;  
-  margin-top: 6px;
+  padding: 0 4px;
+  margin-top: 4px;
   font-size: 0.9rem;
   color: var(--text-color);
 }
@@ -635,6 +514,7 @@ html, body {
   padding: 0;
 }
 
+
 .race-checkbox-group {
   display: flex;
   flex-direction: column;
@@ -646,20 +526,10 @@ html, body {
   padding: 0;
   transform: scale(1.1);
   cursor: pointer;
-  width: auto; 
-  flex-shrink: 0; 
+  width: auto; /* ADD THIS - prevents checkbox from stretching */
+  flex-shrink: 0; /* ALSO ADD THIS - prevents checkbox from shrinking */
 }
 
 .checkbox-item span {
-  display: inline-block; 
-}
-
-.questions-container,
-.definitions-box,
-.demographic-info-container {
-  max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: clamp(12px, 3vw, 32px);
-  padding-right: clamp(12px, 3vw, 32px);
+  display: inline-block; /* keeps label text inline */
 }
