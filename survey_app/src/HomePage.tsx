@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
@@ -7,21 +8,13 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [consentGiven, setConsentGiven] = useState(false);
   const [showConsentError, setShowConsentError] = useState(false);
-  // const [Age, setAge] = useState("");
-  // const [SinglePredicter, setSinglePredicter] = useState("");
-  
+
   const handleTakeSurvey = () => {
     if (!consentGiven) {
       setShowConsentError(true);
       return;
     }
   
-    // if (!Age || !SinglePredicter) {
-    //   alert("Please select your age and musician title before continuing.");
-    //   return;
-    // }
-  
-    // send values to the questions page
     navigate('/question');
   };
   
