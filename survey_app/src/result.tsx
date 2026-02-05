@@ -709,7 +709,7 @@ const ResultsPage = () => {
     };
   
     return (
-      <button onClick={handleCopy}>
+      <button className = "download-btn" onClick={handleCopy}>
         {copied ? "Copied!" : "Copy Link"}
       </button>
     );

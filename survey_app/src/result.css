@@ -329,6 +329,25 @@
   text-decoration: none;
 }
 
+/* Button styling: centered, pill, gradient, subtle shadow */
+.download-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  color: #fff;
+  border: 0;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(59,130,246,0.18);
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+  text-decoration: none;
+}
+
 /* Icon sizing inside button */
 .download-btn svg {
   width: 18px;
