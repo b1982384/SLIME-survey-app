@@ -694,6 +694,26 @@ const ResultsPage = () => {
   const [isStraightlined, setIsStraightlined] = useState(false);
   const [isDownloadMode, setIsDownloadMode] = useState(false);
 
+  const CopyLinkButton: React.FC = () => {
+    const [copied, setCopied] = useState(false);
+    const linkToCopy = "https://slime-survey-app.vercel.app";
+  
+    const handleCopy = async () => {
+      try {
+        await navigator.clipboard.writeText(linkToCopy);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error("Failed to copy!", err);
+      }
+    };
+  
+    return (
+      <button className = "download-btn" onClick={handleCopy}>
+        {copied ? "Copied!" : "Copy Link"}
+      </button>
+    );
+  };
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -886,7 +906,7 @@ const ResultsPage = () => {
   }));
 
   // share values used by all share buttons
-  const shareUrl = 'https://slime-survey-app-9smf-7u05z3uox-bwfs-projects.vercel.app';
+  const shareUrl = 'https://slime-survey-app.vercel.app';
   const shareTitle = `I am a ${results.topFactor.name}! What are you?`;
 
   const pinterestImage = `${shareUrl}/preview-image.png`;
@@ -970,7 +990,15 @@ const ResultsPage = () => {
       </section>
 
       <section className="results-section share-section">
-        <p>Share your results! Use the button below to download, take a screenshot, or share to socials.</p>
+        <p>Share your results! Use the button below to download, take a screenshot, or share to socials</p>
+        <a href="https://slime-survey-app.vercel.app" target="_blank" rel="noopener noreferrer">
+          Link for Sharing
+        </a>
+
+        <section className="results-section share-section">
+        <CopyLinkButton />
+        </section>
+
         <button className="download-btn" onClick={handleDownloadImage}>
           <Download size={20} /> Download Results
         </button>

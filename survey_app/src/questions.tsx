@@ -164,7 +164,7 @@ const EmojiProgression: React.FC = () => { // main component
   };
 
   const addResponse = async () => {
-    if (!singlepredictor.trim() || !streamFrequency.trim() || !age.trim())
+    if (!singlepredictor.trim() || !streamFrequency.trim() || !age.trim() || !nationality.trim())
     {
       setAnswerError(true);
       alert('Please answer required questions before submitting.')
@@ -244,16 +244,16 @@ const EmojiProgression: React.FC = () => { // main component
       </div>
 
       <div className="demographic-info-container">
-        <label>Demographic Data</label>
+        <label>Demographic Data *</label>
 
         {/* AGE */}
         <div className="age-input">
-          <input value={age} placeholder="Age*" onChange={(e) => setAge(e.target.value)} />
+          <input value={age} placeholder="Age *" onChange={(e) => setAge(e.target.value)} />
         </div>
 
         <div className="predictor-dropdown">
           <select value={singlepredictor} onChange={(e) => setSinglePredictor(e.target.value)}>
-            <option value="" disabled>Which title best describes you?*</option>
+            <option value="" disabled>Which title best describes you? *</option>
             <option value="Nonmusician">Nonmusician</option>
             <option value="Music-loving nonmusician">Music-loving nonmusician</option>
             <option value="Amateur musician">Amateur musician</option>
@@ -263,9 +263,19 @@ const EmojiProgression: React.FC = () => { // main component
           </select>
         </div>
 
+           {/* NATIONALITY — not optional */}
+        <div className="nationality-input">
+          <label>In what country do you typically listen to music? *</label>
+          <input
+            value={nationality}
+            placeholder="Country *"
+            onChange={(e) => setNationality(e.target.value)}
+          />
+        </div>
+
         {/* STREAMING FREQUENCY — slider 1–5 */}
         <div className="frequency-slider">
-          <label>How often do you use music streaming platforms?* (1 = Never, 5 = Always)</label>
+          <label>How often do you use music streaming platforms? *  (1 = Never, 5 = Always)</label>
 
           <input
             type="range"
@@ -310,6 +320,8 @@ const EmojiProgression: React.FC = () => { // main component
         ))}
       </div>
 
+        
+
         {/* GENDER — optional */}
         <div className="gender-dropdown">
           <select value={gender} onChange={(e) => setGender(e.target.value)}>
@@ -323,15 +335,6 @@ const EmojiProgression: React.FC = () => { // main component
         </div>
 
 
-        {/* NATIONALITY — now optional */}
-        <div className="nationality-input">
-          <label>In what country do you typically listen to music? (Optional)</label>
-          <input
-            value={nationality}
-            placeholder="Country"
-            onChange={(e) => setNationality(e.target.value)}
-          />
-        </div>
 
       </div>
 
