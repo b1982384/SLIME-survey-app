@@ -32,7 +32,7 @@ const HomePage: React.FC = () => {
   <p><strong>Title of Research Study: <em>What Listening Device Are You?</em></strong></p>
 
   <p><strong>Principal Investigator:</strong> Daniel Shanahan</p>
-  <p><strong>Student Investigators:</strong> Annie Chu, Benjamin Wong-Fodor, Katie Lam</p>
+  <p><strong>Student Investigators: </strong>Annie Chu, Benjamin Wong-Fodor, Katie Lam</p>
 
   <p><strong>Supported By:</strong> This research is supported by the Bienen School of Music at Northwestern University.</p>
 
